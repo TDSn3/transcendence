@@ -4,10 +4,15 @@
 └── transcendence
     ├── backend
     |    └── Dockerfile
+    |    └── ...
     ├── frontend
     |    └── Dockerfile
+    |    └── ...
+    └── .gitignore
     └── docker-compose.yml
+    └── Makefile
 ```
+
 ## Usage
 
 - ` make ` : Creates and starts two containers. One with backend connected to port ` 5000 ` and another with frontend connected to port ` 3000 `.
