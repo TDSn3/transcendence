@@ -6,7 +6,7 @@
 #    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/01/22 11:24:20 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/01/22 12:31:15 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,6 +68,8 @@ run_it_backend:
 		--restart unless-stopped		\
 		backend							\
 		bash
+
+manual_back_it: setup build_backend run_it_backend
 
 it_backend:
 	@docker exec -it $$(docker ps --filter name=backend --format "{{.ID}}") bash

@@ -5,6 +5,8 @@ RUN			npm install -g @nestjs/cli
 WORKDIR		/usr/src/app
 COPY		. /usr/src/app
 
+RUN			npm install
+
 EXPOSE		5000
 
-CMD			["tail", "-f", "/dev/null"]
+CMD			["npm", "start"]
