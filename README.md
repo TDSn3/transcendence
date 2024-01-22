@@ -11,6 +11,7 @@
     └── .gitignore
     └── docker-compose.yml
     └── Makefile
+    └── README.md
 ```
 
 ## Usage
@@ -24,3 +25,12 @@
 - ` make clean ` : Stops and deletes containers.
 - ` make fclean ` : Stops and deletes **ALL** containers **(Note that this will delete all your other containers, if any)**.
 - Other commands are available in the Makefile.
+
+## Ressources
+
+- https://fullstackopen.com/en/
+- - ` Part 0 ` Fundamentals : https://fullstackopen.com/en/part0
+- - ` Part 1 ` react : https://fullstackopen.com/en/part0
+- - ` Part 2 ` react : https://fullstackopen.com/en/part0
+- - ` Part 9 ` typeScript : https://fullstackopen.com/en/part0
+- - ` Part 13 ` relational databases : https://fullstackopen.com/en/part0
