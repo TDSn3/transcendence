@@ -6,7 +6,7 @@
 #    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/01/22 11:02:38 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/01/22 11:24:20 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,7 +87,7 @@ kill_backend:
 build_frontend:
 	@docker build -t frontend ./frontend
 
-run_d_backend:
+run_d_frontend:
 	@docker run							\
 		-d								\
 		--name frontend					\
@@ -106,13 +106,13 @@ run_it_frontend:
 		frontend						\
 		bash
 
-it_backend:
+it_frontend:
 	@docker exec -it $$(docker ps --filter name=frontend --format "{{.ID}}") bash
 
-ps_backend:
+ps_frontend:
 	@docker exec -it $$(docker ps --filter name=frontend --format "{{.ID}}") ps aux
 
-kill_backend:
+kill_frontend:
 	@docker kill $$(docker ps --filter name=frontend --format "{{.ID}}")
 
 # **************************************************************************** #
@@ -131,7 +131,7 @@ clean: down
 #                                                                              #
 # **************************************************************************** #
 
-fclean:
+fclean: clean
 	@docker-compose -f ./docker-compose.yml kill
 	@echo ""
 	@docker system prune -a -f
