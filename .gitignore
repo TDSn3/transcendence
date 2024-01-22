@@ -1,0 +1,8 @@
+**/.DStore
+**/.DS_Store
+**/.vscode
+**/object
+**/*.o
+**/*.a
+**/node_modules
+**/.env
