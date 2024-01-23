@@ -6,9 +6,12 @@
 #    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/01/23 12:38:40 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/01/23 12:53:02 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+include .env
+export
 
 all:
 	@docker-compose -f ./docker-compose.yml up -d --build
@@ -51,22 +54,22 @@ build_backend:
 	@docker build -t backend ./backend
 
 run_d_backend:
-	@docker run							\
-		-d								\
-		--name backend					\
-		-p 5001:5001					\
-		--network transcendence_network	\
-		--restart unless-stopped		\
+	@docker run								\
+		-d									\
+		--name backend						\
+		-p $(BACKEND_PORT):$(BACKEND_PORT)	\
+		--network transcendence_network		\
+		--restart unless-stopped			\
 		backend
 
 run_it_backend:
-	@docker run							\
-		-it								\
-		--name backend					\
-		-p 5001:5001					\
-		--network transcendence_network	\
-		--restart unless-stopped		\
-		backend							\
+	@docker run								\
+		-it									\
+		--name backend						\
+		-p $(BACKEND_PORT):$(BACKEND_PORT)	\
+		--network transcendence_network		\
+		--restart unless-stopped			\
+		backend								\
 		bash
 
 manual_back_it: setup build_backend run_it_backend
@@ -90,23 +93,25 @@ build_frontend:
 	@docker build -t frontend ./frontend
 
 run_d_frontend:
-	@docker run							\
-		-d								\
-		--name frontend					\
-		-p 5001:5001					\
-		--network transcendence_network	\
-		--restart unless-stopped		\
+	@docker run									\
+		-d										\
+		--name frontend							\
+		-p $(FRONTEND_PORT):$(FRONTEND_PORT)	\
+		--network transcendence_network			\
+		--restart unless-stopped				\
 		frontend
 
 run_it_frontend:
-	@docker run							\
-		-it								\
-		--name frontend					\
-		-p 5001:5001					\
-		--network transcendence_network	\
-		--restart unless-stopped		\
-		frontend						\
+	@docker run									\
+		-it										\
+		--name frontend							\
+		-p $(FRONTEND_PORT):$(FRONTEND_PORT)	\
+		--network transcendence_network			\
+		--restart unless-stopped				\
+		frontend								\
 		bash
+
+manual_front_it: setup build_frontend run_it_frontend
 
 it_frontend:
 	@docker exec -it $$(docker ps --filter name=frontend --format "{{.ID}}") bash
