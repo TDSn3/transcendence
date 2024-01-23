@@ -6,7 +6,7 @@
 #    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/01/22 12:31:15 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/01/23 12:38:40 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ run_d_backend:
 	@docker run							\
 		-d								\
 		--name backend					\
-		-p 5000:5000					\
+		-p 5001:5001					\
 		--network transcendence_network	\
 		--restart unless-stopped		\
 		backend
@@ -63,7 +63,7 @@ run_it_backend:
 	@docker run							\
 		-it								\
 		--name backend					\
-		-p 5000:5000					\
+		-p 5001:5001					\
 		--network transcendence_network	\
 		--restart unless-stopped		\
 		backend							\
@@ -93,7 +93,7 @@ run_d_frontend:
 	@docker run							\
 		-d								\
 		--name frontend					\
-		-p 5000:5000					\
+		-p 5001:5001					\
 		--network transcendence_network	\
 		--restart unless-stopped		\
 		frontend
@@ -102,7 +102,7 @@ run_it_frontend:
 	@docker run							\
 		-it								\
 		--name frontend					\
-		-p 5000:5000					\
+		-p 5001:5001					\
 		--network transcendence_network	\
 		--restart unless-stopped		\
 		frontend						\

@@ -5,7 +5,7 @@ services:
         container_name: backend
         build: ./backend
         ports:
-            - "5000:5000"
+            - "5001:5001"
         networks:
             - transcendence_network
         restart: unless-stopped
