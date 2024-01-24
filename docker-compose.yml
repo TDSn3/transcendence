@@ -3,9 +3,13 @@ version: '3'
 services:
     backend:
         container_name: backend
-        build: ./backend
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
         ports:
-            - "5000:5000"
+            - "5001:5001"
+        env_file:
+            - .env
         depends_on:
             - db
         networks:
@@ -14,7 +18,9 @@ services:
 
     frontend:
         container_name: frontend
-        build: ./frontend
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
         ports:
             - "3000:3000"
         depends_on:
@@ -22,39 +28,23 @@ services:
         networks:
             - transcendence_network
         restart: unless-stopped
-
     
     db:
-        container_name: postgres
-        image: postgres
+        image: postgres:14
+        container_name: db
         restart: always
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
-        volumes:
-            - pgdata:/var/lib/postgresql/data
         ports:
             - "5432:5432"
-        networks:
-            - transcendence_network
-    
-    pgadmin:
-        container_name: pgadmin
-        image: dpage/pgadmin4
-        restart: always
-        environment:
-            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-        ports:
-            - "5050:80"
-        depends_on:
-            - db
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        env_file:
+            - .env
         networks:
             - transcendence_network
 
 volumes:
     pgdata:
+        name: pgdata
 
 networks:
     transcendence_network:

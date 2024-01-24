@@ -13,6 +13,11 @@
     └── Makefile
 ```
 
+# PRISMA
+
+`npx prisma migrate dev` : load .env variable and create a network between my database and my backend
+`npx prisma studio` : debug the database
+
 ## Usage
 
 - ` make ` : Creates and starts two containers. One with backend connected to port ` 5000 ` and another with frontend connected to port ` 3000 `.
@@ -24,3 +29,4 @@
 - ` make clean ` : Stops and deletes containers.
 - ` make fclean ` : Stops and deletes **ALL** containers **(Note that this will delete all your other containers, if any)**.
 - Other commands are available in the Makefile.
+
