@@ -1,38 +1,34 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users') // users is the path segment for this controller
+@Controller('users')
 export class UsersController {
-    
-    constructor(private readonly usersService: UsersService) {} // dependency injection, he's doing : const newUsersService = new UsersService(), building new instance of UsersService
+  constructor(private readonly usersService: UsersService) {}
 
-   @Get() // GET /users or /users?role=admin
-   findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-        return this.usersService.findAll(role);
-   }
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
 
-   @Get('interns') // GET /users/interns
-   findAllInterns() {
-       return []
-    }
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
+  }
 
-    @Get(':id') // GET /users/:id
-    findOne(@Param('id') id: string) {
-        return this.usersService.findOne(+id);
-    }
-    
-    @Post() // POST /users
-    create(@Body() user: {name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        return this.usersService.create(user);
-    }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(+id);
+  }
 
-    @Patch(':id') // GET /users/:id
-    update(@Param('id') id: string, @Body() userUpdate: {name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        return this.usersService.update(+id, userUpdate);
-    }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
 
-    @Delete(':id') // DELETE /users/:id
-    delete(@Param('id') id: string) {
-        return this.usersService.delete(+id);
-    }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
 }

@@ -1,14 +1,54 @@
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  // Connexion process 
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  twoFactorAuthSecret Bytes?
+  isTwoFactorAuthEnabled Boolean @default(false)
+  name String[] 
+
+  // Profile process
+
+  intraId  Int    @unique
+  username String @unique @db.VarChar(255)
+  avatar   String
+  email    String @unique
+
+  status   UserStatus @default(OFFLINE)
+
+}
+
+model Channel {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  description String
+  type ChannelType @default(PUBLIC)
+
+
+}
+
+enum UserStatus {
+  ONLINE
+  OFFLINE
+  PLAYING
+}
+
+enum ChannelType {
+  PUBLIC
+  PRIVATE
 }

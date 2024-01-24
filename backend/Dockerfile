@@ -1,13 +1,25 @@
-FROM		node:21.6.0 
+FROM node:21 AS builder
 
-RUN			npm install -g @nestjs/cli
+# Create app directory
+WORKDIR /app
 
-WORKDIR		/usr/src/app
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+COPY prisma ./prisma/
 
-COPY		. /usr/src/app
+# Install app dependencies
+RUN npm install
 
-RUN			npm install
+COPY . .
 
-EXPOSE		5000
+RUN npm run build
 
-CMD			["npm", "start"]
+FROM node:21
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+
+
+EXPOSE 5001
+CMD [ "npm", "run", "start:prod" ]
