@@ -35,3 +35,8 @@
 - - ` Part 2 ` react : https://fullstackopen.com/en/part0
 - - ` Part 9 ` typeScript : https://fullstackopen.com/en/part0
 - - ` Part 13 ` relational databases : https://fullstackopen.com/en/part0
+
+## VS Code extension
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
