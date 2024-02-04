@@ -1,14 +1,18 @@
+import { useState } from 'react';
+
 import Button from './Button/Button';
 
 const Navbar = () =>
 {
+  const [buttonSelected, setButtonSelected] = useState<string>('');
+
   return (
-    <>
-      <Button to="/" text='Home' />
-      <Button to="/profile" text='Profile' />
-      <Button to="/chat" text='Chat' />
-      <Button to="/game" text='Play' />
-    </>
+    <div>
+      <Button to="/" text='Home' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
+      <Button to="/profile" text='Profile' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
+      <Button to="/chat" text='Chat' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
+      <Button to="/game" text='Play' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
+    </div>
   );
 };
 
