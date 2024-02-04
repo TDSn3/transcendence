@@ -1,7 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Profile from './components/Profile';
-import Button from './components/Button';
+import Chat from './components/Chat';
+import Game from './components/Game';
 
 const App = () => {
   return (
@@ -10,9 +12,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/game" element={<Game />} />
       </Routes>
-      <Button to="/" text='Home' />
-      <Button to="/profile" text='Profile' />
+      <Navbar/>
     </div>
   );
 };
