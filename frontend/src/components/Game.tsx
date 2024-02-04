@@ -1,7 +1,7 @@
 // TODO
-const	Game = () =>
+const Game = () =>
 {
-	return (<></>)
-}
+	return (<></>);
+};
 
-export default Game
+export default Game;

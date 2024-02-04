@@ -1,7 +1,7 @@
 // TODO
-const	Chat = () =>
+const Chat = () =>
 {
-	return (<></>)
-}
+  return (<></>);
+};
 
-export default Chat
+export default Chat;
