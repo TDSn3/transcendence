@@ -1,7 +1,11 @@
 // TODO
 const Chat = () =>
 {
-  return (<></>);
+  return (
+    <>
+      <h3>Chat</h3>
+    </>
+  );
 };
 
 export default Chat;

@@ -1,7 +1,11 @@
 // TODO
 const Profile = () =>
 {
-	return (<></>);
+  return (
+    <>
+      <h3>Profile</h3>
+    </>
+  );
 };
 
 export default Profile;
