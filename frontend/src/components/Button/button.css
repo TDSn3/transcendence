@@ -1,0 +1,28 @@
+.button-style {
+	border: none;
+	background-color: #eeeeee;
+  
+	color: black;
+	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+  
+	margin: 8px;
+  
+	padding-top: 6px;
+	padding-right: 14px;
+	padding-bottom: 6px;
+	padding-left: 14px;
+  
+	border-radius: 6px;
+}
+
+.button-style:hover {
+	background-color: #dddddd;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.button-style:active {
+	background-color: #cccccc;
+}
