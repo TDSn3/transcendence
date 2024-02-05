@@ -2,10 +2,37 @@
 html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.root {
+	height: 100vh;
+	padding: 8px;
+	box-sizing: border-box;
 }
 
 body {
-	margin: 8;
+	margin: 0;
+	padding: 0px;
+
+	background-color: #f2f2f2;
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
+	height: 100%;
+}
+
+.page {
+	flex-grow: 1;
+	padding: 8px;
+	box-sizing: border-box;
+
+	background-color: #ffffff;
+	border-radius: 14px;
 }
 
 h1 {
@@ -17,6 +44,8 @@ h1 {
 }
 
 h3 {
+	margin-left: 16px;
+	
 	color: black;
 	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
 	font-weight:500;

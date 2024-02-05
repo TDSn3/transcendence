@@ -8,9 +8,10 @@ interface ButtonProps {
   to: string,
   buttonSelected: string,
   setButtonSelected: React.Dispatch<React.SetStateAction<string>>,
+  handleClick?: () => void,
 }
 
-const Button = ({ text, to, buttonSelected, setButtonSelected }: ButtonProps) =>
+const Button = ({ text, to, buttonSelected, setButtonSelected, handleClick }: ButtonProps) =>
 {
   const location = useLocation();
 
@@ -21,13 +22,13 @@ const Button = ({ text, to, buttonSelected, setButtonSelected }: ButtonProps) =>
   }, [location, to, text, setButtonSelected]);
 
   return (
-    <span style={{ margin: '8px' }}>
+    <div>
       <Link to={to}>
-        <button className={buttonSelected === text ? 'clicked-button-style' : 'button-style'} >
+        <button className={buttonSelected === text ? 'clicked-button-style' : 'button-style'} onClick={handleClick} >
           {text}
         </button>
       </Link>
-    </span>
+    </div>
   );
 };
 

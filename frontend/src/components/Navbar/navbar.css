@@ -1,0 +1,10 @@
+.navbar-style {
+	display: flex;
+	gap: 8px;
+	flex-direction: column;
+	background-color: #ffffff;
+	padding: 8px;
+	width: 192px;
+	border-radius: 14px;
+	box-sizing: border-box;
+}

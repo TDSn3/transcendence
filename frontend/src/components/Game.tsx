@@ -2,9 +2,9 @@
 const Game = () =>
 {
   return (
-    <>
+    <div className='page'>
       <h3>Game</h3>
-    </>
+    </div>
   );
 };
 
