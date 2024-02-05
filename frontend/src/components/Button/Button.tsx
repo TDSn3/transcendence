@@ -21,7 +21,7 @@ const Button = ({ text, to, buttonSelected, setButtonSelected }: ButtonProps) =>
   }, [location, to, text, setButtonSelected]);
 
   return (
-    <div style={{ margin: '8px' }}>
+    <div>
       <Link to={to}>
         <button className={buttonSelected === text ? 'clicked-button-style' : 'button-style'} >
           {text}

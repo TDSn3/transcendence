@@ -13,9 +13,9 @@ body {
 .container {
 	display: flex;
 	flex-direction: row;
+	gap: 8px;
 	overflow: hidden;
 	height: 100%;
-	gap: 8px;
 }
 
 .page {
