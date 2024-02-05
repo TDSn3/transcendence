@@ -11,12 +11,13 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "twoFactorAuthSecret" BYTEA,
     "isTwoFactorAuthEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "name" TEXT[],
     "intraId" INTEGER NOT NULL,
-    "username" VARCHAR(255) NOT NULL,
+    "email42" TEXT NOT NULL,
+    "login" VARCHAR(12) NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "avatar" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "status" "UserStatus" NOT NULL DEFAULT 'OFFLINE',
+    "status" "UserStatus" NOT NULL DEFAULT 'ONLINE',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -37,7 +38,7 @@ CREATE TABLE "Channel" (
 CREATE UNIQUE INDEX "User_intraId_key" ON "User"("intraId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+CREATE UNIQUE INDEX "User_email42_key" ON "User"("email42");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "User_login_key" ON "User"("login");

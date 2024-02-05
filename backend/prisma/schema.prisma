@@ -17,16 +17,20 @@ model User {
   updatedAt DateTime @updatedAt
   twoFactorAuthSecret Bytes?
   isTwoFactorAuthEnabled Boolean @default(false)
-  name String[] 
+
+  // signup process without 42_API
+  // email String @unique
+  // hash String
 
   // Profile process
+  intraId Int @unique
+  email42 String @unique
+  login String @unique @db.VarChar(12)
+  firstName String 
+  lastName String
+  avatar String
 
-  intraId  Int    @unique
-  username String @unique @db.VarChar(255)
-  avatar   String
-  email    String @unique
-
-  status   UserStatus @default(OFFLINE)
+  status UserStatus @default(ONLINE)
 
 }
 
@@ -38,7 +42,6 @@ model Channel {
   name String
   description String
   type ChannelType @default(PUBLIC)
-
 
 }
 
