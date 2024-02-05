@@ -5,7 +5,24 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 }
 
 body {
-	margin: 8;
+	margin: 0;
+	padding: 8px;
+	background-color: #f2f2f2;
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+	height: 100%;
+	gap: 8px;
+}
+
+.page {
+	flex-grow: 1;
+	padding: 8px;
+	background-color: #ffffff;
+	border-radius: 14px;
 }
 
 h1 {

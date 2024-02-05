@@ -21,13 +21,13 @@ const Button = ({ text, to, buttonSelected, setButtonSelected }: ButtonProps) =>
   }, [location, to, text, setButtonSelected]);
 
   return (
-    <span style={{ margin: '8px' }}>
+    <div style={{ margin: '8px' }}>
       <Link to={to}>
         <button className={buttonSelected === text ? 'clicked-button-style' : 'button-style'} >
           {text}
         </button>
       </Link>
-    </span>
+    </div>
   );
 };
 

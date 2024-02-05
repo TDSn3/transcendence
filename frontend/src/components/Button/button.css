@@ -1,6 +1,6 @@
 .button-style {
 	border: none;
-	background-color: #eeeeee;
+	background-color: #ffffff;
   
 	color: black;
 	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
@@ -37,10 +37,6 @@
 }
 
 .button-style:hover {
-	background-color: #dddddd;
+	background-color: #f2f2f2;
 	transition: background-color 0.2s ease-in-out;
-}
-
-.button-style:active {
-	background-color: #cccccc;
 }

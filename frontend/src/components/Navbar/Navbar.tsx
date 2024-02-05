@@ -1,13 +1,14 @@
 import { useState } from 'react';
 
-import Button from './Button/Button';
+import Button from '../Button/Button';
+import './navbar.css';
 
 const Navbar = () =>
 {
   const [buttonSelected, setButtonSelected] = useState<string>('');
 
   return (
-    <div>
+    <div className={'navbar-style'}>
       <Button to="/" text='Home' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
       <Button to="/profile" text='Profile' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
       <Button to="/chat" text='Chat' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
