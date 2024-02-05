@@ -9,7 +9,7 @@ const Navbar = () =>
 
   return (
     <div className={'navbar-style'}>
-      <Button to="/" text='Home' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
+      <Button to="/home" text='Home' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
       <Button to="/profile" text='Profile' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
       <Button to="/chat" text='Chat' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
       <Button to="/game" text='Play' buttonSelected={buttonSelected} setButtonSelected={setButtonSelected} />
