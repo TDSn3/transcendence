@@ -1,25 +1,26 @@
 FROM node:21 AS builder
 
-# Create app directory
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 COPY prisma ./prisma/
+COPY tsconfig.json ./ 
 
-# Install app dependencies
 RUN npm install
-
 COPY . .
 
 RUN npm run build
+
+RUN npx prisma generate
 
 FROM node:21
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/tsconfig.json ./
+COPY --from=builder /app/prisma ./prisma
 
+RUN apt-get update && apt-get install -y wait-for-it
 
-EXPOSE 5001
-CMD [ "npm", "run", "start:prod" ]
+CMD [  "npm", "run", "start:migrate:prod" ]
