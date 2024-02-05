@@ -14,7 +14,7 @@ const Login = ({ setIsLogin }: LoginProps) => {
   return (
     <div className='login'>
       <h3 style={{ marginBottom: '16px', marginLeft: 0 }} >Log in</h3>
-      <Cta text='42'handleClick={handleClick} />
+      <Cta text='Sign in with 42'handleClick={handleClick} />
     </div>
   );
 };

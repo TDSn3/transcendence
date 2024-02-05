@@ -10,7 +10,7 @@ const Cta = ({ text, handleClick }: ButtonProps) =>
   return (
     <div>
       <button className='cta-style' onClick={handleClick} >
-        {text}
+        <img height="24" src='../../public/42-BLACK.svg' alt={text} />
       </button>
     </div>
   );
