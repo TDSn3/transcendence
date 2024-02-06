@@ -1,0 +1,15 @@
+:root {
+	--font-family-principal: 'Helvetica Now Display', Helvetica, sans-serif;
+
+	--margin-medium: 16px;
+	--margin-large: 32px;
+	
+	--border-radius-small: 6px;
+	--border-radius-medium: 8px;
+	--border-radius-large: 16px;
+
+	--color-light: #ffffff;
+	--color-medium: #f3f2f1;
+	--color-medium-dark: #E7E7E5;
+	--color-dark: #000000;
+}

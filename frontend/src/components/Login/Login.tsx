@@ -1,4 +1,4 @@
-import Cta from '../cta/Cta';
+import Cta from '../Cta/Cta';
 import './login.css';
 
 interface LoginProps {

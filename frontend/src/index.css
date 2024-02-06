@@ -8,7 +8,7 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 
 .root {
 	height: 100vh;
-	padding: 8px;
+	padding: var(--margin-medium);
 	box-sizing: border-box;
 }
 
@@ -16,28 +16,28 @@ body {
 	margin: 0;
 	padding: 0px;
 
-	background-color: #f2f2f2;
+	background-color: var(--color-medium);
 }
 
 .container {
 	display: flex;
 	flex-direction: row;
-	gap: 8px;
+	gap: var(--margin-medium);
 	height: 100%;
 }
 
 .page {
 	flex-grow: 1;
-	padding: 8px;
+	padding: var(--margin-medium);
 	box-sizing: border-box;
 
-	background-color: #ffffff;
+	background-color: var(--color-light);
 	border-radius: 14px;
 }
 
 h1 {
-	color: black;
-	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
 	font-weight: 500;
 	font-style: normal;
 	font-size: 64px;
@@ -46,16 +46,16 @@ h1 {
 h3 {
 	margin-left: 16px;
 	
-	color: black;
-	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
 	font-weight:500;
 	font-style: normal;
 	font-size: 34px;
 }
 
 p {
-	color: black;
-	font-family: 'Helvetica Now Display', Helvetica, sans-serif;
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
 	font-size: 16px;
