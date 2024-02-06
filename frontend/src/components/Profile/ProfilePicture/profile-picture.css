@@ -1,12 +1,8 @@
 .profile-picture-style {
-	width: 256px;
-	height: 256px;
-	background-color: #000000;
+	background-color: var(--color-medium);
 	border-radius: 50%;
 	background-size: cover;
 	background-position: center;
 
-	margin-top: 16px;
-	margin-right: 16px;
-	margin-left: 16px;
+	margin: 16px;
 }

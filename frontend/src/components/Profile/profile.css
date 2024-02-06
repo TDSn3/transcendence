@@ -37,3 +37,58 @@
 .number {
 	font-weight: 600;
 }
+
+.big-number-won {
+	color: var(--color-dark);
+	font-size: 32px;
+	font-weight:500;
+	font-style: normal;
+}
+
+.big-number-lose {
+	color: var(--color-dark-soft);
+	font-size: 32px;
+	font-weight:500;
+	font-style: normal;
+}
+
+.game-history-title-style {
+	flex-shrink: 0;
+}
+
+.game-result-container {
+	display: flex;	
+	flex-direction: column;
+	overflow-y: auto;
+	gap: var(--margin-medium);
+}
+
+.game-result {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: var(--color-medium);
+	font-family: var(--font-family-principal);
+
+	border-radius: var(--border-radius-small);
+}
+
+::-webkit-scrollbar {
+	width: 24px;
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-medium-dark);
+	border-radius: 100px;
+	border: 8px solid transparent;
+	background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background:var(--color-dark-soft);
+	border-radius: 100px;
+	border: 7px solid transparent;
+	background-clip: padding-box;
+}
