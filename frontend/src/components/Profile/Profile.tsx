@@ -3,14 +3,6 @@ import ProfilePicture from './ProfilePicture/ProfilePicture';
 
 import './profile.css';
 
-const user: User = {
-  username: 'tda-silv',
-  profilePictureUrl: 'https://avatars.githubusercontent.com/u/92325211?v=4',
-  rank: 1,
-  gamesWon: 2,
-  gamesLost: 3,
-};
-
 const gameResult: GameResult[] = [
   {
     players: [
@@ -54,6 +46,15 @@ const gameResult: GameResult[] = [
   }
 ];
 
+const user: User = {
+  username: 'tda-silv',
+  profilePictureUrl: 'https://avatars.githubusercontent.com/u/92325211?v=4',
+  rank: 1,
+  gamesWon: 2,
+  gamesLost: 3,
+  gameHistory: gameResult,
+};
+
 const Profile = () =>
 {
   return (
@@ -82,7 +83,7 @@ const Profile = () =>
 
         <div className='game-result-container'>
           {
-            gameResult.map((value, index) => {
+            user.gameHistory.map((value, index) => {
               return (
                 <div key={index} className='game-result'>
                   <div className='game-result-item-start'>
