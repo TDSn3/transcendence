@@ -24,7 +24,7 @@ const NavbarItem = ({ text, to, navbarItemSelected, setNavbarItemSelected, handl
   return (
     <div>
       <Link to={to}>
-        <button className={navbarItemSelected === text ? 'clicked-button-style' : 'button-style'} onClick={handleClick} >
+        <button className={navbarItemSelected === text ? 'clicked-item-style' : 'item-style'} onClick={handleClick} >
           {text}
         </button>
       </Link>
