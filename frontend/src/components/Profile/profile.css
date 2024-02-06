@@ -7,7 +7,6 @@
 	flex-direction: column;
 	gap: var(--margin-medium);
 
-	/* width: 30%; */
 	min-width: 256px;
 }
 
@@ -65,13 +64,51 @@
 
 .game-result {
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
+	position: relative;
 
 	background-color: var(--color-medium);
 	font-family: var(--font-family-principal);
 
 	border-radius: var(--border-radius-small);
+}
+
+.game-result-item-start {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	justify-content: flex-start;
+	padding-left: 16px;
+}
+
+.game-result-item-end {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	justify-content: flex-end;
+	padding-right: 16px;
+}
+
+.game-result-item-middle {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	position: absolute;
+	width: 100%;
+}
+
+.left {
+	position: absolute;
+	left: 50%;
+	transform: translateX(calc(-100% - 32px));
+}
+  
+.right {
+	position: absolute;
+	right: 50%;
+	transform: translateX(calc(100% + 32px));
 }
 
 ::-webkit-scrollbar {

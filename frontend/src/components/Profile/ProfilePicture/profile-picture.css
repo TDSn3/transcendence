@@ -1,4 +1,6 @@
 .profile-picture-style {
+	flex-shrink: 0;
+	
 	background-color: var(--color-medium);
 	border-radius: 50%;
 	background-size: cover;

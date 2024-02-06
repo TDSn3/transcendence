@@ -85,15 +85,21 @@ const Profile = () =>
             gameResult.map((value, index) => {
               return (
                 <div key={index} className='game-result'>
-                  {value.players[0].user.username}
-                  <ProfilePicture size='64px' imageUrl={value.players[0].user.profilePictureUrl}/>
+                  <div className='game-result-item-start'>
+                    <ProfilePicture size='64px' imageUrl={value.players[0].user.profilePictureUrl}/>
+                    {value.players[0].user.username}
+                  </div>
 
-                  <span className={ value.players[0].won ? 'big-number-won' : 'big-number-lose' }>{value.players[0].score}</span>
-                  <span className='big-number-won'>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
-                  <span className={ value.players[1].won ? 'big-number-won' : 'big-number-lose' }>{value.players[1].score}</span>
+                  <div className='game-result-item-middle '>
+                    <span className={ (value.players[0].won ? 'big-number-won' : 'big-number-lose') + '  left' }>{value.players[0].score}</span>
+                    <span className='big-number-won'>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+                    <span className={ (value.players[1].won ? 'big-number-won' : 'big-number-lose') + ' right' }>{value.players[1].score}</span>
+                  </div>
 
-                  <ProfilePicture size='64px' imageUrl={value.players[1].user.profilePictureUrl}/>
-                  {value.players[1].user.username}
+                  <div className='game-result-item-end'>
+                    {value.players[1].user.username}
+                    <ProfilePicture size='64px' imageUrl={value.players[1].user.profilePictureUrl}/>
+                  </div>
                 </div>
               );
             }, 0)
