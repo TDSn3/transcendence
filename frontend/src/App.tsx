@@ -12,27 +12,30 @@ import { User } from './utils/types';
 
 import userService from './services/user';
 
+const defaultUser: User = {
+  id: '',
+  username: '',
+  profilePictureUrl: '',
+  rank: -1,
+  gamesWon: -1,
+  gamesLost: -1,
+};
+
 function App() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [users, setUsers] = useState<User[]>([]);
+  const [user, setUser] = useState<User>(defaultUser);
 
   const fetchUserList = async () => {
     const userList = await userService.getAll();
-    setUsers(userList);
+    setUser(userList[0]);
   };
 
   useEffect(() => {
     axios.get<undefined>(`${API_BASE_URL}/ping`);
-
     fetchUserList();
   }, []);
 
   return (
-    // <div className="App container">
-    //   {
-    //     users.map((value) => (value.username))
-    //   }
-    // </div>
     <div className="App container">
       {
         isLogin === false ? (
@@ -45,7 +48,7 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/home" element={<Home />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={<Profile user={user} />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/game" element={<Game />} />
               <Route path="*" element={<Navigate to="/home" replace />} />

@@ -1,13 +1,13 @@
 export interface User {
+  id: string,
   username: string,
   profilePictureUrl: string,
   rank: number,
   gamesWon: number,
   gamesLost: number,
-  gameHistory: GameResult[],
 }
 
-export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost' | 'gameHistory'>;
+export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
 
 export interface Player {
   user: UserEssential,
@@ -17,4 +17,9 @@ export interface Player {
 
 export interface GameResult {
   players: [Player, Player],
+}
+
+export interface UserGameHistory {
+  userId: string,
+  gameHistory: GameResult[],
 }

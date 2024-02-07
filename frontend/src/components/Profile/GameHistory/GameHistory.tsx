@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from '../../../utils/types';
+import { User, UserGameHistory } from '../../../utils/types';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
+import gameHistoryService from '../../../services/gameHistory';
 
 import './game-history.css';
 
@@ -8,11 +10,21 @@ interface GameHistoryProps {
   user: User,
 }
 
+const defaultUserGameHistory: UserGameHistory = {
+  userId: '',
+  gameHistory: [],
+};
+
 function GameHistory({ user }: GameHistoryProps) {
+  const [userGameHistory, setGameHistory] = useState<UserGameHistory>(defaultUserGameHistory);
+
+  gameHistoryService.getUserGameHistory(user.id)
+    .then((data) => { setGameHistory(data); });
+
   return (
     <div className="game-result-container">
       {
-        user.gameHistory.map((value) => (
+        userGameHistory.gameHistory.map((value) => (
           <div key={uuidv4()} className="game-result">
             <div className="game-result-item-start">
               <ProfilePicture size="64px" imageUrl={value.players[0].user.profilePictureUrl} />

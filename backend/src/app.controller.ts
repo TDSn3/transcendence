@@ -27,11 +27,16 @@ export class AppController {
 
   @Get('api/users/:id')
   getUser(@Param('id') id: string): User {
-    return users.find((patientValue) => patientValue.id === id) as User; // TODO: remove "as User" by a verification function
+    return users.find((userValue) => userValue.id === id) as User; // TODO: remove "as User" by a verification function
   }
 
   @Get('api/users-game-histories')
   getUsersGameHistories(): UserGameHistory[] {
     return usersGameHistories;
+  }
+
+  @Get('api/users-game-histories/:id')
+  getUserGameHistory(@Param('id') id: string): UserGameHistory {
+    return usersGameHistories.find((value) => value.userId === id) as UserGameHistory; // TODO: remove "as UserGameHistory" by a verification function
   }
 }

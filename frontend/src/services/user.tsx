@@ -9,7 +9,7 @@ const getAll = async () => {
   return (data);
 };
 
-const getUser = async (id: number): Promise<User> => {
+const getUser = async (id: string): Promise<User> => {
   const { data } = await axios.get<User>(`${usersUrl}/${id}`);
 
   return (data);
