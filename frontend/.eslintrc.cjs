@@ -5,10 +5,17 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
+    'airbnb',
+    'airbnb/hooks',
+    'airbnb-typescript',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
+  },
+  plugins: ['react-refresh', '@typescript-eslint'],
   rules: {
   
     'react-refresh/only-export-components': [
@@ -28,10 +35,14 @@ module.exports = {
       { "argsIgnorePattern": "^_" }
     ],
   
+    // Allows declarations in case clauses.
     "no-case-declarations": "off",
+
+    // Enforces 2-space indentation.
     indent: ['error', 2],
+
+    // Enforces Unix line endings.
     'linebreak-style': ['error', 'unix'],
-    quotes: ['error', 'single'],
 
     // disallow == and != // use === and !== instead
     eqeqeq: 'error',
@@ -47,6 +58,9 @@ module.exports = {
 
     // allow console.log() disallowed in 'eslint:recommended'
     'no-console': 0,
+
+    // disables requiring React import in JSX files, unnecessary with React 17 and later.
+    'react/react-in-jsx-scope': 'off',
 
     'import/no-extraneous-dependencies': 0,
   },
