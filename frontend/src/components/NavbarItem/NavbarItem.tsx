@@ -8,11 +8,11 @@ interface NavbarItemProps {
   to: string,
   navbarItemSelected: string,
   setNavbarItemSelected: React.Dispatch<React.SetStateAction<string>>,
-  handleClick?: () => void,
 }
 
-const NavbarItem = ({ text, to, navbarItemSelected, setNavbarItemSelected, handleClick }: NavbarItemProps) =>
-{
+function NavbarItem({
+  text, to, navbarItemSelected, setNavbarItemSelected,
+}: NavbarItemProps) {
   const location = useLocation();
 
   useEffect(() => {
@@ -24,12 +24,12 @@ const NavbarItem = ({ text, to, navbarItemSelected, setNavbarItemSelected, handl
   return (
     <div>
       <Link to={to}>
-        <button className={navbarItemSelected === text ? 'clicked-item-style' : 'item-style'} onClick={handleClick} >
+        <button className={navbarItemSelected === text ? 'clicked-item-style' : 'item-style'} type="button">
           {text}
         </button>
       </Link>
     </div>
   );
-};
+}
 
 export default NavbarItem;

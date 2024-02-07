@@ -7,27 +7,25 @@ import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
 import Game from './components/Game';
 
-const App = () => {
+function App() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
 
   return (
-    <div className={'App container'}>
+    <div className="App container">
       {
         isLogin === false ? (
-          <>
-            <Routes>
-              <Route path="/login" element={<Login setIsLogin={setIsLogin}/>} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          </>
+          <Routes>
+            <Route path="/login" element={<Login setIsLogin={setIsLogin} />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
         ) : (
           <>
-            <Navbar/>
+            <Navbar />
             <Routes>
-              <Route path="/home" element={<Home/>} />
-              <Route path="/profile" element={<Profile/>} />
-              <Route path="/chat" element={<Chat/>} />
-              <Route path="/game" element={<Game/>} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/game" element={<Game />} />
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           </>
@@ -35,6 +33,6 @@ const App = () => {
       }
     </div>
   );
-};
+}
 
 export default App;
