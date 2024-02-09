@@ -11,39 +11,38 @@ services:
             - pgdata:/var/lib/postgresql/data
         env_file:
             - ./backend/.env
-        command: postgres -c listen_addresses=*
         networks:
             - transcendence_network
 
-    backend:
-        container_name: backend
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
-        env_file:
-            - ./backend/.env
-        ports:
-            - "5001:5001"
-        depends_on:
-            - db
-        networks:
-            - transcendence_network
-        restart: unless-stopped
+    # backend:
+    #     container_name: backend
+    #     build:
+    #         context: ./backend
+    #         dockerfile: Dockerfile
+    #     env_file:
+    #         - ./backend/.env
+    #     ports:
+    #         - "5001:5001"
+    #     depends_on:
+    #         - db
+    #     networks:
+    #         - transcendence_network
+    #     restart: unless-stopped
 
-    frontend:
-        container_name: frontend
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        env_file:
-            - ./frontend/.env
-        ports:
-            - "3000:3000"
-        depends_on:
-            - db
-        networks:
-            - transcendence_network
-        restart: unless-stopped
+    # frontend:
+    #     container_name: frontend
+    #     build:
+    #         context: ./frontend
+    #         dockerfile: Dockerfile
+    #     env_file:
+    #         - ./frontend/.env
+    #     ports:
+    #         - "3000:3000"
+    #     depends_on:
+    #         - db
+    #     networks:
+    #         - transcendence_network
+    #     restart: unless-stopped
 
     # prisma-studio:
     #   build:
