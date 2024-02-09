@@ -1,47 +1,66 @@
 // auth.controller.ts
-import { Controller, Post, Body, Get, Req, Res} from "@nestjs/common";
+import { Controller, Post, Body, Get, Req, Res, Query} from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto";
-
-
+import { Request, Response } from "express";
+import { Cookie } from "express-cookies";
+import { ApiTags } from "@nestjs/swagger";
+import { SignIn42Dto } from "./dto/sign-in-42.dto";
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../prisma/prisma.service";
+import { JwtService } from "@nestjs/jwt";
+import { BadRequestException } from "@nestjs/common";
+import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
+import { sign } from "crypto";
 
 @Controller('api/auth')
+@ApiTags('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
-
-    @Post('signup')
-    signup(@Body() dto: AuthDto) {
-        console.log(dto);
-        return this.authService.signup(dto);
-    }
-
-    @Post('signin')
-    signin(@Body() dto: AuthDto) {
-        return this.authService.signin(dto);
-    }
+  constructor(
+    private authService: AuthService,
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private configService: ConfigService
+) {}
 
     @Get('signin42')
-    async signin42(@Req() req: Request, @Res() res: Response) {
-        try {
-            const code = req.query.code as string;
-            const state = req.query.state as string;
-    
-            // console.log('Code:', code);
-            // console.log('State:', state);
-    
-            const accessToken = await this.authService.exchangeCodeForAccessToken(code);
-            // console.log('Access Token:', accessToken);
+    async signin42Get(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
+      try {
 
-            const userData = await this.authService.fetchDataWithAccessToken(accessToken);
-            await this.authService.saveUserData(userData);
-            res.json({ user_data: userData });
-        } catch (error) {
-            console.error('Erreur lors du traitement de la requête signin42:', error);
-            res.status(500).json({ 
-                status: 500,
-                error: 'Internal Server Error' 
-            });
-        }
-  }
+        const ft_token = await this.authService.exchangeCodeForFtToken(signIn42Dto.code);
+  
+        const userData = await this.authService.fetchDataWithFtToken(ft_token);
+        console.log('userData:', userData.id);
+        
+        await this.authService.saveUserData(userData);
+
+        const signInResponse: SignInResponse42Dto = await this.authService.handleUserSignIn(userData);
+
+        // res.cookie('isLogin', 'true', { sameSite: 'None', secure: true });
+        // res.status(200).json(signInResponse);
+        console.log(signInResponse);
+        res.redirect('http://localhost:3000/home');
+      } catch (error) {
+        res.status(500).json({ 
+          status: 500,
+          error: 'Error while processing signin42 request' 
+        });
+      }
+    }
+
+    @Get('logout')
+    async logout(@Res() res: Response) {
+      try {
+        res.clearCookie('isLogin',  { sameSite: 'None', secure: true });
+        console.log('Logout successful');
+        res.status(200).send('Logout successful');
+      } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({
+          status: 500,
+          error: 'Error during logout' 
+        });
+      }
+    }
+    
 }
 

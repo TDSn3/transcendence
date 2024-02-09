@@ -12,10 +12,9 @@ datasource db {
 
 model User {
   // Connexion process 
-  id        Int      @id @default(autoincrement())
+  id        String      @id @unique @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  twoFactorAuthSecret Bytes?
   isTwoFactorAuthEnabled Boolean @default(false)
 
   // signup process without 42_API
