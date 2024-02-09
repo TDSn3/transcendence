@@ -1,11 +1,11 @@
 // TODO
-const	Profile = () =>
+const Profile = () =>
 {
-	return (
-		<>
-			<h1>Profile</h1>
-		</>
-	)
-}
+  return (
+    <div className='page'>
+      <h3>Profile</h3>
+    </div>
+  );
+};
 
-export default Profile
+export default Profile;

@@ -1,7 +1,11 @@
 // TODO
-const	Game = () =>
+const Game = () =>
 {
-	return (<></>)
-}
+  return (
+    <div className='page'>
+      <h3>Game</h3>
+    </div>
+  );
+};
 
-export default Game
+export default Game;

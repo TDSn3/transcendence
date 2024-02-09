@@ -1,0 +1,9 @@
+.navbar-style {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-light);
+	padding: var(--margin-medium);
+	width: 192px;
+	border-radius: var(--border-radius-large);
+	box-sizing: border-box;
+}

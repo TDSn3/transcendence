@@ -1,13 +1,62 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.root {
+	height: 100vh;
+	padding: var(--margin-medium);
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0px;
+
+	background-color: var(--color-medium);
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+	gap: var(--margin-medium);
+	height: 100%;
+}
+
+.page {
+	flex-grow: 1;
+	padding: var(--margin-medium);
+	box-sizing: border-box;
+
+	background-color: var(--color-light);
+	border-radius: 14px;
+}
+
+h1 {
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: 500;
+	font-style: normal;
+	font-size: 64px;
+}
+
+h3 {
+	margin-left: 16px;
+	
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight:500;
+	font-style: normal;
+	font-size: 34px;
+}
+
+p {
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
 }

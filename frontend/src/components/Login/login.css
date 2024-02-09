@@ -1,0 +1,11 @@
+.login {
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+
+	padding: var(--margin-medium);
+	background-color: var(--color-light);
+	border-radius: var(--border-radius-large);
+	text-align: center;
+	box-sizing: border-box;
+}

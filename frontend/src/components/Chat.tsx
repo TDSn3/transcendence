@@ -1,7 +1,11 @@
 // TODO
-const	Chat = () =>
+const Chat = () =>
 {
-	return (<></>)
-}
+  return (
+    <div className='page'>
+      <h3>Chat</h3>
+    </div>
+  );
+};
 
-export default Chat
+export default Chat;
