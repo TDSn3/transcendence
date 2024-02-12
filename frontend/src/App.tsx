@@ -5,7 +5,7 @@ import Login from './components/Login/Login';
 import Home from './components/Home';
 import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
-import Game from './components/Game';
+import Game from './components/Game/Game.tsx';
 
 function App() {
   const [isLogin, setIsLogin] = useState<boolean>(false);
