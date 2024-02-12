@@ -23,6 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         });
         if (!user)
           throw new Error('User not found');
+        console.log(user);
         return user;
       }
 }

@@ -18,6 +18,15 @@ export class AuthService {
         private configService: ConfigService
     ) {}
 
+    async signin42(code:string, state: string, otp: string): Promise<SignInResponse42Dto> {
+
+        const ft_token = await this.exchangeCodeForFtToken(code);
+        const userData = await this.fetchDataWithFtToken(ft_token);
+        await this.saveUserData(userData);
+        const signInResponse: SignInResponse42Dto = await this.handleUserSignIn(userData);
+
+        return signInResponse;
+    }
 
     async exchangeCodeForFtToken(code: string): Promise<string> {
         const clientId = process.env.CLIENT_ID_42 as string;
@@ -104,14 +113,15 @@ export class AuthService {
             const jwtToken = await this.TokenIdentifier(userData.intraId);
     
             return {
-                created: true,
+                created: 1,
                 access_token: jwtToken,
                 data: {
-                    avatar: userData.avatar,
-                    email: userData.email42,
-                    intraId: userData.intraId,
-                    isTwoFactorAuthEnabled: userData.isTwoFactorAuthEnabled,
+                    intraId: userData.id,
+                    email42: userData.email,
                     login: userData.login,
+                    firstName: userData.first_name,
+                    lastName: userData.last_name,
+                    avatar: userData.image.versions.small,
                 },
             };
         } catch (error) {

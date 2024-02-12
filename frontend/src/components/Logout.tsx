@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// a refaire en fonction du cookie
 interface LogoutProps {
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }

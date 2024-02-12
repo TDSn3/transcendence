@@ -17,13 +17,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  // @UseGuards(AuthGuard('jwt'))
-  // @Get('me')
-  // getMe( @Req() req: Request ) {
-  //   console.log(req.user);
-  //   return 'user info';
-  // }
-
   @Get('id/:id')
   findAllById(@Param('id') id: string) : Promise<User> {
     return this.usersService.findAllById(+id);

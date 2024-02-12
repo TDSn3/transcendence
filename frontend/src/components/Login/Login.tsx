@@ -1,28 +1,24 @@
-import Cta from '../Cta/Cta';
+import { URLSearchParams } from 'url';
 import './login.css';
 
-interface LoginProps {
-  setIsLogin: React.Dispatch<React.SetStateAction<boolean>>,
-}
 
-const Login = ({ setIsLogin }: LoginProps) => {
+const Login: React.FC = (): JSX.Element => {
 
-  const handleClick = () => {
+  const handleClick = (event: React.FormEvent) => {
+    event.preventDefault();
     const redirect_url = import.meta.env.VITE_APP_42API as string;
-    try {
-      window.location.href = redirect_url
-      setIsLogin(true);
-    } catch (error) {
-      setIsLogin(false);
-      console.log(error);
-    }
+    window.location.href = redirect_url;
+
   };
 
   return (
-    <div className='login'>
-      <h3 style={{ marginBottom: '16px', marginLeft: 0 }} >Log in</h3>
-      <Cta text='Sign in with 42'handleClick={handleClick} />
-    </div>
+		<div className='42button'>
+      Log in 
+			<button 
+				className="42buttonsubmit" onClick={handleClick}
+				> login with 42
+			</button>
+		</div>
   );
 };
 
