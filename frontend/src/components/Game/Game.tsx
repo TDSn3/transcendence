@@ -1,11 +1,11 @@
 // TODO
-import CanvasComponent from "./CanvaComponent";
+import Pong from "./Pong";
 
 function Game() {
   return (
     <div className="page">
       <h3>Game</h3>
-	  <CanvasComponent />
+	  <Pong />
     </div>
   );
 }
