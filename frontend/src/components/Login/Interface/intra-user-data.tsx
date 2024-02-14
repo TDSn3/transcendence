@@ -1,3 +1,5 @@
+// interface/IntraUserData.tsx
+
 export default interface IntraUserData {
     isTwoFactorEnabled: boolean;
     intraId: number;

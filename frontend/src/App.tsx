@@ -1,43 +1,48 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
+import SignIn42 from './components/Login/signIn42';
 import Home from './components/Home';
-import Profile from './components/Profile';
+import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
 import Game from './components/Game';
+import { useAuth } from './components/Login/AuthContext';
 import Logout from './components/Logout';
 
-const App = () => {
+function App() {
+  const { isLoggedIn } = useAuth();
 
+  // Si l'utilisateur n'est pas connecté, affichez la page de connexion
+  if (!isLoggedIn) {
+    console.log('isLoggedIn under login:', isLoggedIn);
+    return (
+      <div className="App container">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signIn42" element={<SignIn42 />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, affichez les autres pages
   return (
-    <div className={'App container'}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <Navigate to="/login" replace />
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <>
-              <Navbar />
-              <Routes>
-                <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/game" element={<Game />} />
-                {/* <Route path="/logout" element={<Logout />} /> */}
-              </Routes>
-            </>
-          }
-        />
-      </Routes>
+    console.log('isLoggedIn under navbar:', isLoggedIn),
+    <div className="App container">
+      <>
+        <Navbar />
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
+      </>
     </div>
   );
-};
+}
 
 export default App;
