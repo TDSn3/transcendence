@@ -56,13 +56,6 @@ export class AuthService {
   async fetchDataWithFtToken(accessToken: string) {
     try {
       const apiEndpoint = 'https://api.intra.42.fr/v2';
-    //   const response = await fetch(`${apiEndpoint}/me`, {
-    //     headers: {
-    //       method: 'GET',
-    //       Authorization: `Bearer ${accessToken}`,
-    //     },
-    //   });
-
       const response = await axios.get(`${apiEndpoint}/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,

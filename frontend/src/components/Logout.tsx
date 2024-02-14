@@ -2,12 +2,9 @@
 import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import { AuthContext } from './Login/AuthContext'; // Assurez-vous d'importer correctement votre contexte
 import { useAuth } from './Login/AuthContext';
 
-
-const Logout: React.FC = () => {
-  // const { logout } = useContext(AuthContext);
+function Logout(): React.FC {
   const navigate = useNavigate();
   const { setLoggedIn } = useAuth();
 
@@ -15,19 +12,20 @@ const Logout: React.FC = () => {
     const performLogout = async () => {
       try {
         await axios.get('http://localhost:5001/api/auth/logout');
-        // logout();
         console.log('User is disconnected');
-        navigate('/login');
         setLoggedIn(false);
+        localStorage.removeItem('isLogin');
+        localStorage.removeItem('refreshToken');
+        navigate('/login');
       } catch (error) {
         console.error('Error during disconnection', error);
       }
     };
 
     performLogout();
-  }, [navigate]);
+  }, [navigate, setLoggedIn]);
 
-  return null;
+  return <></>;
 };
 
 export default Logout;

@@ -1,6 +1,6 @@
 // AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { IntraUserData } from './Interface/intra-user-data';
+import { IntraUserData } from './interface/intra-user-data';
 
 interface AuthContextType {
   isLoggedIn: boolean;

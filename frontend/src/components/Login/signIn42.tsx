@@ -30,23 +30,24 @@ function SignIn42(): React.FC {
           const userData: IntraUserData = response.data.user;
 
           console.log('User signed in:', userData);
-
+          console.log('status:', response.status);
           setLoggedIn(true);
           setUser(userData);
 
           const nextLocation = '/home';
           navigate(nextLocation);
-        } else {
+        } else if (response.status === 501) {
           setLoggedIn(false);
           setError('User not found');
         }
       } catch (error) {
+        setLoggedIn(false);
         console.error('Error during signin42 request:', error);
       }
     };
 
     fetchData();
-  }, [location.search, navigate, setLoggedIn]);
+  }, [location.search, navigate, setLoggedIn, setUser]);
 
   return (
     <div>
