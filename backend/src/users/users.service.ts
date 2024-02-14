@@ -20,7 +20,7 @@ export class UsersService {
     }
   
     const user = await this.prisma.user.findUnique({
-      where: { id },
+      where: { email42 },
     });
   
     if (!user) {

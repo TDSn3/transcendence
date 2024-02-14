@@ -10,7 +10,7 @@ export class IntraUserDataDto {
 
     @IsString()
     @IsEmail()
-    emai42: string;
+    email42: string;
 
     @IsString()
     login: string;
