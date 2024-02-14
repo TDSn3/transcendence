@@ -37,6 +37,8 @@ export class AppController {
 
   @Get('api/users-game-histories/:id')
   getUserGameHistory(@Param('id') id: string): UserGameHistory {
-    return usersGameHistories.find((value) => value.userId === id) as UserGameHistory; // TODO: remove "as UserGameHistory" by a verification function
+    return usersGameHistories.find(
+      (value) => value.userId === id,
+    ) as UserGameHistory; // TODO: remove "as UserGameHistory" by a verification function
   }
 }
