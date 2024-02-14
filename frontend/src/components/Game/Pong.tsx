@@ -14,6 +14,7 @@ interface Ball {
 	speedX: number;
 	speedY: number;
 }
+
 const Pong: React.FC = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 10, y: 120, width: 10, height: 60 });
@@ -42,13 +43,13 @@ const Pong: React.FC = () => {
 					// const backgroundImage = new Image();
 					// backgroundImage.src = 'https://cdn.futura-sciences.com/buildsv6/images/largeoriginal/0/0/b/00bc623b1c_50080254_691-illusions-canonique.jpg';
 					// backgroundImage.onload = () => {
-					// context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-        			context.fillStyle = 'black';
-        			context.fillRect(0, 0, canvas.width, canvas.height);
+						// context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        				context.fillStyle = 'black';
+        				context.fillRect(0, 0, canvas.width, canvas.height);
         				context.fillStyle = 'white';
         				context.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
         				context.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-					// }s
+					// }
         		};
 
 				const handleKeyPress = (event: KeyboardEvent) => {
@@ -85,6 +86,7 @@ const Pong: React.FC = () => {
 				  x: prev.x + prev.speedX,
 				  y: prev.y + prev.speedY,
 				}));
+				// console.log(ball.x);
 			  };
 
 				const resetBall = () => {
@@ -159,8 +161,8 @@ const Pong: React.FC = () => {
 				}
     			const drawGame = () => {
 					drawPaddles();
-					updateBall();
 					drawMiddleLine();
+					updateBall();
 					drawBall();
 					context.fillStyle = 'white';
 					context.font = '20px Arial';
@@ -170,8 +172,8 @@ const Pong: React.FC = () => {
 
         		const gameLoop = () => {
 					drawGame();
-					if (ball.speedX == 0)
-						console.log(ball.speedX);
+					console.log(ball.speedY);
+					// console.log(ball.x);
         			// requestAnimationFrame(gameLoop);
       			};
 

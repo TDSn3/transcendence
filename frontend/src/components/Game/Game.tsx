@@ -1,5 +1,5 @@
 // TODO
-import Pong from "./Pong";
+import Pong from "./ff.tsx";
 
 function Game() {
   return (
