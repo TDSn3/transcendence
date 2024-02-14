@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 // https://vitejs.dev/config/
 
 dotenv.config();
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: './.env' });
 
 const FRONTEND_PORT = process.env.FRONTEND_PORT || '3000';
 const BACKEND_PORT = process.env.BACKEND_PORT || '5001';

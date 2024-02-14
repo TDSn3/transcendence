@@ -12,6 +12,20 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 	box-sizing: border-box;
 }
 
+
+html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.root {
+	height: 100vh;
+	padding: var(--margin-medium);
+	box-sizing: border-box;
+}
+
 body {
 	margin: 0;
 	padding: 0px;

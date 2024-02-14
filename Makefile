@@ -6,11 +6,11 @@
 #    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/01/23 12:53:02 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/02/14 15:21:37 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-include .env
+include ./frontend/.env
 export
 
 all:

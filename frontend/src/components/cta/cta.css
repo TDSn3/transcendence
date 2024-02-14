@@ -1,0 +1,31 @@
+.cta-style {	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	width: 192px;
+	border: none;
+	background-color: var(--color-medium);
+  
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	text-align: center;
+    
+	padding-top: 14px;
+	padding-right: 14px;
+	padding-bottom: 14px;
+	padding-left: 14px;
+  
+	border-radius: var(--border-radius-small);
+
+	cursor: pointer;
+}
+
+.cta-style:hover {
+	width: 192px;
+	background-color: var(--color-medium-dark);
+	transition: background-color 0.2s ease-in-out;
+}

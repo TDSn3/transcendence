@@ -1,68 +1,87 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
+import { Prisma } from "@prisma/client";
+import { NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
-    private users = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'john@g.fere',
-            role: 'INTERN',
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany();
+    return users;
+  }
+
+  async findAllById(id: number): Promise<User> {
+    if (!id) {
+      throw new BadRequestException('User ID is required');
+    }
+  
+    const user = await this.prisma.user.findUnique({
+      where: { email42 },
+    });
+  
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+  
+    return user;
+  }
+  
+
+  async findAllByLogin(login: string): Promise<User> {
+    if (!login) {
+      throw new BadRequestException('login is required');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { login } });
+
+    if (!user) {
+      throw new NotFoundException(`User with username ${login} not found`);
+    }
+    console.log(user);
+    return user;
+  }
+
+  async findOneByLogin(login: string): Promise<User | null> {
+    try {
+      if (!login) {
+        throw new BadRequestException('login is required');
+      }
+
+      const user = await this.prisma.user.findUnique({
+        where: {
+          login: login,
         },
-        {
-            id: 2,
-            name: 'Jane Doe',
-            email: 'geq@fere',
-            role: 'ENGINEER',
+        select: {
+          login: true,
         },
-        {
-            id: 3,
-            name: 'Jack Doe',
-            email: 'gw@grw.fr',
-            role: 'ADMIN',
-        },
-    ];
+      });
 
-    findAll(role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-        if (role) {
-            return this.users.filter(user => user.role === role);
-        }
-        return this.users;
+      if (!user) {
+        throw new NotFoundException(`User with username ${login} not found`);
+      }
+
+      console.log(user);
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new NotFoundException('User not found');
     }
+  }
 
-    findOne(id: number) {
-        const user = this.users.find(user => user.id === id);
+  // async update(login: string): Promise<User> {
+  //   return this.prisma.user.update({
+  //     where: { login },
+  //     data,
+  //   });
+  // }
 
-        return user;
-    }
-
-    create(user: {name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
-
-        const newUser = {
-            id: usersByHighestId[0].id + 1,
-            ...user,
-        };
-        this.users.push(newUser);
-        return newUser;
-    }
-        
-
-    update(id: number, userUpdate: {name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        this.users = this.users.map(user => {
-            if (user.id === id) {
-                return { ...user, ...userUpdate };
-            }
-            return user;
-        });
-        return this.findOne(id);
-    }
-
-    delete(id: number) {
-        const removedUser = this.findOne(id);
-
-        this.users = this.users.filter(user => user.id !== id);
-        
-        return removedUser;
-    }
+  remove(id: number) {
+    return `This action removes a #${id} user`;
+  }
 }

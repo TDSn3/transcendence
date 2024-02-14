@@ -7,6 +7,10 @@ import Home from './components/Home';
 import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
 import Game from './components/Game';
+import SignIn42 from './components/Login/signIn42';
+import Logout from './components/Logout';
+
+import { useAuth } from './components/Login/AuthContext';
 
 import { User } from './utils/types';
 
@@ -22,7 +26,7 @@ const defaultUser: User = {
 };
 
 function App() {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const { isLoggedIn } = useAuth();
   const [user, setUser] = useState<User>(defaultUser);
 
   const fetchUserList = async () => {
@@ -35,27 +39,35 @@ function App() {
     fetchUserList();
   }, []);
 
+  // Si l'utilisateur n'est pas connecté, affichez la page de connexion
+  if (!isLoggedIn) {
+    console.log('isLoggedIn under login:', isLoggedIn);
+    return (
+      <div className="App container">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signIn42" element={<SignIn42 />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, affichez les autres pages
   return (
+    console.log('isLoggedIn under navbar:', isLoggedIn),
     <div className="App container">
-      {
-        isLogin === false ? (
-          <Routes>
-            <Route path="/login" element={<Login setIsLogin={setIsLogin} />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        ) : (
-          <>
-            <Navbar />
-            <Routes>
-              <Route path="/home" element={<Home />} />
-              <Route path="/profile" element={<Profile user={user} />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="*" element={<Navigate to="/home" replace />} />
-            </Routes>
-          </>
-        )
-      }
+      <>
+        <Navbar />
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile user={user} />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
+      </>
     </div>
   );
 }
