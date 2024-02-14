@@ -54,20 +54,19 @@ function App() {
   }
 
   // Si l'utilisateur est connecté, affichez les autres pages
+  console.log('isLoggedIn under navbar:', isLoggedIn);
+
   return (
-    console.log('isLoggedIn under navbar:', isLoggedIn),
     <div className="App container">
-      <>
-        <Navbar />
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile user={user} />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/game" element={<Game />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="*" element={<Navigate to="/home" replace />} />
-        </Routes>
-      </>
+      <Navbar />
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
     </div>
   );
 }
