@@ -35,6 +35,9 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Other
+# **/.env
+
 # dependencies
 **/node_modules
 **/.pnp

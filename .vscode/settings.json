@@ -2,5 +2,9 @@
     "eslint.workingDirectories": [
         "../backend",
         "../backend"
+    ],
+    "cSpell.words": [
+        "linebreak",
+        "uuidv"
     ]
 }
