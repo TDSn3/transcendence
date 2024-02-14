@@ -1,62 +1,14 @@
-import { User, GameResult } from '../../utils/types';
+import { User } from '../../utils/types';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 import GameHistory from './GameHistory/GameHistory';
 
 import './profile.css';
 
-const gameResult: GameResult[] = [
-  {
-    players: [
-      {
-        user: {
-          username: 'tda-silv',
-          profilePictureUrl: 'https://avatars.githubusercontent.com/u/92325211?v=4',
-        },
-        score: 10,
-        won: true,
-      },
-      {
-        user: {
-          username: 'Boby-Booba',
-          profilePictureUrl: 'https://avatars.githubusercontent.com/u/86242235?v=4',
-        },
-        score: 3,
-        won: false,
-      },
-    ],
-  },
-  {
-    players: [
-      {
-        user: {
-          username: 'tda-silv',
-          profilePictureUrl: 'https://avatars.githubusercontent.com/u/92325211?v=4',
-        },
-        score: 1,
-        won: false,
-      },
-      {
-        user: {
-          username: 'Boby-Booba',
-          profilePictureUrl: 'https://avatars.githubusercontent.com/u/86242235?v=4',
-        },
-        score: 10,
-        won: true,
-      },
-    ],
-  },
-];
+interface ProfileProps {
+  user: User,
+}
 
-const user: User = {
-  username: 'tda-silv',
-  profilePictureUrl: 'https://avatars.githubusercontent.com/u/92325211?v=4',
-  rank: 1,
-  gamesWon: 2,
-  gamesLost: 3,
-  gameHistory: gameResult,
-};
-
-function Profile() {
+function Profile({ user }: ProfileProps) {
   return (
     <>
       <div className="page profile-style">

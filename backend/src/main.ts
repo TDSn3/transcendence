@@ -4,6 +4,11 @@ import config from './utils/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(Number(config.PORT));
+
+  app.enableCors({
+    origin: `http://localhost:${config.FRONTEND_PORT}`,
+  });
+
+  await app.listen(Number(config.BACKEND_PORT));
 }
 bootstrap();

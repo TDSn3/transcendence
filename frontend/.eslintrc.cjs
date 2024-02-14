@@ -9,7 +9,7 @@ module.exports = {
     'airbnb/hooks',
     'airbnb-typescript',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.ts'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',
@@ -63,5 +63,18 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
 
     'import/no-extraneous-dependencies': 0,
+
+    '@typescript-eslint/member-delimiter-style': ['error', {
+      // Use commas for members on multiple lines
+      multiline: {
+        delimiter: 'comma',
+        requireLast: true,
+      },
+      // Use commas for members on a single line
+      singleline: {
+        delimiter: 'comma',
+        requireLast: false,
+      },
+    }],
   },
 }
