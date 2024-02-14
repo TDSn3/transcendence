@@ -1,3 +1,14 @@
+.channels button {
+	display: flex;
+	flex-direction: column;
+	margin-top: 5px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	border-radius: 14px;
+	font-size: 20px;
+}
+
 #kekw {
 	display: flex;
 	flex-direction: column;
@@ -18,7 +29,7 @@ form button {
 	margin: auto;
 }
 
-.messages li + li {
+.messages li {
 	margin-top: 5px;
 }
 
@@ -41,11 +52,27 @@ form button {
 	border-radius: 50%;
 }
 
-.banner h3 {
+.banner {
+	display: flex;
+	flex-direction: row;
+	background-color: #c2c9d6;
+	border-radius: 14px;
 	text-align: center;
+	margin-left: 0px;
 }
 
-.banner {
-	background-color: #8f96a3;
-	border-radius: 14px;
+.banner h3 {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.banner button {
+	align-self: center;
+	margin-right: 5px;
+	border-radius: 50%;
+	border: none;
+	width: 30px;
+	height: 30px;
+	font-size: 23px;
+
 }
