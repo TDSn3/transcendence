@@ -15,11 +15,11 @@ interface Paddle {
   }
 
 import React, { useState, useEffect, useRef } from 'react';
-import './ff.css';
 
-const Pong = () => {
+const PongLocal = () => {
 const canvasRef = useRef<HTMLCanvasElement>(null);
-const initialBallState = { x: 400, y: 250, speedX: 5, speedY: 5 };
+const [angleStart, setAngleStart] = useState(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
+const initialBallState = { x: 400, y: 250, speedX: Math.random() > 0.5 ? 5 * Math.cos(angleStart) : 5 * -Math.cos(angleStart), speedY: 5 * Math.sin(angleStart)};
 const initialPaddleState = { left: 150, right: 150 };
 const [ball, setBall] = useState(initialBallState);
 const [paddles, setPaddles] = useState(initialPaddleState);
@@ -28,6 +28,7 @@ const [gameRunning, setGameRunning] = useState(false);
 const ballRef = useRef(null);
 const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 10, y: 220, width: 10, height: 60 });
 const [rightPaddle, setRightPaddle] = useState<Paddle>({ x: 780, y: 220, width: 10, height: 60 });
+// const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 780, y: 220, width: 10, height: 60 });
 // const [ball, setBall] = useState<Ball>({
 // 	x: 250,
 // 	y: 150,
@@ -45,7 +46,7 @@ function drawGame() {
 		
 		if (context) {
 			const drawPaddles = () => {
-				
+				//dessiner le terrain et les paddles
 				context.fillStyle = 'black';
 				context.fillRect(0, 0, canvas.width, canvas.height);
 				context.fillStyle = 'white';
@@ -64,7 +65,7 @@ function drawGame() {
 				const midlleLinewidth = 1;
 				const middleLineX = (canvas.width / 2) - (midlleLinewidth / 2);
 
-				context.fillStyle = 'white';
+				context.fillStyle = 'red';
 				context.fillRect(middleLineX, 0, midlleLinewidth, canvas.height);
 			};
 			drawPaddles();
@@ -84,6 +85,7 @@ useEffect(() => {
 		const speed: number = 10;
 		if (canvas)
 			{
+				//gerer les deplacements des paddles
 			if (event.key === 'w' && leftPaddle.y - speed >= 0) {
 				setLeftPaddle((prev) => ({ ...prev, y: prev.y - speed }));
 			}
@@ -98,9 +100,9 @@ useEffect(() => {
 			}
 		}
 	};
-
+	
 	const updateGame = () => {
-		// console.log("avant ", ball.y, ball.speedY);
+		// mettre a jour le jeu
 		setBall((prevBall) => ({
 		...prevBall,
 		x: prevBall.x + prevBall.speedX,
@@ -119,9 +121,29 @@ useEffect(() => {
 			// 		setBall((prev) => ({ ...prev, x: 5, speedX: -prev.speedX }));
 			
 		}
-
+		
+		const moveBot = () => {
+			const botSpeed = 5; // Ajustez la vitesse du bot
+		  
+			// Calculer la coordonnée y cible pour le bot en fonction de la position de la balle
+			const targetY = ball.y - rightPaddle.height / 2;
+		  
+			// Si la différence entre la position actuelle du bot et la position cible est inférieure à la vitesse, déplacez directement le bot à la position cible
+			if (Math.abs(rightPaddle.y - targetY) < botSpeed) {
+			  setRightPaddle((prev) => ({ ...prev, y: targetY }));
+			} else {
+			  // Sinon, effectuez le déplacement normal
+			  if (rightPaddle.y < targetY) {
+				setRightPaddle((prev) => ({ ...prev, y: prev.y + botSpeed }));
+			  } else if (rightPaddle.y > targetY) {
+				setRightPaddle((prev) => ({ ...prev, y: prev.y - botSpeed }));
+			  }
+			}
+		  };
+		  
 
 		const resetBall = () => {
+			console.log("couciu");
 			setBall({
 				x: canvas.width / 2,
 				y: canvas.height / 2,
@@ -142,20 +164,24 @@ useEffect(() => {
 			// setBallSpeed(0.005);
 		}
 
-		if (ball.x - 5< leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
+		if (ball.x - 5 < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
 			let relativePosition = (ball.y - leftPaddle.y) / leftPaddle.height;
 			if (relativePosition > 0.66)
 				relativePosition = 0.66;
 			const angle = (relativePosition - 0.5) * Math.PI;
 			const speed = Math.sqrt(ball.speedX ** 2 + ball.speedY ** 2);
 			const directionX = Math.cos(angle);
-			const directiony = Math.sin(angle);
-		
+			const directionY = Math.sin(angle);
+			
+			const speedMultiplier = 1.05;
+			const newSpeedX = directionX * speed * speedMultiplier;
+			const newSpeedY = directionY * speed * speedMultiplier;
+
 			setBall((prev) => ({
 				...prev,
 				x:leftPaddle.x + leftPaddle.width + 5 ,
-				speedX: directionX * speed,
-				speedY: directiony * speed,
+				speedX: newSpeedX,
+				speedY: newSpeedY,
 			}));
 		}
 		if (ball.x + 5 > rightPaddle.x && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height){
@@ -165,17 +191,27 @@ useEffect(() => {
 			const angle = (relativePosition - 0.5) * Math.PI;
 			const speed = Math.sqrt(ball.speedX ** 2 + ball.speedY ** 2);
 			const directionX = -Math.cos(angle);
-			const directiony = Math.sin(angle);
+			const directionY = Math.sin(angle);
+
+			const speedMultiplier = 1.05;
+			const newSpeedX = directionX * speed * speedMultiplier;
+			const newSpeedY = directionY * speed * speedMultiplier;
+
 			setBall((prev) => ({
 				...prev,
 				x: rightPaddle.x - 5 ,
-				speedX: directionX * speed,
-				speedY: directiony * speed,
+				speedX: newSpeedX,
+				speedY: newSpeedY,
 			}));
 		};
+		// moveBot();
 		drawGame();
+		// console.log('x', ball.speedX);
+		// console.log('y' ,ball.speedY);
+		console.log(angleStart);
+		// console.log(Math.sin(14));
 	};
-	const intervalId = setInterval(updateGame, 20);
+	const intervalId = setInterval(updateGame, 15);
 	if (leftScore >= 5 || RightScore >= 5)
 		setGameOver(true);
 	window.addEventListener('keydown', handleKeyPress);
@@ -198,6 +234,7 @@ const restartGame = () => {
 	setGameRunning(true);
 	setRightScore(0);
 	setLeftScore(0);
+	setAngleStart(-Math.PI/4 + Math.random() * ((Math.PI/4) -  (-Math.PI/4)));
 };
 
 const pauseGame = () => {
@@ -210,8 +247,8 @@ return (
         <button onClick={restartGame}>Restart</button>
         <button onClick={pauseGame}>Pause</button>
       <canvas ref={canvasRef} width={800} height={500} style={{ border: '0px solid #add8e6' }} />
-	  {gameOver ? (<p> Fin de la game</p>) : <p></p>}
+	  {gameOver ? leftScore === 5 ? (<p> Le joueur de gauche a gagner</p>): <p> Le joueur de droite a gagner</p> : <p></p>}
     </div>
   );
 };
-export default Pong;
+export default PongLocal;
