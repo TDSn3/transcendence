@@ -1,38 +1,44 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+import { User } from '@prisma/client';
+import { NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('users') // users is the path segment for this controller
+@Controller('api/users')
+@ApiTags('users')
 export class UsersController {
-    
-    constructor(private readonly usersService: UsersService) {} // dependency injection, he's doing : const newUsersService = new UsersService(), building new instance of UsersService
+  constructor(private readonly usersService: UsersService) {}
 
-   @Get() // GET /users or /users?role=admin
-   findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-        return this.usersService.findAll(role);
-   }
+  @Get()
+  findAll(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
 
-   @Get('interns') // GET /users/interns
-   findAllInterns() {
-       return []
-    }
+  @Get('id/:id')
+  findAllById(@Param('id') id: string) : Promise<User> {
+    return this.usersService.findAllById(+id);
+  }
 
-    @Get(':id') // GET /users/:id
-    findOne(@Param('id') id: string) {
-        return this.usersService.findOne(+id);
-    }
-    
-    @Post() // POST /users
-    create(@Body() user: {name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        return this.usersService.create(user);
-    }
+  @Get('login/:login')
+  findAllByLogin(@Param('login') login: string) : Promise<User> {
+    return this.usersService.findAllByLogin(login);
+  }
 
-    @Patch(':id') // GET /users/:id
-    update(@Param('id') id: string, @Body() userUpdate: {name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN'}) {
-        return this.usersService.update(+id, userUpdate);
-    }
+  @Get('login/me/:login')
+  async findOneByLogin(@Param('login') login: string): Promise<User> {
+    return this.usersService.findOneByLogin(login);
+  }
 
-    @Delete(':id') // DELETE /users/:id
-    delete(@Param('id') id: string) {
-        return this.usersService.delete(+id);
-    }
+  // @Patch('login/:login')
+  // update(@Param('login') login: string): Promise<User> {
+  //   return this.usersService.updateData(login);
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.usersService.remove(+id);
+  // }
 }

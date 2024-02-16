@@ -12,6 +12,7 @@ function Navbar() {
       <NavbarItem to="/profile" text="Profile" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
       <NavbarItem to="/chat" text="Chat" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
       <NavbarItem to="/game" text="Play" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
+      <NavbarItem to="/logout" text="Logout" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
     </div>
   );
 }
