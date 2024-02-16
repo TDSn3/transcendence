@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import IntraUserData from './interface/intra-user-data';
 
 function SignIn42(): React.FC {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function SignIn42(): React.FC {
 
   useEffect(() => {
     const code = new URLSearchParams(location.search).get('code');
-    console.log('code:', code);
+    // console.log('code:', code);
 
     if (!code) {
       setError('No authorization code found');
@@ -29,8 +30,7 @@ function SignIn42(): React.FC {
         if (response.data.user && response.status === 200) {
           const userData: IntraUserData = response.data.user;
 
-          console.log('User signed in:', userData);
-          console.log('status:', response.status);
+          console.log('User cookie:', userData.accessToken);
           setLoggedIn(true);
           setUser(userData);
 

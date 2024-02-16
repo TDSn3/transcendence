@@ -29,9 +29,16 @@ export class AuthService {
     const user = await this.saveUserData(userData);
 
     // if (user.isTwoFactorEnabled) {}
-    await this.generateToken(user.intraId, user.email42, user.login, res);
-    const signInResponse: SignInResponse42Dto = user;
-    console.log('signInResponse:', signInResponse);
+    const signInResponse: SignInResponse42Dto = await this.generateToken(
+      user.intraId,
+      user.email42,
+      user.login,
+      user.firstName,
+      user.lastName,
+      user.avatar,
+      res,
+    );
+    // console.log('signInResponse from backend:', signInResponse);
     return signInResponse;
   }
 
@@ -58,6 +65,7 @@ export class AuthService {
       const apiEndpoint = 'https://api.intra.42.fr/v2';
       const response = await axios.get(`${apiEndpoint}/me`, {
         headers: {
+          withCredentials: true,
           Authorization: `Bearer ${accessToken}`,
         },
       });
@@ -119,11 +127,14 @@ export class AuthService {
     intraId: number,
     email: string,
     login: string,
+    firstName: string,
+    lastName: string,
+    avatar: string,
     res: Response,
   ): Promise<SignInResponse42Dto> {
     try {
       const jwtToken = await this.signToken(intraId, email, login, true);
-      console.log('jwtToken:', jwtToken);
+      // console.log('jwtToken:', jwtToken);
 
       res.cookie('isLogin', jwtToken.JWTtoken, {
         httpOnly: false,
@@ -131,17 +142,30 @@ export class AuthService {
         sameSite: 'strict',
       });
 
-      const refreshToken = await this.signToken(intraId, email, login, false);
-      console.log('refreshToken:', refreshToken);
+      // const refreshToken = await this.signToken(intraId, email, login, false);
+      // console.log('refreshToken:', refreshToken);
 
-      res.cookie('refreshToken', refreshToken.JWTtoken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'strict',
-      });
+      // res.cookie('refreshToken', refreshToken.JWTtoken, {
+      //   httpOnly: true,
+      //   secure: false,
+      //   sameSite: 'strict',
+      // });
 
-      // Note: You may want to return a response here or any additional data you need.
-      // For example, you can return an object like { accessToken: jwtToken.JWTtoken, refreshToken: refreshToken.JWTtoken }
+      const signInResponse: SignInResponse42Dto = {
+        created: Date.now(),
+        accessToken: jwtToken.JWTtoken,
+        userData: {
+          isTwoFactorEnabled: false,
+          intraId: intraId,
+          email42: email,
+          login: login,
+          firstName: firstName,
+          lastName: lastName,
+          avatar: avatar,
+        },
+      };
+
+      return signInResponse;
     } catch (error) {
       console.error('Error generating token:', error);
       throw error;
@@ -161,7 +185,7 @@ export class AuthService {
     };
 
     const secret = this.configService.get('JWT_SECRET');
-    const refreshSecret = this.configService.get('JWT_REFRESH_SECRET');
+    // const refreshSecret = this.configService.get('JWT_REFRESH_SECRET');
 
     if (jwtToken) {
       const token = await this.jwtService.signAsync(payload, {
@@ -172,9 +196,38 @@ export class AuthService {
     } else {
       const token = await this.jwtService.signAsync(payload, {
         expiresIn: '15m',
-        secret: refreshSecret,
+        secret: secret,
       });
       return { JWTtoken: token };
+    }
+  }
+
+  async logout(res: Response) {
+    try {
+      res.clearCookie('isLogin', {
+        httpOnly: false,
+        secure: false,
+        sameSite: 'strict',
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async checksession(SignInResponse42Dto: SignInResponse42Dto, res: Response) {
+    try {
+      const userData = SignInResponse42Dto.userData;
+
+      // Utilisez les données de l'utilisateur comme nécessaire
+      console.log('User ID:', userData.access_token);
+      console.log('User ID:', userData.intraId);
+      console.log('User Email:', userData.email42);
+      console.log('User Login:', userData.login);
+      if (userData.access_token)
+        return res.status(200).json({ message: 'User is logged in' });
+      else return res.status(501).json({ message: 'User is not logged in' });
+    } catch (error) {
+      throw error;
     }
   }
 }

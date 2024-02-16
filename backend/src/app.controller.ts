@@ -16,7 +16,7 @@ export class AppController {
 
   @Get('api/ping')
   getPing(): string {
-    console.log('someone pinged here');
+    // console.log('someone pinged here');
     return 'pong';
   }
 

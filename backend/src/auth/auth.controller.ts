@@ -21,6 +21,7 @@ import { JwtService } from '@nestjs/jwt';
 import { BadRequestException } from '@nestjs/common';
 import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
 import { IntraUserDataDto } from './dto/intra-user-data.dto';
+import { JwtGuard } from './guard/jwt.guard';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -47,18 +48,34 @@ export class AuthController {
       });
   }
 
+  // @UseGuards(JwtGuard)
   @Get('logout')
   async logout(@Res() res: Response) {
-    try {
-      // res.clearCookie('isLogin',  { sameSite: 'None', secure: true });
-      // console.log('Logout successful');
-      res.status(200).send('Logout successful');
-    } catch (error) {
-      console.error('Error during logout:', error);
-      res.status(500).json({
-        status: 500,
-        error: 'Error during logout',
+    return this.authService
+      .logout(res)
+      .then(() => {
+        res.status(200).send({ message: 'User successfully logged out' });
+      })
+      .catch(() => {
+        res.status(501).send({ message: 'Logout doesnt work...' });
       });
-    }
+  }
+
+  @Get('checksession')
+  async checkSession(
+    @Query signInResponseDto: SignInResponse42Dto,
+    @Res() res: Response,
+  ) {
+    return this.authService
+      .checksession(signInResponseDto, res)
+      .then((user) => {
+        res.status(200).json({
+          message: 'User is logged in',
+          user,
+        });
+      })
+      .catch(() => {
+        res.status(501).json({ message: 'User is not logged in' });
+      });
   }
 }
