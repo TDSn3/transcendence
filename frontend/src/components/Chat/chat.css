@@ -1,3 +1,7 @@
+.channels a {
+	text-decoration:none
+}
+
 .channels button {
 	display: flex;
 	flex-direction: column;
@@ -41,7 +45,7 @@ form button {
 .username {
 	font-weight: 600;
 	color: black;
-	text-decoration: none;
+	/* text-decoration: none; */
 }
 
 .profilePicture {

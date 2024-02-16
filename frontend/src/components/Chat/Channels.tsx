@@ -1,4 +1,4 @@
-import {MessageProps} from "./Messages.tsx"
+import { Link } from "react-router-dom";
 import "./chat.css";
 
 interface ChannelProps {
@@ -21,104 +21,38 @@ const test: ChannelProps[] = [
 	{
 		channelName: "suuuuuuu",
 	},
-	{
-		channelName: "General",
-	},
-	{
-		channelName: "oui",
-	},
-	{
-		channelName: "Coucou",
-	},
-	{
-		channelName: "bob",
-	},
-	{
-		channelName: "suuuuuuu",
-	},
-	{
-		channelName: "General",
-	},
-	{
-		channelName: "oui",
-	},
-	{
-		channelName: "Coucou",
-	},
-	{
-		channelName: "bob",
-	},
-	{
-		channelName: "suuuuuuu",
-	},
-	{
-		channelName: "General",
-	},
-	{
-		channelName: "oui",
-	},
-	{
-		channelName: "Coucou",
-	},
-	{
-		channelName: "bob",
-	},
-	{
-		channelName: "suuuuuuu",
-	},
-	{
-		channelName: "General",
-	},
-	{
-		channelName: "oui",
-	},
-	{
-		channelName: "Coucou",
-	},
-	{
-		channelName: "bob",
-	},
-	{
-		channelName: "suuuuuuu",
-	},
-	{
-		channelName: "General",
-	},
-	{
-		channelName: "oui",
-	},
-	{
-		channelName: "Coucou",
-	},
-	{
-		channelName: "bob",
-	},
-	{
-		channelName: "suuuuuuu",
-	},
 ]
 
 const Channel = ({channelName}: ChannelProps) => {
+	const handleClick: any = () => {
+	}
+
 	return (
-		<li className="channel">
-			<button>#{channelName}</button>
-		</li>
+		<div className="channel">
+			<Link to={channelName}>
+				<button onClick={handleClick}>{channelName}</button>
+			</Link>
+		</div>
 	);
 }
 
 const Channels = () => {
+	const handleClick: any = (e: any) => {
+		console.log(e);
+	}
+
 	return (
 		<div>
 			<div className="banner">
-				<h3>Chat</h3><button>+</button>
+				<h3>Chat</h3><button onClick={handleClick}>+</button>
 			</div>
-			<ul className="channels">
+			<div className="channels">
 				{
 					test.map((value: ChannelProps) =>
-						<Channel channelName={value.channelName} />
+						<Channel key={value.channelName} channelName={value.channelName} />
 					)
 				}
-			</ul>
+			</div>
 		</div>
 	);
 }

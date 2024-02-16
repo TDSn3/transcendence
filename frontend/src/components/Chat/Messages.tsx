@@ -110,7 +110,7 @@ const test: MessageProps[] = [
 ]
 
 const Message = ({username, profilePictureUrl, message}: MessageProps) => {
-	const userlink: string = "http://localhost:3001/profile=" + {username};
+	const userlink: string = "http://localhost:3001/profile/" + {username};
 	return (
 		<li className="message">
 			<a href={userlink}><img className="profilePicture" src={profilePictureUrl} /></a>
