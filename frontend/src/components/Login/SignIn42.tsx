@@ -4,8 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 import IntraUserData from './interface/intra-user-data';
+import './signIn42.css';
 
-function SignIn42(): React.FC {
+function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
   const { setLoggedIn, setUser } = useAuth();
@@ -29,13 +30,14 @@ function SignIn42(): React.FC {
 
         if (response.data.user && response.status === 200) {
           const userData: IntraUserData = response.data.user;
-
-          console.log('User cookie:', userData.accessToken);
-          setLoggedIn(true);
           setUser(userData);
+          setTimeout(() => {
+            setLoggedIn(true);
+            const nextLocation = '/home';
+            navigate(nextLocation);
 
-          const nextLocation = '/home';
-          navigate(nextLocation);
+          }, 6000);
+         
         } else if (response.status === 501) {
           setLoggedIn(false);
           setError('User not found');
@@ -50,10 +52,8 @@ function SignIn42(): React.FC {
   }, [location.search, navigate, setLoggedIn, setUser]);
 
   return (
-    <div>
-      <h1>Signing in...</h1>
-    </div>
+    <div className="loader-container"></div>
   );
-};
+}
 
 export default SignIn42;

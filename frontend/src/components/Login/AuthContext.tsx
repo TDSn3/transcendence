@@ -25,7 +25,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           withCredentials: true,
           });
         
-        console.log('response for the checkin session:', response.status);
         if (response.status === 200) {
           setLoggedIn(true);
         }

@@ -2,7 +2,7 @@ import './cta.css';
 
 interface ButtonProps {
   text: string,
-  handleClick: () => void,
+  handleClick: (event: React.FormEvent) => void,
 }
 
 function Cta({ text, handleClick }: ButtonProps) {

@@ -1,5 +1,6 @@
 import React from 'react';
-import './Login.css';
+import './login.css';
+import Cta from '../Cta/cta';
 
 function SignIn42(): JSX.Element {
   const handleClick = (event: React.FormEvent): void => {
@@ -8,19 +9,11 @@ function SignIn42(): JSX.Element {
   };
 
   return (
-    <div className="login42">
+    <div className="login">
       <h3 style={{ marginBottom: '16px', marginLeft: 0 }}>Log in</h3>
-      <button
-        className="buttonsubmit42"
-        onClick={handleClick}
-        type="button"
-      >
-        {' '}
-        login with 42
-      </button>
+      <Cta text="Sign in with 42"handleClick={handleClick} />
     </div>
   );
 }
 
 export default SignIn42;
-

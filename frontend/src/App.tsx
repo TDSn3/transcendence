@@ -7,7 +7,7 @@ import Home from './components/Home';
 import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
 import Game from './components/Game/Game.js';
-import SignIn42 from './components/Login/signIn42';
+import SignIn42 from './components/Login/SignIn42.js';
 import Logout from './components/Logout';
 
 import { useAuth } from './components/Login/AuthContext';
