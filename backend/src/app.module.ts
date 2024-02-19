@@ -5,11 +5,12 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ChannelsModule } from './channel/channels.module';
 
 @Module({
   imports: [AuthModule, ConfigModule.forRoot({
     isGlobal: true,
-  }), UsersModule, PrismaModule],
+  }), UsersModule, ChannelsModule, PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })
