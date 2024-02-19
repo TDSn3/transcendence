@@ -43,7 +43,7 @@ const Channels = () => {
 			name: "bob",
 			description: "lol",
 		}
-		axios.post<any>("http://localhost:5001/channels", newChan)
+		axios.post<any>("http://localhost:5001/api/channels", newChan)
 			.then(response => {
 				console.log('Nouveau canal créé:', response.data);
 			})
