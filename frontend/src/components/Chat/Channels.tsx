@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./chat.css";
+import "./channels.css";
 import axios from "axios";
 
 interface ChannelProps {
@@ -38,28 +38,8 @@ const Channel = ({channelName}: ChannelProps) => {
 }
 
 const Channels = () => {
-	const handleClick: any = (e: any) => {
-		// const newChan = {
-		// 	name: "bob",
-		// 	description: "lol",
-		// }
-
-		const response = axios.post('http://localhost:5001/api/channels/create', 
-		{
-			name: "bob",
-			description: "lol",
-		
-		});
-		console.log('Nouveau canal créé:', response.data);
-
-		// axios.post<any>("http://localhost:5001/api/channels", newChan)
-		// 	.then(response => {
-		// 		console.log('Nouveau canal créé:', response.data);
-		// 	})
-		// 	.catch(error => {
-		// 		console.error('Erreur lors de la création du canal:', error);
-		// 	});
-		// console.log(e);
+	const handleClick: any = () => {
+		axios.post('http://localhost:5001/api/channels/create', { name: "bob", description: "lol" });
 	}
 
 	return (

@@ -10,9 +10,9 @@ const InputBar = () => {
 	}
 
 	return (
-		<form id="form" onSubmit={handleSubmit}>
-			<input id="input-chat" type="text" value={bob} autoComplete="off" onChange={(e) => { setBob(e.target.value); }}/>
-			<button>Send</button>
+		<form className="input-bar" onSubmit={handleSubmit}>
+			<input className="input-text" type="text" value={bob} autoComplete="off" onChange={(e) => { setBob(e.target.value); }}/>
+			<button className="input-button">Send</button>
 		</form>
 	);
 }

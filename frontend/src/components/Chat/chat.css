@@ -1,18 +1,3 @@
-.channels a {
-	text-decoration:none
-}
-
-.channels button {
-	display: flex;
-	flex-direction: column;
-	margin-top: 5px;
-	width: 100%;
-	text-align: left;
-	border: none;
-	border-radius: 14px;
-	font-size: 20px;
-}
-
 #kekw {
 	display: flex;
 	flex-direction: column;
@@ -20,15 +5,15 @@
 	overflow: auto;
 }
 
-form {
+.input-bar {
 	margin-top: auto;
 }
 
-form input {
+.input-text {
 	width: 89%;
 }
 
-form button {
+.input-button {
 	width: 10%;
 	margin: auto;
 }
@@ -45,7 +30,7 @@ form button {
 .username {
 	font-weight: 600;
 	color: black;
-	/* text-decoration: none; */
+	text-decoration: none;
 }
 
 .profilePicture {
@@ -78,5 +63,4 @@ form button {
 	width: 30px;
 	height: 30px;
 	font-size: 23px;
-
 }

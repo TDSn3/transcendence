@@ -16,7 +16,6 @@ import { User } from './utils/types';
 
 import userService from './services/user';
 import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
-import ChatRender from './components/Chat/Chatrender.tsx';
 
 const defaultUser: User = {
   id: '',
@@ -66,7 +65,6 @@ function App() {
 			<Route path="/profile" element={<Profile user={user} />} />
 			<Route path="/chat" element={<Chat />} />
 			{ChatRoutes()}
-			{/* <Route path="/chat/" element={<ChatRender channelName='kekw'/>} /> */}
 			<Route path="/game" element={<Game />} />
 			<Route path="/logout" element={<Logout />} />
 			<Route path="*" element={<Navigate to="/home" replace />} />

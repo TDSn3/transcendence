@@ -32,81 +32,6 @@ const test: MessageProps[] = [
 		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
 		message: "Hmmmmmmmmm",
 	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
 ]
 
 const Message = ({username, profilePictureUrl, message}: MessageProps) => {
@@ -124,13 +49,13 @@ const Message = ({username, profilePictureUrl, message}: MessageProps) => {
 
 const Messages = () => {
 	return (
-		<ul className="messages">
+		<div className="messages">
 			{
 				test.map((value: MessageProps, index: number) => (
 					<Message key={index} username={value.username} profilePictureUrl={value.profilePictureUrl} message={value.message} />
 				))
 			}
-		</ul>
+		</div>
 	);
 }
 

@@ -1,0 +1,15 @@
+.channels a {
+	text-decoration:none
+}
+
+.channels button {
+	display: flex;
+	flex-direction: column;
+	margin-top: 5px;
+	padding-left: 10px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	border-radius: 14px;
+	font-size: 20px;
+}
