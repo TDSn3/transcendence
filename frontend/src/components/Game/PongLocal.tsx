@@ -211,7 +211,7 @@ useEffect(() => {
 		console.log(angleStart);
 		// console.log(Math.sin(14));
 	};
-	const intervalId = setInterval(updateGame, 15);
+	const intervalId = setInterval(updateGame, 1000/60);
 	if (leftScore >= 5 || RightScore >= 5)
 		setGameOver(true);
 	window.addEventListener('keydown', handleKeyPress);
@@ -234,6 +234,8 @@ const restartGame = () => {
 	setGameRunning(true);
 	setRightScore(0);
 	setLeftScore(0);
+	setLeftPaddle(({ x: 10, y: 220, width: 10, height: 60 }));
+	setRightPaddle(({ x: 780, y: 220, width: 10, height: 60 }));
 	setAngleStart(-Math.PI/4 + Math.random() * ((Math.PI/4) -  (-Math.PI/4)));
 };
 
