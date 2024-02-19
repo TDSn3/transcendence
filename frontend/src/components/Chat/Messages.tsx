@@ -112,13 +112,13 @@ const test: MessageProps[] = [
 const Message = ({username, profilePictureUrl, message}: MessageProps) => {
 	const userlink: string = "http://localhost:3001/profile/" + {username};
 	return (
-		<li className="message">
+		<div className="message">
 			<a href={userlink}><img className="profilePicture" src={profilePictureUrl} /></a>
 			<div>
 				<a href={userlink} className="username">{username}</a><br />
 				{message}
 			</div>
-		</li>
+		</div>
 	);
 }
 
@@ -126,8 +126,8 @@ const Messages = () => {
 	return (
 		<ul className="messages">
 			{
-				test.map((value: MessageProps) => (
-					<Message username={value.username} profilePictureUrl={value.profilePictureUrl} message={value.message} />
+				test.map((value: MessageProps, index: number) => (
+					<Message key={index} username={value.username} profilePictureUrl={value.profilePictureUrl} message={value.message} />
 				))
 			}
 		</ul>

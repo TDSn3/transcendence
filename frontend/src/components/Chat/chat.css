@@ -33,13 +33,13 @@ form button {
 	margin: auto;
 }
 
-.messages li {
-	margin-top: 5px;
-}
-
 .message {
 	display: flex;
 	flex-direction: row;
+}
+
+.message + .message {
+	margin-top: 5px;
 }
 
 .username {

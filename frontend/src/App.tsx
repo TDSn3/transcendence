@@ -49,7 +49,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signIn42" element={<SignIn42 />} />
-          {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
     );
@@ -64,13 +64,12 @@ function App() {
         <Routes>
 			<Route path="/home" element={<Home />} />
 			<Route path="/profile" element={<Profile user={user} />} />
-			<Route path="/chat" element={<Chat />} >
-				{ChatRoutes()}
-				<Route path="kekw" element={<ChatRender channelName='kekw'/>} />
-			</Route>
+			<Route path="/chat" element={<Chat />} />
+			{ChatRoutes()}
+			{/* <Route path="/chat/" element={<ChatRender channelName='kekw'/>} /> */}
 			<Route path="/game" element={<Game />} />
 			<Route path="/logout" element={<Logout />} />
-          {/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
+			<Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </>
     </div>

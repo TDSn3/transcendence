@@ -6,7 +6,7 @@ const channels = ['General', 'oui', 'Coucou', 'bob', 'suuuuuuu'];
 const ChatRoutes = () => {
 	return (
 		channels.map((channel) => (
-			<Route key={channel} path={channel} element={<ChatRender channelName={channel}/>} />
+			<Route key={channel} path={"/chat/" + channel} element={<ChatRender channelName={channel}/>} />
 		))
 	);
 }

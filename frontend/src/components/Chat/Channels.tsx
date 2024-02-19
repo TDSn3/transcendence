@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./chat.css";
+import axios from "axios";
 
 interface ChannelProps {
 	channelName: string,
@@ -38,6 +39,17 @@ const Channel = ({channelName}: ChannelProps) => {
 
 const Channels = () => {
 	const handleClick: any = (e: any) => {
+		const newChan = {
+			name: "bob",
+			description: "lol",
+		}
+		axios.post<any>("http://localhost:5001/channels", newChan)
+			.then(response => {
+				console.log('Nouveau canal créé:', response.data);
+			})
+			.catch(error => {
+				console.error('Erreur lors de la création du canal:', error);
+			});
 		console.log(e);
 	}
 
