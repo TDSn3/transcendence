@@ -11,7 +11,7 @@ const InputBar = () => {
 
 	return (
 		<form className="input-bar" onSubmit={handleSubmit}>
-			<input className="input-text" type="text" value={bob} autoComplete="off" onChange={(e) => { setBob(e.target.value); }}/>
+			<input className="input-text" type="text" autoComplete="off" value={bob} onChange={(e) => { setBob(e.target.value); }}/>
 			<button className="input-button">Send</button>
 		</form>
 	);
