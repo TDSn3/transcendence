@@ -16,20 +16,21 @@ interface Paddle {
 
 import React, { useState, useEffect, useRef } from 'react';
 
-const PongLocal = () => {
+const BotvsBot = () => {
 const canvasRef = useRef<HTMLCanvasElement>(null);
 const [angleStart, setAngleStart] = useState(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
-const initialBallState = { x: 400, y: 250, speedX: Math.random() > 0.5 ? 5 * Math.cos(angleStart) : 5 * -Math.cos(angleStart), speedY: 5 * Math.sin(angleStart)};
+const initialBallState = { x: 400, y: 200, speedX: Math.random() > 0.5 ? 10 * Math.cos(angleStart) : 10 * -Math.cos(angleStart), speedY: 10 * Math.sin(angleStart)};
+// const initialBallState = { x: 400, y: 250, speedX: 5, speedY: 0};
 const initialPaddleState = { left: 150, right: 150 };
 const [ball, setBall] = useState(initialBallState);
+const [ballSpeed, setBallSpeed] = useState(0);
 const [paddles, setPaddles] = useState(initialPaddleState);
 const [gameOver, setGameOver] = useState(false);
 const [gameRunning, setGameRunning] = useState(false);
 const ballRef = useRef(null);
-const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 10, y: 220, width: 10, height: 30 });
-const [rightPaddle, setRightPaddle] = useState<Paddle>({ x: 780, y: 220, width: 10, height: 30 });
-const [hookTab, setHookTab] = useState<boolean[]>([false, false, false, false]);
-// const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 780, y: 220, width: 10, height: 60 });
+// const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 60 });
+const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 790, y: 220, width: 10, height: 45 });
+const [BotPaddle1, setBotPaddle1] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 45 });
 // const [ball, setBall] = useState<Ball>({
 // 	x: 250,
 // 	y: 150,
@@ -39,6 +40,11 @@ const [hookTab, setHookTab] = useState<boolean[]>([false, false, false, false]);
 // });
 const [leftScore, setLeftScore] = useState(0);
 const [RightScore, setRightScore] = useState(0);
+const [hookTab, setHookTab] = useState<boolean[]>([false, false, false]);
+const [countdown, setCountDown] = useState(3);
+const [gameStarted, setGameStarted] = useState(false);
+const [countdownActive, setCountdownActive] = useState(false);
+
 const canvas = canvasRef.current;
 function drawGame() {
 
@@ -50,15 +56,16 @@ function drawGame() {
 				//dessiner le terrain et les paddles
 				context.fillStyle = 'black';
 				context.fillRect(0, 0, canvas.width, canvas.height);
+				context.fillStyle = 'blue';
+				context.fillRect(BotPaddle1.x, BotPaddle1.y, BotPaddle1.width, BotPaddle1.height);
 				context.fillStyle = 'red';
-				context.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
-				context.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+				context.fillRect(BotPaddle.x, BotPaddle.y, BotPaddle.width, BotPaddle.height);
 		}
 
 			const drawBall = () => {
 				context.beginPath();
 				context.arc(ball.x, ball.y, 6, 0, 2 * Math.PI, false);
-				context.fillStyle = 'red';
+				context.fillStyle = 'white';
 				context.fill();
 				context.closePath();
 			};
@@ -103,10 +110,8 @@ useEffect(() => {
 						updatedTab[0] = true;
 					if (event.key === 's')
 						updatedTab[1] = true;
-					if (event.key === 'ArrowUp')
+					if (event.key === 'm')
 						updatedTab[2] = true;
-					if (event.key === 'ArrowDown')
-						updatedTab[3] = true;
 					return updatedTab;
 				})
 		}
@@ -118,18 +123,15 @@ useEffect(() => {
 			let updatedTab = [...prev];
    
 			if (event.key === 'w') {
-				updatedTab[0] = false;
+			   updatedTab[0] = false;
 			}
    
 			if (event.key === 's') {
-				updatedTab[1] = false;
+			   updatedTab[1] = false;
 			}
    
-			if (event.key === 'ArrowUp') {
-				updatedTab[2] = false;
-			}
-			if (event.key === 'ArrowDown') {
-				updatedTab[3] = false;
+			if (event.key === 'm') {
+			   updatedTab[2] = false;
 			}
    
 			return updatedTab;
@@ -137,21 +139,15 @@ useEffect(() => {
 		
 	}
 
-	const UpdatePaddle = () => {
-		let moveLeft = 0;
-		let moveRight = 0;
+	// const UpdatePaddle = () => {
+	// 	let move = 0;
 
-		if (hookTab[0] === true && leftPaddle.y  >= 0)
-			moveLeft -= 8;
-		if (hookTab[1] === true && leftPaddle.y + leftPaddle.height <= canvas.height)
-			moveLeft += 8;
-		if (hookTab[2] === true && rightPaddle.y  >= 0)
-			moveRight -= 8;
-		if (hookTab[3] === true && rightPaddle.y + rightPaddle.height <= canvas.height)
-			moveRight += 8;
-		setLeftPaddle((prev) => ({...prev, y: prev.y + moveLeft}));
-		setRightPaddle((prev) => ({...prev, y: prev.y + moveRight}));
-	}
+	// 	if (hookTab[0] === true && leftPaddle.y  >= 0)
+	// 		move -= 8;
+	// 	if (hookTab[1] === true && leftPaddle.y + leftPaddle.height <= canvas.height)
+	// 		move += 8;
+	// 	setLeftPaddle((prev) => ({...prev, y: prev.y + move}));
+	// }
 	
 	const updateGame = () => {
 		// mettre a jour le jeu
@@ -174,6 +170,37 @@ useEffect(() => {
 			
 		}
 		
+		const moveBot = () => {
+			const botSpeed = 30; // Ajustez la vitesse du bot
+		  
+			// Calculer la coordonnée y cible pour le bot en fonction de la position de la balle
+			const targetY = ball.y - BotPaddle.height / 2;
+		  
+			// Si la différence entre la position actuelle du bot et la position cible est inférieure à la vitesse, déplacez directement le bot à la position cible
+			if (Math.abs(BotPaddle.y - targetY) < botSpeed +4) {
+			  setBotPaddle((prev) => ({ ...prev, y: targetY +4}));
+			} else {
+			  // Sinon, effectuez le déplacement normal
+			  if (BotPaddle.y + 20 < targetY) {
+				setBotPaddle((prev) => ({ ...prev, y: prev.y + botSpeed }));
+			  } else if (BotPaddle.y  -20 > targetY) {
+				setBotPaddle((prev) => ({ ...prev, y: prev.y - botSpeed }));
+			  }
+			}
+
+			if (Math.abs(BotPaddle1.y - targetY) < botSpeed +4) {
+				setBotPaddle1((prev) => ({ ...prev, y: targetY +4}));
+			  } else {
+				// Sinon, effectuez le déplacement normal
+				if (BotPaddle1.y < targetY) {
+				  setBotPaddle1((prev) => ({ ...prev, y: prev.y + botSpeed }));
+				} else if (BotPaddle1.y > targetY) {
+				  setBotPaddle1((prev) => ({ ...prev, y: prev.y - botSpeed }));
+				}
+			  }
+		  };
+		  
+
 		const resetBall = (speedX: number, speedY: number) => {
 			setBall({
 				x: canvas.width / 2,
@@ -182,20 +209,20 @@ useEffect(() => {
 				speedX: speedX,
 				speedY: speedY,
 			});
-			// setBallSpeed(0);
+			setBallSpeed(0);
 		};
 
-		if (ball.x - 5 < 0 && !(ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height)) {
+		if (ball.x - 5 < 0 && !(ball.y > BotPaddle1.y && ball.y < BotPaddle1.y + BotPaddle1.height)) {
 			setRightScore((prev) => prev + 1);
-			resetBall(-5, 0);
+			resetBall(-10, 0);
 		}
-		if (ball.x + 5 > canvas.width && !(ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
+		if (ball.x + 5 > canvas.width && !(ball.y > BotPaddle.y && ball.y < BotPaddle.y + BotPaddle.height)) {
 			setLeftScore((prev) => prev + 1);
-			resetBall(5, 0);
+			resetBall(10, 0);
 		}
 
-		if (ball.x - 5 < leftPaddle.x + leftPaddle.width && ball.y > leftPaddle.y && ball.y < leftPaddle.y + leftPaddle.height) {
-			let relativePosition = (ball.y - leftPaddle.y) / leftPaddle.height;
+		if (ball.x - 5 < BotPaddle1.x + BotPaddle1.width && ball.y > BotPaddle1.y && ball.y < BotPaddle1.y + BotPaddle1.height) {
+			let relativePosition = (ball.y - BotPaddle1.y) / BotPaddle1.height;
 			if (relativePosition > 0.66)
 				relativePosition = 0.66;
 			const angle = (relativePosition - 0.5) * Math.PI;
@@ -211,13 +238,13 @@ useEffect(() => {
 
 			setBall((prev) => ({
 				...prev,
-				x:leftPaddle.x + leftPaddle.width + 5 ,
+				x:BotPaddle1.x + BotPaddle1.width + 5 ,
 				speedX: newSpeedX,
 				speedY: newSpeedY,
 			}));
 		}
-		if (ball.x + 5 > rightPaddle.x && ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height){
-			let relativePosition = (ball.y - rightPaddle.y) / rightPaddle.height;
+		if (ball.x + 5 > BotPaddle.x && ball.y > BotPaddle.y && ball.y < BotPaddle.y + BotPaddle.height){
+			let relativePosition = (ball.y - BotPaddle.y) / BotPaddle.height;
 			if (relativePosition > 0.66)
 				relativePosition = 0.66;
 			const angle = (relativePosition - 0.5) * Math.PI;
@@ -233,12 +260,13 @@ useEffect(() => {
 
 			setBall((prev) => ({
 				...prev,
-				x: rightPaddle.x - 5 ,
+				x: BotPaddle.x - 5 ,
 				speedX: newSpeedX,
 				speedY: newSpeedY,
 			}));
 		};
-		UpdatePaddle();
+		// UpdatePaddle();
+		moveBot();
 		drawGame();
 	
 		console.log(ball.speedX);
@@ -270,15 +298,15 @@ const restartGame = () => {
 	setGameRunning(true);
 	setRightScore(0);
 	setLeftScore(0);
-	setLeftPaddle(({ x: 0, y: 220, width: 10, height: 60 }));
-	setRightPaddle(({ x: 790, y: 220, width: 10, height: 60 }));
-	// setBallSpeed(0);
+	setBotPaddle1(({ x: 0, y: 220, width: 10, height: 45 }));
+	setBotPaddle(({ x: 790, y: 220, width: 10, height: 45 }));
+	setBallSpeed(0);
 	setAngleStart(-Math.PI/4 + Math.random() * ((Math.PI/4) -  (-Math.PI/4)));
 };
 
 const pauseGame = () => {
 	setGameRunning(false);
-}
+};
 
 return (
     <div>
@@ -286,8 +314,8 @@ return (
         <button onClick={restartGame}>Restart</button>
         <button onClick={pauseGame}>Pause</button>
       <canvas ref={canvasRef} width={800} height={500} style={{ border: '0px solid #add8e6' }} />
-	  {gameOver ? leftScore === 5 ? (<p> Le joueur de gauche a gagner</p>): <p> Le joueur de droite a gagner</p> : <p></p>}
+	  {gameOver ? leftScore === 5 ? (<p> Blue Win </p>): <p>Red Win</p> : <p></p>}
     </div>
   );
 };
-export default PongLocal;
+export default BotvsBot;
