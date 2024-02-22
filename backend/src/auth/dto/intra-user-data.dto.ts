@@ -1,27 +1,26 @@
 import { IsBoolean, IsEmail, IsNumber, IsString, IsUrl } from 'class-validator';
 
 export class IntraUserDataDto {
+  @IsBoolean()
+  isTwoFactorEnabled: boolean;
 
-    @IsBoolean()
-    isTwoFactorEnabled: boolean;
+  @IsNumber()
+  intraId: number;
 
-    @IsNumber()
-    intraId: number;
+  @IsString()
+  @IsEmail()
+  email42: string;
 
-    @IsString()
-    @IsEmail()
-    email42: string;
+  @IsString()
+  login: string;
 
-    @IsString()
-    login: string;
+  @IsString()
+  firstName: string;
 
-    @IsString()
-    firstName: string;
+  @IsString()
+  lastName: string;
 
-    @IsString()
-    lastName: string;
-
-    @IsString()
-    @IsUrl()
-    avatar: string;
+  @IsString()
+  @IsUrl()
+  avatar: string;
 }
