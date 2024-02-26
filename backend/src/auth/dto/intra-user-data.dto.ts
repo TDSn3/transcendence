@@ -11,7 +11,7 @@ export class IntraUserDataDto {
   isTwoFactorEnabled?: boolean;
 
   @IsNumber()
-  intraId: number;
+  intraId?: number;
 
   @IsString()
   @IsEmail()
@@ -21,12 +21,12 @@ export class IntraUserDataDto {
   login: string;
 
   @IsString()
-  firstName: string;
+  firstName?: string;
 
   @IsString()
-  lastName: string;
+  lastName?: string;
 
   @IsString()
   @IsUrl()
-  avatar: string;
+  avatar?: string;
 }

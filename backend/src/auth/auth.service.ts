@@ -39,7 +39,42 @@ export class AuthService {
       user.avatar,
       res,
     );
-    // console.log('signInResponse from backend:', signInResponse);
+
+    return signInResponse;
+  }
+
+  async FakeUsers(signIn42Dto: SignIn42Dto,
+    res: Response,
+  ): Promise<SignInResponse42Dto> {
+    const fake = {
+      id: 1,
+      email: "bob@mail.com",
+      login: "bob",
+      first_name: "bobby",
+      last_name: "fatass",
+      image: {
+        link: 'https://cdn.intra.42.fr/users/4eb155a3e26f47e520f51167907735e4/wnaseeve.jpg',
+        versions: {
+          large: 'https://cdn.intra.42.fr/users/dde92386d6828a531ed1f28735d9d732/large_wnaseeve.jpg',
+          medium: 'https://cdn.intra.42.fr/users/e8f1ca3c64e0ca7eb1a2f56ad30b814b/medium_wnaseeve.jpg',
+          small: 'https://cdn.intra.42.fr/users/bcb8d9431fa02476618e6f25ff61ec64/small_wnaseeve.jpg',
+          micro: 'https://cdn.intra.42.fr/users/fb9cedc9ab2c1601d41799dcf4160120/micro_wnaseeve.jpg'
+        }
+      }
+    }
+
+    const user1 = await this.saveUserData(fake);
+    
+    const signInResponse: SignInResponse42Dto = await this.generateToken(
+      user1.intraId,
+      user1.email42,
+      user1.login,
+      user1.firstName,
+      user1.lastName,
+      user1.avatar,
+      res,
+    );
+    // console.log('signInResponse: ', signInResponse);
     return signInResponse;
   }
 
@@ -102,6 +137,7 @@ export class AuthService {
             firstName: userData.first_name,
             lastName: userData.last_name,
             avatar: userData.image.versions.small,
+            status: 'ONLINE',
           },
         });
         return updateUser;
@@ -195,15 +231,27 @@ export class AuthService {
     }
   }
 
-  async logout(res: Response) {
+  async logout(res: Response, logOutUser?: any) {
     try {
       res.clearCookie('isLogin', {
         httpOnly: false,
         secure: false,
         sameSite: 'strict',
       });
+
+      if (logOutUser) {
+        const user1 = await this.prisma.user.update({
+          where: {
+            email42: logOutUser.user.userData.email42,
+          },
+          data: {
+            status: 'OFFLINE',
+          },
+        });
+        console.log('StatusUser:', user1);
+      }
     } catch (error) {
-      throw error;
+      throw "Problem with logout";
     }
   }
 

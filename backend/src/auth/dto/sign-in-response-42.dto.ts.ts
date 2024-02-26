@@ -3,10 +3,10 @@ import { IntraUserDataDto } from './intra-user-data.dto';
 
 export class SignInResponse42Dto {
   @IsNumber()
-  created: number;
+  created?: number;
 
   @IsJWT()
-  accessToken: string;
+  accessToken?: string;
 
   userData: IntraUserDataDto;
 }
