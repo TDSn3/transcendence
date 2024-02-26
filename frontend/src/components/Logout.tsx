@@ -1,33 +1,39 @@
 // Logout.tsx
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// import { AuthContext } from './Login/AuthContext'; // Assurez-vous d'importer correctement votre contexte
 import { useAuth } from './Login/AuthContext';
 
-
-const Logout: React.FC = () => {
-  // const { logout } = useContext(AuthContext);
+function Logout(): React.FC {
   const navigate = useNavigate();
   const { setLoggedIn } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
       try {
-        await axios.get('http://localhost:5001/api/auth/logout');
-        // logout();
-        console.log('User is disconnected');
-        navigate('/login');
+        const response = await axios.get(
+          'http://localhost:5001/api/auth/logout',
+          { withCredentials: true }
+        );
+        console.log('response:', response);
+
+        // Vérification du statut de la réponse
+        if (response.status !== 200) {
+          throw new Error('Failed to log out');
+        }
+
         setLoggedIn(false);
+        localStorage.removeItem('isLoggedIn');
+        navigate('/login');
       } catch (error) {
         console.error('Error during disconnection', error);
       }
     };
 
     performLogout();
-  }, [navigate]);
+  }, [navigate, setLoggedIn]);
 
-  return null;
+  return <></>;
 };
 
 export default Logout;

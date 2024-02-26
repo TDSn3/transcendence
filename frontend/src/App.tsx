@@ -6,7 +6,7 @@ import Login from './components/Login/Login';
 import Home from './components/Home';
 import Profile from './components/Profile/Profile';
 import Chat from './components/Chat';
-import Game from './components/Game';
+import Game from './components/Game/Game.js';
 import SignIn42 from './components/Login/signIn42';
 import Logout from './components/Logout';
 
@@ -55,10 +55,10 @@ function App() {
   }
 
   // Si l'utilisateur est connecté, affichez les autres pages
+  console.log('isLoggedIn under navbar:', isLoggedIn);
+
   return (
-    console.log('isLoggedIn under navbar:', isLoggedIn),
     <div className="App container">
-      <>
         <Navbar />
         <Routes>
 			<Route path="/home" element={<Home />} />
@@ -69,7 +69,6 @@ function App() {
 			<Route path="/logout" element={<Logout />} />
 			<Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
-      </>
     </div>
   );
 }

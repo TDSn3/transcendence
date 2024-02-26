@@ -1,12 +1,12 @@
-import { IsNumber, IsJWT } from "class-validator";
-import { IntraUserDataDto } from "./intra-user-data.dto";
+import { IsNumber, IsJWT } from 'class-validator';
+import { IntraUserDataDto } from './intra-user-data.dto';
 
 export class SignInResponse42Dto {
-    @IsNumber()
-    created: number;
+  @IsNumber()
+  created: number;
 
-    @IsJWT()
-    accessToken: string;
+  @IsJWT()
+  accessToken: string;
 
-    userData: IntraUserDataDto
+  userData: IntraUserDataDto;
 }

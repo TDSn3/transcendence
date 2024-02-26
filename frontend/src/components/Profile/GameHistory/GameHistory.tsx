@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserGameHistory } from '../../../utils/types';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
@@ -18,8 +18,10 @@ const defaultUserGameHistory: UserGameHistory = {
 function GameHistory({ user }: GameHistoryProps) {
   const [userGameHistory, setGameHistory] = useState<UserGameHistory>(defaultUserGameHistory);
 
-  gameHistoryService.getUserGameHistory(user.id)
-    .then((data) => { setGameHistory(data); });
+  useEffect(() => {
+    gameHistoryService.getUserGameHistory(user.id)
+      .then((data) => { setGameHistory(data); });
+  }, [user.id]);
 
   return (
     <div className="game-result-container">
