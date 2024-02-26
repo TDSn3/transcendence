@@ -43,23 +43,22 @@ services:
         networks:
             - transcendence_network
         restart: unless-stopped
-
-    # prisma-studio:
-    #   build:
-    #     context: ./
-    #     dockerfile: ./docker/prisma-studio/dockerfile
-    #   container_name: prisma-studio
-    #   depends_on:
-    #     - backend
-    #   environment:
-    #     DATABASE_URL: "postgresql://${DATABASE_USER}:${DATABASE_PASSWORD}@dev-db:${DATABASE_PORT}/${DATABASE_NAME}?schema=public"
-    #   volumes:
-    #     - ./server:/server
-    #   ports:
-    #     - 5555:5555
-    #   networks:
-    #     - transcendence_network
-    #   restart: always
+    
+    prisma-studio:
+        container_name: prisma-studio
+        build:
+            context: ./backend
+            dockerfile: Dockerfile.studio
+        env_file:
+            - ./backend/.env
+        ports:
+            - "5555:5555"
+        depends_on:
+            - db
+            - backend
+        networks:
+            - transcendence_network
+        restart: unless-stopped
 
 volumes:
     pgdata:
