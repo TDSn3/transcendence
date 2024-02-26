@@ -12,6 +12,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { GetUser } from './decorator/get-user.decorator';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { SignIn42Dto } from './dto/sign-in-42.dto';

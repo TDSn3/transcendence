@@ -143,19 +143,11 @@ export class AuthService {
         sameSite: 'strict',
       });
 
-      // const refreshToken = await this.signToken(intraId, email, login, false);
-      // console.log('refreshToken:', refreshToken);
-
-      // res.cookie('refreshToken', refreshToken.JWTtoken, {
-      //   httpOnly: true,
-      //   secure: false,
-      //   sameSite: 'strict',
-      // });
-
       const signInResponse: SignInResponse42Dto = {
         created: Date.now(),
         accessToken: jwtToken.JWTtoken,
         userData: {
+          TwoFactorAuthSecret: '',
           isTwoFactorEnabled: false,
           intraId: intraId,
           email42: email,
