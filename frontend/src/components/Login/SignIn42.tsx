@@ -14,7 +14,6 @@ function SignIn42(): React.ReactElement {
 
   useEffect(() => {
     const code = new URLSearchParams(location.search).get('code');
-    // console.log('code:', code);
 
     if (!code) {
       setError('No authorization code found');
@@ -36,7 +35,7 @@ function SignIn42(): React.ReactElement {
             const nextLocation = '/home';
             navigate(nextLocation);
 
-          }, 6000);
+          }, 2000);
          
         } else if (response.status === 501) {
           setLoggedIn(false);
