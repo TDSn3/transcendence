@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
+#    By: wnaseeve <wnaseeve@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/02/14 15:21:37 by tda-silv         ###   ########.fr        #
+#    Updated: 2024/02/27 10:26:08 by wnaseeve         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,8 @@ stop:
 down: 
 	@docker-compose -f ./docker-compose.yml down --rmi all --volumes
 
+debug:
+	@docker-compose up
 # **************************************************************************** #
 #                                                                              #
 #   Manual     														           #
