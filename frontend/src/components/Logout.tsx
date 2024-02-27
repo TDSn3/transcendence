@@ -17,7 +17,6 @@ function Logout(): React.FC {
           { withCredentials: true }, 
         );
   
-        // Vérification du statut de la réponse
         if (response.status !== 200) {
           throw new Error('Failed to log out');
         }
