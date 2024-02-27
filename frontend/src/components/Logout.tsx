@@ -21,13 +21,11 @@ function Logout(): React.FC {
           throw new Error('Failed to log out');
         }
   
-        await Promise.all([
           setLoggedIn(false),
           localStorage.removeItem('isLoggedIn'),
-          setUser(null),
           navigate('/login'),
           console.log('logoutuser: ', user)
-        ]);
+       
       } catch (error) {
         console.error('Error during disconnection', error);
       }

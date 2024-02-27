@@ -1,4 +1,3 @@
-// AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { IntraUserData } from './interface/intra-user-data';
 import axios from 'axios';
