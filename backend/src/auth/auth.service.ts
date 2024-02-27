@@ -257,7 +257,7 @@ export class AuthService {
 
   async checksession(req: Request) {
     const token = req.cookies['isLogin'];
-    console.log('token:', token);
+    // console.log('token:', token);
 
     if (!token) throw new ForbiddenException('No token found');
   }
