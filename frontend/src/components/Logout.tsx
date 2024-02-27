@@ -6,32 +6,35 @@ import { useAuth } from './Login/AuthContext';
 
 function Logout(): React.FC {
   const navigate = useNavigate();
-  const { setLoggedIn } = useAuth();
+  const { setLoggedIn, user, setUser} = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
       try {
-        const response = await axios.get(
+        const response = await axios.post(
           'http://localhost:5001/api/auth/logout',
-          { withCredentials: true }
+          { user },
+          { withCredentials: true }, 
         );
-        console.log('response:', response);
-
-        // Vérification du statut de la réponse
+  
         if (response.status !== 200) {
           throw new Error('Failed to log out');
         }
-
-        setLoggedIn(false);
-        localStorage.removeItem('isLoggedIn');
-        navigate('/login');
+  
+        await Promise.all([
+          setLoggedIn(false),
+          localStorage.removeItem('isLoggedIn'),
+          setUser(null),
+          navigate('/login'),
+          console.log('logoutuser: ', user)
+        ]);
       } catch (error) {
         console.error('Error during disconnection', error);
       }
     };
-
+  
     performLogout();
-  }, [navigate, setLoggedIn]);
+  }, [navigate, setLoggedIn, setUser, user]);
 
   return <></>;
 };

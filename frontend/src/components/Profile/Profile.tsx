@@ -34,6 +34,11 @@ function Profile({ user }: ProfileProps) {
               <span className="number">{user.gamesWon}</span>
             </p>
           </div>
+          <div>
+            <p className="box">
+              2FA&nbsp;&nbsp;
+            </p>
+          </div>
         </div>
 
       </div>
