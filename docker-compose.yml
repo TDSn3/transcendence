@@ -25,6 +25,7 @@ services:
             - "5001:5001"
         depends_on:
             - db
+            - frontend
         networks:
             - transcendence_network
         restart: unless-stopped
@@ -56,6 +57,7 @@ services:
         depends_on:
             - db
             - backend
+            - frontend
         networks:
             - transcendence_network
         restart: unless-stopped

@@ -6,7 +6,7 @@
 #    By: wnaseeve <wnaseeve@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/02/27 10:26:08 by wnaseeve         ###   ########.fr        #
+#    Updated: 2024/02/27 11:20:19 by wnaseeve         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ down:
 	@docker-compose -f ./docker-compose.yml down --rmi all --volumes
 
 debug:
-	@docker-compose up
+	@docker-compose up --build
+
 # **************************************************************************** #
 #                                                                              #
 #   Manual     														           #
