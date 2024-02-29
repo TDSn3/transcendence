@@ -12,62 +12,35 @@ import Logout from './components/Logout';
 
 import { useAuth } from './components/Login/AuthContext';
 
-import { User } from './utils/types';
-
-import userService from './services/user';
 import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
 
-const defaultUser: User = {
-  id: '',
-  username: '',
-  profilePictureUrl: '',
-  rank: -1,
-  gamesWon: -1,
-  gamesLost: -1,
-};
 
 function App() {
   const { isLoggedIn } = useAuth();
-  const [user, setUser] = useState<User>(defaultUser);
 
-  const fetchUserList = async () => {
-    const userList = await userService.getAll();
-    setUser(userList[0]);
-  };
-
-  useEffect(() => {
-    axios.get<undefined>(`${API_BASE_URL}/ping`);
-    fetchUserList();
-  }, []);
-
-  // Si l'utilisateur n'est pas connecté, affichez la page de connexion
   if (!isLoggedIn) {
-    console.log('isLoggedIn under login:', isLoggedIn);
     return (
       <div className="App container">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signIn42" element={<SignIn42 />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </div>
     );
   }
-
-  // Si l'utilisateur est connecté, affichez les autres pages
-  console.log('isLoggedIn under navbar:', isLoggedIn);
 
   return (
     <div className="App container">
       <Navbar />
         <Routes>
 			<Route path="/home" element={<Home />} />
-			<Route path="/profile" element={<Profile user={user} />} />
+			{/* <Route path="/profile" element={<Profile user={user} />} /> */}
 			<Route path="/chat" element={<Chat />} />
 			{ChatRoutes()}
 			<Route path="/game" element={<Game />} />
 			<Route path="/logout" element={<Logout />} />
-			<Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
     </div>
   );

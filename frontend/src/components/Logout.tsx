@@ -1,4 +1,3 @@
-// Logout.tsx
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -16,15 +15,14 @@ function Logout(): React.FC {
           { user },
           { withCredentials: true }, 
         );
-  
+
         if (response.status !== 200) {
           throw new Error('Failed to log out');
         }
-          setLoggedIn(false),
-          localStorage.removeItem('isLoggedIn'),
-          navigate('/login'),
-          console.log('logoutuser: ', user)
-       
+
+        setLoggedIn(null)
+        localStorage.removeItem('isLoggedIn')
+        navigate('/')
       } catch (error) {
         console.error('Error during disconnection', error);
       }
@@ -34,6 +32,7 @@ function Logout(): React.FC {
   }, [navigate, setLoggedIn, setUser, user]);
 
   return <></>;
+
 };
 
 export default Logout;
