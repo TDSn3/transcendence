@@ -6,7 +6,7 @@ import { useAuth } from './Login/AuthContext';
 
 function Logout(): React.FC {
   const navigate = useNavigate();
-  const { setLoggedIn, user, setUser} = useAuth();
+  const { setLoggedIn, user, setUser } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
@@ -20,7 +20,6 @@ function Logout(): React.FC {
         if (response.status !== 200) {
           throw new Error('Failed to log out');
         }
-  
           setLoggedIn(false),
           localStorage.removeItem('isLoggedIn'),
           navigate('/login'),

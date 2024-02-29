@@ -92,6 +92,7 @@ export class AuthService {
       redirect_uri: redirectUri,
       approval_prompt: 'force',
     });
+    console.log('response:', response.data);
 
     return response.data.access_token;
   }
@@ -218,13 +219,13 @@ export class AuthService {
 
     if (jwtToken) {
       const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '3m',
+        expiresIn: '1d',
         secret: secret,
       });
       return { JWTtoken: token };
     } else {
       const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '15m',
+        expiresIn: '1d',
         secret: secret,
       });
       return { JWTtoken: token };
@@ -256,6 +257,7 @@ export class AuthService {
   }
 
   async checksession(req: Request) {
+
     const token = req.cookies['isLogin'];
     // console.log('token:', token);
 

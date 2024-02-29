@@ -25,10 +25,8 @@ export const AuthProvider: React.FC = ({ children }) => {
           withCredentials: true,
           });
         
-        if (response.status === 200) {
+        if (response.status === 200)
           setLoggedIn(true);
-          setUser(response.data.user);
-        }
         else
           setLoggedIn(false);
 
@@ -39,7 +37,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
 
     checkSession();
-  }, [setLoggedIn, setUser]);
+  }, [setLoggedIn, setUser, user]);
 
   // Mettre à jour le stockage local lorsqu'on change l'état d'authentification
   useEffect(() => {

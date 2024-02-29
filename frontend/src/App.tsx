@@ -59,7 +59,7 @@ function App() {
 
   return (
     <div className="App container">
-        <Navbar />
+      <Navbar />
         <Routes>
 			<Route path="/home" element={<Home />} />
 			<Route path="/profile" element={<Profile user={user} />} />

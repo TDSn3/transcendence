@@ -30,6 +30,8 @@ function SignIn42(): React.ReactElement {
         if (response.data.user && response.status === 200) {
           const userData: IntraUserData = response.data.user;
           setUser(userData);
+          console.log('User data:', userData.accessToken);
+          console.log('User:', );
           setTimeout(() => {
             setLoggedIn(true);
             const nextLocation = '/home';
