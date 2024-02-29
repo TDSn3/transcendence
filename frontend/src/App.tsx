@@ -41,18 +41,18 @@ function App() {
   }, []);
 
   // Si l'utilisateur n'est pas connecté, affichez la page de connexion
-  if (!isLoggedIn) {
-    console.log('isLoggedIn under login:', isLoggedIn);
-    return (
-      <div className="App container">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signIn42" element={<SignIn42 />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </div>
-    );
-  }
+//   if (!isLoggedIn) {
+//     console.log('isLoggedIn under login:', isLoggedIn);
+//     return (
+//       <div className="App container">
+//         <Routes>
+//           <Route path="/login" element={<Login />} />
+//           <Route path="/signIn42" element={<SignIn42 />} />
+//           {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
+//         </Routes>
+//       </div>
+//     );
+//   }
 
   // Si l'utilisateur est connecté, affichez les autres pages
   console.log('isLoggedIn under navbar:', isLoggedIn);
@@ -67,7 +67,7 @@ function App() {
 			{ChatRoutes()}
 			<Route path="/game" element={<Game />} />
 			<Route path="/logout" element={<Logout />} />
-			<Route path="*" element={<Navigate to="/home" replace />} />
+			{/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
         </Routes>
     </div>
   );

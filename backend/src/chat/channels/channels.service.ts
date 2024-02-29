@@ -6,12 +6,16 @@ import { PrismaService } from 'nestjs-prisma';
 export class ChannelsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(chan: { name: string, description: string }, res): Promise<Channel> {
+  async create(chan: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
     try {
       const newChannel = await this.prisma.channel.create({
         data: {
           name: chan.name,
-          description: chan.description,
+		  password: chan.password,
+		  private: chan.private,
+		  members: {
+			
+		  }
         },
       });
       return (newChannel);
@@ -20,5 +24,15 @@ export class ChannelsService {
       res.status(501).json({ message: 'Channel creation failed', error: error.message });
       throw error;
     }
+  }
+
+  async getAllNames(): Promise<{id: number, name: string}[]> {
+	const channelsNames = await this.prisma.channel.findMany({
+		select: {
+			id: true,
+			name: true,
+		}
+	});
+	return (channelsNames);
   }
 }

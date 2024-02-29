@@ -31,26 +31,50 @@ model User {
 
   status UserStatus @default(ONLINE)
 
+  // relation to other tables
+  members	ChannelMember[]
 }
 
 model Channel {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id		Int     		@id @unique @default(autoincrement())
+  createdAt	DateTime		@default(now())
+  updatedAt	DateTime		@updatedAt
 
-  name String
-  description String
-  type ChannelType @default(PUBLIC)
+  name		String			@unique
+  password	String
+  private	Boolean			@default(false)
 
+  members	ChannelMember[]
+}
+
+model ChannelMember {
+  id		Int				@id @unique @default(autoincrement())
+
+  channelId	Int
+  userId	String
+  channel	Channel			@relation(fields: [channelId], references: [id])
+  user		User			@relation(fields: [userId], references: [id])
+
+  muteEnd	DateTime?
+  isMute	Boolean			@default(false)
+  isAdmin	Boolean			@default(false)
+  isOwner	Boolean			@default(false)
+
+  messages	Message[]
+}
+
+model Message {
+  id		Int				@id @unique @default(autoincrement())
+  createdAt	DateTime		@default(now())
+
+  memberId	Int
+  member	ChannelMember	@relation(fields: [memberId], references: [id])
+
+  content	String
 }
 
 enum UserStatus {
   ONLINE
   OFFLINE
   PLAYING
-}
-
-enum ChannelType {
-  PUBLIC
-  PRIVATE
 }

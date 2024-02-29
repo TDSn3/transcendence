@@ -29,10 +29,19 @@
 	border-radius: 50%;
 }
 
-.create-form input{
+.create-form input[type="text"] {
 	display: flex;
 	flex-direction: column;
 	width: 98%;
+}
+
+.create-form-end {
+	display: flex;
+	flex-direction: row;
+}
+
+.create-form input[type="button"] {
+	margin-left: auto;
 }
 
 .create-title {
