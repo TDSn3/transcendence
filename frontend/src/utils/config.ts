@@ -4,8 +4,8 @@ let FRONTEND_PORT;
 let BACKEND_PORT;
 
 try {
-  FRONTEND_PORT = typeGuard.parseString(__FRONTEND_PORT__);
-  BACKEND_PORT = typeGuard.parseString(__BACKEND_PORT__);
+  FRONTEND_PORT = typeGuard.parseString(FRONTEND_PORT);
+  BACKEND_PORT = typeGuard.parseString(BACKEND_PORT);
 } catch (error) {
   console.error('FRONTEND_PORT or BACKEND_PORT environment variables are not defined.');
   console.error('Default ports have been set instead:');

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 
@@ -18,18 +18,17 @@ export class UsersService {
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
-  
+
     const user = await this.prisma.user.findUnique({
       where: { email42 },
     });
-  
+
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-  
+
     return user;
   }
-  
 
   async findAllByLogin(login: string): Promise<User> {
     if (!login) {
@@ -67,7 +66,10 @@ export class UsersService {
       console.log(user);
       return user;
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
         throw error;
       }
       throw new NotFoundException('User not found');

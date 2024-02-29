@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class SignIn42Dto {
-    @IsNotEmpty()
-    code: string;
+  @IsNotEmpty()
+  @IsString()
+  code: string;
 
-    @IsString()
-    @IsOptional()
-    otp?: string;
-
+  @IsString()
+  @IsOptional()
+  otp?: string;
 }

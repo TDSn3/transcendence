@@ -5,6 +5,7 @@ import axios from 'axios';
 
 interface AuthContextType {
   isLoggedIn: boolean;
+  user: IntraUserData | null; 
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<IntraUserData | null>>;
 }
@@ -25,9 +26,9 @@ export const AuthProvider: React.FC = ({ children }) => {
           withCredentials: true,
           });
         
-        console.log('response for the checkin session:', response.status);
         if (response.status === 200) {
           setLoggedIn(true);
+          setUser(response.data.user);
         }
         else
           setLoggedIn(false);
@@ -39,7 +40,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
 
     checkSession();
-  }, [setLoggedIn]);
+  }, [setLoggedIn, setUser]);
 
   // Mettre à jour le stockage local lorsqu'on change l'état d'authentification
   useEffect(() => {
@@ -47,7 +48,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, [isLoggedIn]);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, setUser }}>
+    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
