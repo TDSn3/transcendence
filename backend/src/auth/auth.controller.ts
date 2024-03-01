@@ -78,17 +78,17 @@ export class AuthController {
       });
   }
 
-  @Get('checksession')
+  @Get('me')
   async checksession(@Req() req: Request, @Res() res: Response) {
-    return this.authService
-      .checksession(req)
-      .then(() => {
-        res.status(200).json({
-          message: 'User is logged in',
-        });
-      })
-      .catch(() => {
-        res.status(501).json({ message: 'User is not logged in' });
+    try {
+      const userData = await this.authService.checksession(req);
+      res.status(200).json({
+        message: 'User is logged in',
+        user: userData,
       });
+    } catch (error) {
+      res.status(501).json({ message: 'User is not logged in' });
+    }
   }
+  
 }
