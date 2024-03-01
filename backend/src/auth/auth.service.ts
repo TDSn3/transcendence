@@ -132,11 +132,6 @@ export class AuthService {
             email42: userData.email,
           },
           data: {
-            intraId: userData.id,
-            login: userData.login,
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            avatar: userData.image.versions.small,
             status: 'ONLINE',
           },
         });
