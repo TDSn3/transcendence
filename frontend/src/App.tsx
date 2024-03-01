@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
@@ -14,9 +12,12 @@ import { useAuth } from './components/Login/AuthContext';
 
 import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
 
+import NotFoundPage from './components/NotFoundPage/NotFoundPage.tsx';
+
 
 function App() {
   const { isLoggedIn } = useAuth();
+  const isNavbarVisible = ["/login", "/home", "/chat", "/game", "/profile"].includes(window.location.pathname);
 
   if (!isLoggedIn) {
     return (
@@ -24,7 +25,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signIn42" element={<SignIn42 />} />
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<Navigate to="/login" />}  />
         </Routes>
       </div>
     );
@@ -32,15 +33,16 @@ function App() {
 
   return (
     <div className="App container">
-      <Navbar />
+      {isNavbarVisible && <Navbar />}
         <Routes>
-			<Route path="/home" element={<Home />} />
-			{/* <Route path="/profile" element={<Profile user={user} />} /> */}
-			<Route path="/chat" element={<Chat />} />
-			{ChatRoutes()}
-			<Route path="/game" element={<Game />} />
-			<Route path="/logout" element={<Logout />} />
-      <Route path="*" element={<Navigate to="/home" />} />
+          <Route path="/home" element={<Home />} />
+          {/* <Route path="/profile" element={<Profile user={user} />} /> */}
+          <Route path="/chat" element={<Chat />} />
+          {ChatRoutes()}
+          <Route path="/game" element={<Game />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/login" element={<Navigate to="/home" />}/>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
     </div>
   );

@@ -11,4 +11,5 @@ export default interface IntraUserData {
   firstName: string,
   lastName: string,
   avatar: string,
+  status: string,
 }
