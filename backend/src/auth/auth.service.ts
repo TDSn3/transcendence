@@ -12,6 +12,7 @@ import axios from 'axios';
 import { IntraUserDataDto } from './dto/intra-user-data.dto';
 import { Response } from 'express';
 import { Request } from 'express';
+import {  NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -126,17 +127,11 @@ export class AuthService {
         },
       });
       if (userAlreadyExist) {
-        // throw new ForbiddenException('User already exists');
         const updateUser = await this.prisma.user.update({
           where: {
             email42: userData.email,
           },
           data: {
-            intraId: userData.id,
-            login: userData.login,
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            avatar: userData.image.versions.small,
             status: 'ONLINE',
           },
         });
@@ -171,7 +166,6 @@ export class AuthService {
   ): Promise<SignInResponse42Dto> {
     try {
       const jwtToken = await this.signToken(intraId, email, login, true);
-      // console.log('jwtToken:', jwtToken);
 
       res.cookie('isLogin', jwtToken.JWTtoken, {
         httpOnly: false,
@@ -214,17 +208,16 @@ export class AuthService {
     };
 
     const secret = this.configService.get('JWT_SECRET');
-    // const refreshSecret = this.configService.get('JWT_REFRESH_SECRET');
 
     if (jwtToken) {
       const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '3m',
+        expiresIn: '1d',
         secret: secret,
       });
       return { JWTtoken: token };
     } else {
       const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '15m',
+        expiresIn: '1d',
         secret: secret,
       });
       return { JWTtoken: token };
@@ -255,10 +248,40 @@ export class AuthService {
     }
   }
 
-  async checksession(req: Request) {
+  async checksession(req: Request): Promise<SignInResponse42Dto> {
     const token = req.cookies['isLogin'];
-    console.log('token:', token);
 
-    if (!token) throw new ForbiddenException('No token found');
+    if (!token)
+      throw new ForbiddenException('No token found');
+
+    const decoded = this.jwtService.verify(token);
+    console.log('decoded:', decoded);
+  
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email42: decoded.email42,
+      },
+    });
+  
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const userData: SignInResponse42Dto = {
+      created: Date.now(),
+      accessToken: token,
+      userData: {
+        TwoFactorAuthSecret: '',
+        intraId: user.intraId,
+        email42: user.email42,
+        login: user.login,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+      },
+    };
+  
+    return userData;
   }
+  
 }

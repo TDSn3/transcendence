@@ -9,7 +9,7 @@ import './signIn42.css';
 function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setLoggedIn, setUser } = useAuth();
+  const { setLoggedIn, setUser, user } = useAuth();
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -30,12 +30,9 @@ function SignIn42(): React.ReactElement {
         if (response.data.user && response.status === 200) {
           const userData: IntraUserData = response.data.user;
           setUser(userData);
-          setTimeout(() => {
-            setLoggedIn(true);
-            const nextLocation = '/home';
-            navigate(nextLocation);
-
-          }, 2000);
+          setLoggedIn(true);
+          const nextLocation = '/home';
+          navigate(nextLocation);
          
         } else if (response.status === 501) {
           setLoggedIn(false);
@@ -48,7 +45,7 @@ function SignIn42(): React.ReactElement {
     };
 
     fetchData();
-  }, [location.search, navigate, setLoggedIn, setUser]);
+  }, [location.search, navigate, setLoggedIn, setUser, user]);
 
   return (
     <div className="loader-container"></div>
