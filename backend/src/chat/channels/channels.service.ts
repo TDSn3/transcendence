@@ -6,15 +6,18 @@ import { PrismaService } from 'nestjs-prisma';
 export class ChannelsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(chan: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
+  async create(intraId: number, chan: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
     try {
+	  console.log("intraId: ", intraId);
       const newChannel = await this.prisma.channel.create({
         data: {
           name: chan.name,
 		  password: chan.password,
 		  private: chan.private,
 		  members: {
-			
+		    create: [
+			  { userId: intraId, isAdmin: true, isOwner: true }
+			]
 		  }
         },
       });

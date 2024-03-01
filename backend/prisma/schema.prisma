@@ -30,6 +30,7 @@ model User {
 
   // relation to other tables
   members	ChannelMember[]
+  message	Message[]
 }
 
 model Channel {
@@ -42,30 +43,31 @@ model Channel {
   private	Boolean			@default(false)
 
   members	ChannelMember[]
+  messages	Message[]
 }
 
 model ChannelMember {
   id		Int				@id @unique @default(autoincrement())
 
   channelId	Int
-  userId	String
+  userId	Int
   channel	Channel			@relation(fields: [channelId], references: [id])
-  user		User			@relation(fields: [userId], references: [id])
+  user		User			@relation(fields: [userId], references: [intraId])
 
   muteEnd	DateTime?
   isMute	Boolean			@default(false)
   isAdmin	Boolean			@default(false)
   isOwner	Boolean			@default(false)
-
-  messages	Message[]
 }
 
 model Message {
   id		Int				@id @unique @default(autoincrement())
   createdAt	DateTime		@default(now())
 
-  memberId	Int
-  member	ChannelMember	@relation(fields: [memberId], references: [id])
+  userId	Int
+  channelId	Int
+  member	User			@relation(fields: [userId], references: [intraId])
+  channel	Channel			@relation(fields: [channelId], references: [id])
 
   content	String
 }

@@ -1,20 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
+import { decodeToken } from "react-jwt";
 import axios from "axios";
 import Popup from "./Popup.tsx";
 import "./channels.css";
 
-import { useNavigate } from 'react-router-dom';
 
 const channelsNames = (await axios.get("http://localhost:5001/api/channels/names")).data;
 
-// ptet utiliser des navigate a la place des Link ?
+
 const Channel = ({name}: any) => {
+	const navigate = useNavigate();
+
+	const handleClick: any = (name: string) => {
+		console.log(name);
+		// axios.put("http://localhost:5001/api/channels/" + name, {})
+		// 	.then(() => {
+		// 		navigate("/chat/" + name);
+		// 	});
+	}
+
 	return (
 		<div className="channel">
-			<Link to={name}>
-				<input type="button" value={name}/>
-			</Link>
+			{/* <input type="button" value={name} onClick={handleClick(name)}/> */}
+			<button onClick={handleClick(name)}>{name}</button>
 		</div>
 	);
 }
@@ -22,15 +32,12 @@ const Channel = ({name}: any) => {
 const Channels = () => {
 	const navigate = useNavigate();
 
-	console.log("pouet,", channelsNames);
-
 	const [buttonPopup, setButtonPopup] = useState(false);
 	const [channelName, setChannelName] = useState("");
 	const [channelPassword, setChannelPassword] = useState("");
 	const [channelPrivate, setChannelPrivate] = useState(false);
 
 	const handleSubmit: any = (e: any) => {
-		const { setLoggedIn, user, setUser } = useAuth();
 		e.preventDefault();
 		if (channelName.length === 0 || channelName.includes(" ") || channelPassword.includes(" ")) {
 			console.log("your channel name or channel password is not valid !");
@@ -38,9 +45,10 @@ const Channels = () => {
 			setChannelPassword("");
 			setChannelPrivate(false);
 		} else {
-			axios.post("http://localhost:5001/api/channels", {name: channelName, password: channelPassword, private: channelPrivate})
+			axios.post("http://localhost:5001/api/channels", {intraId: (decodeToken(document.cookie).sub), name: channelName, password: channelPassword, private: channelPrivate})
 				.then(() => {
 					navigate("/chat/" + channelName);
+					window.location.reload();
 				}
 			);
 		}
