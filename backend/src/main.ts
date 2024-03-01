@@ -4,10 +4,12 @@ import { ValidationPipe } from '@nestjs/common';
 import config from './utils/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useWebSocketAdapter(new IoAdapter(app));
   const builder = new DocumentBuilder()
     .setTitle('Transcendence API')
     .setDescription('Transcendence API description')

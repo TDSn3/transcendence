@@ -1,43 +1,35 @@
-// TODO
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PongIA from "./PongIA.tsx";
 import PongLocal from "./PongLocal.tsx";
 import BotvsBot from "./BotvsBot.tsx";
+import io from "socket.io-client";
+import Lobby from "./Lobby.tsx";
+
 
 function Game() {
-	const[localPong, setLocalPong] = useState(false);
-	const[IAPong, setIAPong] = useState(false);
-	const[BotvsBot1, setBotvsBot] = useState(false);
 
-	const handleLocalPong = () => {
-		setLocalPong(true);
-		setIAPong(false);
-		setBotvsBot(false);
+  const [lobby, setLobby] = useState(false);
+  const [buttonText, setButtonText] = useState("Join lobby");
 
-	};
-
-	const handleIAPong = () => {
-		setLocalPong(false);
-		setIAPong(true);
-		setBotvsBot(false);
-
-	};
-
-	const handleBotvsBot = () => {
-		setLocalPong(false);
-		setIAPong(false);
-		setBotvsBot(true);
+  const handleLobby = () => {
+    // setLobby(true);
+	if (lobby) {
+		setLobby(false);
+		setButtonText("Join lobby");
+	} else {
+		setLobby(true);
+		setButtonText("Quit lobby")
 	}
+   
+  };
 
+  
   return (
     <div className="page">
       <h3>Game</h3>
-	  <button onClick={handleLocalPong}>Jouer en local</button>
-	  <button onClick={handleIAPong}>Jouer contre l'ordi</button>
-	  <button onClick={handleBotvsBot}>Bot vs Bot</button>
-	  {IAPong && <PongIA />}
-	  {localPong &&  <PongLocal />}
-	  {BotvsBot1 &&  <BotvsBot />}
+      <button onClick={handleLobby}>{buttonText}</button>
+      {lobby && <Lobby />}
+     
     </div>
   );
 }
