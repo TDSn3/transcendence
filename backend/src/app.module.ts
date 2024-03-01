@@ -5,12 +5,13 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ChannelsModule } from './channel/channels.module';
 import { SocketModule } from './game/socket.module';
 
 @Module({
   imports: [AuthModule, ConfigModule.forRoot({
     isGlobal: true,
-  }), UsersModule, PrismaModule, SocketModule],
+  }), UsersModule, ChannelsModule, PrismaModule, SocketModule],
   controllers: [AppController],
   providers: [AppService],
 })

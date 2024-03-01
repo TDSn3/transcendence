@@ -1,0 +1,39 @@
+.banner {
+	display: flex;
+	flex-direction: row;
+	background-color: #c2c9d6;
+	border-radius: 14px;
+	text-align: center;
+	margin-left: 0px;
+}
+
+.banner h3 {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.banner .create-btn {
+	align-self: center;
+	margin-right: 5px;
+	border-radius: 50%;
+	border: none;
+	width: 30px;
+	height: 30px;
+	font-size: 23px;
+}
+
+.channels a {
+	text-decoration: none;
+}
+
+.channels button {
+	display: flex;
+	flex-direction: column;
+	margin-top: 5px;
+	padding-left: 10px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	border-radius: 14px;
+	font-size: 20px;
+}

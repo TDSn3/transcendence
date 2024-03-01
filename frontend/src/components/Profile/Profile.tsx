@@ -1,6 +1,8 @@
+import { useState } from "react"
 import { User } from '../../utils/types';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 import GameHistory from './GameHistory/GameHistory';
+import Switch from './SwitchButton/Switch';
 
 import './profile.css';
 
@@ -9,6 +11,9 @@ interface ProfileProps {
 }
 
 function Profile({ user }: ProfileProps) {
+  const [isToggled, setIsToggled] = useState(false);
+  console.log("isToggled", isToggled);
+
   return (
     <>
       <div className="page profile-style">
@@ -35,7 +40,10 @@ function Profile({ user }: ProfileProps) {
             </p>
           </div>
         </div>
-
+          <div className="switch-style">
+            <Switch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
+          </div>
+            
       </div>
 
       <div className="page">
@@ -45,6 +53,8 @@ function Profile({ user }: ProfileProps) {
         <GameHistory user={user} />
 
       </div>
+
+
     </>
   );
 }

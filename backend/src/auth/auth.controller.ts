@@ -12,8 +12,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { GetUser } from './decorator/get-user.decorator';
 import { Request, Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
@@ -47,31 +48,47 @@ export class AuthController {
         res.status(501).json({ message: 'Bruh...' });
       });
   }
+  @ApiBody({ type: SignIn42Dto })
+  @Post('FakeUsers')
+  async FakeUsers(@Body() signIn42Dto: SignIn42Dto, @Res() res: Response) {
+    return this.authService
+      .FakeUsers(signIn42Dto, res)
+      .then((user) => {
+        res.status(200).json({
+          message: 'User successfully signed in',
+          user,
+        });
+      })
+      .catch(() => {
+        res.status(501).json({ message: 'Problem with FakeUser service'});
+      });
+  }
 
   // @UseGuards(JwtGuard)
-  @Get('logout')
-  async logout(@Res() res: Response) {
+  @Post('logout')
+  async logout(@Res() res: Response, @Body() user: string) {
     return this.authService
-      .logout(res)
+      .logout(res, user)
       .then(() => {
-        res.status(200).send({ message: 'User successfully logged out' });
+        res.status(200).send({
+          message: 'User successfully logged out' });
       })
       .catch(() => {
         res.status(501).send({ message: 'Logout doesnt work...' });
       });
   }
 
-  @Get('checksession')
+  @Get('me')
   async checksession(@Req() req: Request, @Res() res: Response) {
-    return this.authService
-      .checksession(req)
-      .then(() => {
-        res.status(200).json({
-          message: 'User is logged in',
-        });
-      })
-      .catch(() => {
-        res.status(501).json({ message: 'User is not logged in' });
+    try {
+      const userData = await this.authService.checksession(req);
+      res.status(200).json({
+        message: 'User is logged in',
+        user: userData,
       });
+    } catch (error) {
+      res.status(501).json({ message: 'User is not logged in' });
+    }
   }
+  
 }

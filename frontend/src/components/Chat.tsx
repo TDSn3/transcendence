@@ -1,10 +1,13 @@
-// TODO
-function Chat() {
-  return (
-    <div className="page">
-      <h3>Chat</h3>
-    </div>
-  );
-}
+import Channels from "./Chat/Channels.tsx";
+import "./Chat/chat.css";
+
+const Chat = () =>
+{
+	return (
+		<div className="page" id="kekw">
+			<Channels />
+		</div>
+	);
+};
 
 export default Chat;
