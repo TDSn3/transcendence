@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from './AuthContext';
+import useAuth from '../../contexts/Auth/useAuth';
 import { User } from '../../utils/types';
 import './signIn42.css';
 

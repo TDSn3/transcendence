@@ -24,7 +24,7 @@
 //   gameHistory: GameResult[],
 // }
 
-enum UserStatus {
+export enum UserStatus {
   ONLINE,
   OFFLINE,
   PLAYING,
@@ -47,4 +47,40 @@ export interface User {
   status: UserStatus,
 
   accessToken: string,
+}
+
+export const emptyUser: User = {
+  id: '',
+  createdAt: 0,
+  updatedAt: 0,
+  TwoFactorAuthSecret: '',
+  isTwoFactorEnabled: false,
+
+  intraId: 0,
+  email42: '',
+  login: '',
+  firstName: '',
+  lastName: '',
+  avatar: '',
+
+  status: UserStatus.OFFLINE,
+
+  accessToken: '',
+};
+
+interface UserData {
+  TwoFactorAuthSecret: string,
+  avatar: string,
+  email42: string,
+  firstName: string,
+  intraId: number,
+  isTwoFactorEnabled: boolean,
+  lastName: string,
+  login: string,
+}
+
+export interface AuthResponse {
+  accessToken: string,
+  created: number,
+  userData: UserData,
 }

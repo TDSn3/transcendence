@@ -3,7 +3,7 @@ import './login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cta from '../Cta/cta';
-import { useAuth } from './AuthContext';
+import useAuth from '../../contexts/Auth/useAuth';
 
 function Login() {
   const navigate = useNavigate();

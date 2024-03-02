@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
@@ -10,34 +9,12 @@ import Game from './components/Game/Game.js';
 import SignIn42 from './components/Login/SignIn42.js';
 import Logout from './components/Logout';
 
-import { useAuth } from './components/Login/AuthContext';
+import useAuth from './contexts/Auth/useAuth';
 
-// import { User } from './utils/types';
-// import userService from './services/user';
 import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
 
-// const defaultUser: User = {
-//   id: '',
-//   username: '',
-//   profilePictureUrl: '',
-//   rank: -1,
-//   gamesWon: -1,
-//   gamesLost: -1,
-// };
-
 function App() {
-  const { isLoggedIn } = useAuth();
-  // const [user, setUser] = useState<User>(defaultUser);
-
-  // const fetchUserList = async () => {
-  //   const userList = await userService.getAll();
-  //   setUser(userList[0]);
-  // };
-
-  // useEffect(() => {
-  //   axios.get<undefined>(`${API_BASE_URL}/ping`);
-  //   fetchUserList();
-  // }, []);
+  const { isLoggedIn, user } = useAuth();
 
   if (!isLoggedIn) {
     return (
@@ -56,7 +33,7 @@ function App() {
       <Navbar />
         <Routes>
 			<Route path="/home" element={<Home />} />
-			{/* <Route path="/profile" element={<Profile user={user} />} /> */}
+			<Route path="/profile" element={<Profile user={user} />} />
 			<Route path="/chat" element={<Chat />} />
 			{ChatRoutes()}
 			<Route path="/game" element={<Game />} />

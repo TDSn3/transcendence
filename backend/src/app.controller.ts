@@ -1,9 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-import { User, UserGameHistory } from './utils/types';
-import users from './data/users';
-import usersGameHistories from './data/usersGameHistories';
+// import { User, UserGameHistory } from './utils/types';
+// import users from './data/users';
+// import usersGameHistories from './data/usersGameHistories';
 
 @Controller()
 export class AppController {

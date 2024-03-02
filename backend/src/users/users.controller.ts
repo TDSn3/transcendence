@@ -1,10 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
 import { User } from '@prisma/client';
-import { NotFoundException } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('api/users')

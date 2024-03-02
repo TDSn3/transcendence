@@ -1,24 +1,45 @@
 import {
   createContext,
-  useContext,
   useState,
   useEffect,
   useMemo,
 } from 'react';
 import axios from 'axios';
 
-import { User } from '../../utils/types';
+import {
+  UserStatus, User, emptyUser, AuthResponse,
+} from '../../utils/types';
 
 interface AuthContextType {
   isLoggedIn: boolean | null,
-  user: User | null,
+  user: User,
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>,
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
 }
 
 const STORAGE_KEY = 'isLoggedIn';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// TODO: armoniser le back et front avec la db
+const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
+  id: '',
+  createdAt: authResponse.created,
+  updatedAt: -1, // TODO
+  TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,
+  isTwoFactorEnabled: authResponse.userData.isTwoFactorEnabled,
+
+  intraId: authResponse.userData.intraId,
+  email42: authResponse.userData.email42,
+  login: authResponse.userData.login,
+  firstName: authResponse.userData.firstName,
+  lastName: authResponse.userData.lastName,
+  avatar: authResponse.userData.avatar,
+
+  status: UserStatus.ONLINE, // TODO
+
+  accessToken: authResponse.accessToken,
+});
 
 interface AuthProviderProps {
   children: React.ReactNode,
@@ -26,7 +47,7 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoggedIn, setLoggedIn] = useState<boolean | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>({ ...emptyUser });
 
   useEffect(() => {
     const checkSession = async () => {
@@ -36,10 +57,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
 
         if (response.status === 200) {
-          setUser(response.data.user);
+          const responseValue: AuthResponse = response.data.user;
+          const userGoodData: User = transformAuthResponseToUser(responseValue);
+
+          setUser(userGoodData);
           setLoggedIn(true);
         } else {
-          setUser(null);
+          setUser({ ...emptyUser });
           setLoggedIn(false);
         }
       } catch (error) {
@@ -66,10 +90,4 @@ export function AuthProvider({ children }: AuthProviderProps) {
   );
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export default AuthContext;
