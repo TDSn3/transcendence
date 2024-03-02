@@ -23,7 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signIn42" element={<SignIn42 />} />
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="*" element={<Navigate to="/login" />} />
+          {/* <Route path="*" element={<Navigate to="/login" />} /> */}
         </Routes>
       </div>
     );
@@ -33,7 +33,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/profile/:login" element={<Profile />} />
         <Route path="/chat" element={<Chat />} />
         {ChatRoutes()}
         <Route path="/game" element={<Game />} />

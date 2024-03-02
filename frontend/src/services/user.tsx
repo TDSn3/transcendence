@@ -14,8 +14,14 @@ const getAll = async () => {
   return (data);
 };
 
-const getUser = async (id: string): Promise<User> => {
-  const { data } = await axios.get<User>(`${url}/${id}`);
+const getUserById = async (id: string): Promise<User> => {
+  const { data } = await axios.get<User>(`${url}/id/${id}`);
+
+  return (data);
+};
+
+const getUserByLogin = async (login: string): Promise<User> => {
+  const { data } = await axios.get<User>(`${url}/login/${login}`);
 
   return (data);
 };
@@ -94,7 +100,8 @@ const authentication42 = async (code: string) => {
 
 export default {
   getAll,
-  getUser,
+  getUserById,
+  getUserByLogin,
   addFakeUser,
   authentication42,
 };
