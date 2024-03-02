@@ -40,7 +40,7 @@ function SignIn42(): React.ReactElement {
     };
 
     fetchData();
-  }, []);
+  }, [location.search, navigate, setLoggedIn, setUser]);
 
   if (errorSignIn !== '') {
     console.error('Error :', errorSignIn); // TODO: revoir le code de ce state
