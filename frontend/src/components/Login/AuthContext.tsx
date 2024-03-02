@@ -1,21 +1,32 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { IntraUserData } from './interface/intra-user-data';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react';
 import axios from 'axios';
 
+import { User } from '../../utils/types';
+
 interface AuthContextType {
-  isLoggedIn: boolean | null;
-  user: IntraUserData | null;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>;
-  setUser: React.Dispatch<React.SetStateAction<IntraUserData | null>>;
+  isLoggedIn: boolean | null,
+  user: User | null,
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>,
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
 const STORAGE_KEY = 'isLoggedIn';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface AuthProviderProps {
+  children: React.ReactNode,
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoggedIn, setLoggedIn] = useState<boolean | null>(null);
-  const [user, setUser] = useState<IntraUserData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -44,12 +55,16 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, isLoggedIn ? 'true' : 'false');
   }, [isLoggedIn]);
 
+  const value = useMemo(() => ({
+    isLoggedIn, setLoggedIn, user, setUser,
+  }), [isLoggedIn, user]);
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn, user, setUser }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

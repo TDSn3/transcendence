@@ -12,11 +12,32 @@ import Logout from './components/Logout';
 
 import { useAuth } from './components/Login/AuthContext';
 
+// import { User } from './utils/types';
+// import userService from './services/user';
 import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
 
+// const defaultUser: User = {
+//   id: '',
+//   username: '',
+//   profilePictureUrl: '',
+//   rank: -1,
+//   gamesWon: -1,
+//   gamesLost: -1,
+// };
 
 function App() {
   const { isLoggedIn } = useAuth();
+  // const [user, setUser] = useState<User>(defaultUser);
+
+  // const fetchUserList = async () => {
+  //   const userList = await userService.getAll();
+  //   setUser(userList[0]);
+  // };
+
+  // useEffect(() => {
+  //   axios.get<undefined>(`${API_BASE_URL}/ping`);
+  //   fetchUserList();
+  // }, []);
 
   if (!isLoggedIn) {
     return (

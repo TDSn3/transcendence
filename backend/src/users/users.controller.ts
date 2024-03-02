@@ -18,12 +18,12 @@ export class UsersController {
   }
 
   @Get('id/:id')
-  findAllById(@Param('id') id: string) : Promise<User> {
+  findAllById(@Param('id') id: string): Promise<User> {
     return this.usersService.findAllById(+id);
   }
 
   @Get('login/:login')
-  findAllByLogin(@Param('login') login: string) : Promise<User> {
+  findAllByLogin(@Param('login') login: string): Promise<User> {
     return this.usersService.findAllByLogin(login);
   }
 

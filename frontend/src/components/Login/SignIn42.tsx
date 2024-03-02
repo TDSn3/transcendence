@@ -3,20 +3,20 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
-import IntraUserData from './interface/intra-user-data';
+import { User } from '../../utils/types';
 import './signIn42.css';
 
 function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
   const { setLoggedIn, setUser, user } = useAuth();
-  const [error, setError] = useState('');
+  const [errorSignIn, setErrorSignIn] = useState('');
 
   useEffect(() => {
     const code = new URLSearchParams(location.search).get('code');
 
     if (!code) {
-      setError('No authorization code found');
+      setErrorSignIn('No authorization code found');
       return;
     }
 
@@ -28,27 +28,28 @@ function SignIn42(): React.ReactElement {
         });
 
         if (response.data.user && response.status === 200) {
-          const userData: IntraUserData = response.data.user;
+          const userData: User = response.data.user;
           setUser(userData);
           setLoggedIn(true);
           const nextLocation = '/home';
           navigate(nextLocation);
-         
         } else if (response.status === 501) {
           setLoggedIn(false);
-          setError('User not found');
+          setErrorSignIn('User not found');
         }
       } catch (error) {
         setLoggedIn(false);
-        console.error('Error during signin42 request:', error);
+        console.error('Error during SignIn42 request:', error);
       }
     };
 
     fetchData();
   }, [location.search, navigate, setLoggedIn, setUser, user]);
 
+  console.error('Error :', errorSignIn); // TODO: revoir le code de ce state
+
   return (
-    <div className="loader-container"></div>
+    <div className="loader-container" />
   );
 }
 
