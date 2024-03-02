@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
-import { Prisma } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 
@@ -11,6 +10,7 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
+    console.log(users);
     return users;
   }
 

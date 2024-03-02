@@ -23,4 +23,4 @@ COPY --from=builder /app/prisma ./prisma
 
 RUN apt-get update && apt-get install -y wait-for-it
 
-CMD [  "npm", "run", "start:migrate:dev" ]
+CMD [ "npm", "run", "start:migrate:dev" ]

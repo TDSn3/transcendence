@@ -1,25 +1,106 @@
+// export interface User {
+//   id: string,
+//   username: string,
+//   profilePictureUrl: string,
+//   rank: number,
+//   gamesWon: number,
+//   gamesLost: number,
+// }
+
+// export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
+
+// export interface Player {
+//   user: UserEssential,
+//   score: number,
+//   won: boolean,
+// }
+
+// export interface GameResult {
+//   players: [Player, Player],
+// }
+
+// export interface UserGameHistory {
+//   userId: string,
+//   gameHistory: GameResult[],
+// }
+
+export enum UserStatus {
+  ONLINE,
+  OFFLINE,
+  PLAYING,
+}
+
 export interface User {
   id: string,
-  username: string,
-  profilePictureUrl: string,
-  rank: number,
-  gamesWon: number,
-  gamesLost: number,
+  createdAt: number,
+  updatedAt: number,
+  TwoFactorAuthSecret: string,
+  isTwoFactorEnabled: boolean,
+
+  intraId: number,
+  email42: string,
+  login: string,
+  firstName: string,
+  lastName: string,
+  avatar: string,
+
+  status: UserStatus,
+
+  accessToken: string,
 }
 
-export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
+export const emptyUser: User = {
+  id: '',
+  createdAt: 0,
+  updatedAt: 0,
+  TwoFactorAuthSecret: '',
+  isTwoFactorEnabled: false,
 
-export interface Player {
-  user: UserEssential,
-  score: number,
-  won: boolean,
+  intraId: 0,
+  email42: '',
+  login: '',
+  firstName: '',
+  lastName: '',
+  avatar: '',
+
+  status: UserStatus.OFFLINE,
+
+  accessToken: '',
+};
+
+interface UserData {
+  TwoFactorAuthSecret: string,
+  avatar: string,
+  email42: string,
+  firstName: string,
+  intraId: number,
+  isTwoFactorEnabled: boolean,
+  lastName: string,
+  login: string,
 }
 
-export interface GameResult {
-  players: [Player, Player],
+export interface AuthResponse {
+  accessToken: string,
+  created: number,
+  userData: UserData,
 }
 
-export interface UserGameHistory {
-  userId: string,
-  gameHistory: GameResult[],
-}
+// TODO: armoniser le back et front avec la db
+export const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
+  id: '',
+  createdAt: authResponse.created,
+  updatedAt: -1, // TODO
+  TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,
+  isTwoFactorEnabled: authResponse.userData.isTwoFactorEnabled,
+
+  intraId: authResponse.userData.intraId,
+  email42: authResponse.userData.email42,
+  login: authResponse.userData.login,
+  firstName: authResponse.userData.firstName,
+  lastName: authResponse.userData.lastName,
+  avatar: authResponse.userData.avatar,
+
+  status: UserStatus.ONLINE, // TODO
+
+  accessToken: authResponse.accessToken,
+});

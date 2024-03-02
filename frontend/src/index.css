@@ -71,7 +71,7 @@ h3 {
 	font-size: 34px;
 }
 
-p {
+p, span, div {
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
