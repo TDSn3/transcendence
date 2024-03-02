@@ -15,6 +15,8 @@ import ChatRoutes from './components/Chat/ChatRoutes';
 function App() {
   const { isLoggedIn } = useAuth();
 
+  console.log('isLoggedIn === ', isLoggedIn);
+
   if (!isLoggedIn) {
     console.log('isLoggedIn === false'); // TODO: bug quand on refresh, ne devrais pas passer ici
     return (

@@ -4,23 +4,19 @@ import {
   useEffect,
   useMemo,
 } from 'react';
-import axios from 'axios';
 
 import {
   User,
   emptyUser,
-  AuthResponse,
-  transformAuthResponseToUser,
 } from '../../utils/types';
+import userServices from '../../services/user';
 
 interface AuthContextType {
-  isLoggedIn: boolean | null,
+  isLoggedIn: boolean,
   user: User,
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>,
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
   setUser: React.Dispatch<React.SetStateAction<User>>,
 }
-
-const STORAGE_KEY = 'isLoggedIn';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -29,38 +25,24 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isLoggedIn, setLoggedIn] = useState<boolean | null>(null);
+  const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<User>({ ...emptyUser });
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/api/auth/me', {
-          withCredentials: true,
-        });
+  const hookIsLogged = () => {
+    const userLogin = window.localStorage.getItem('userLogin');
 
-        if (response.status === 200) {
-          const userData: AuthResponse = response.data.user;
-          const userGoodData: User = transformAuthResponseToUser(userData);
+    if (userLogin && userLogin !== '') {
+      console.log(userLogin, ' is already connected.');
 
-          setUser(userGoodData);
+      userServices.getUserByLogin(userLogin)
+        .then((userValue) => {
+          setUser(userValue);
           setLoggedIn(true);
-        } else {
-          setUser({ ...emptyUser });
-          setLoggedIn(false);
-        }
-      } catch (error) {
-        console.error('Error checking session:', error);
-        setLoggedIn(false);
-      }
-    };
+        });
+    }
+  };
 
-    checkSession();
-  }, [setUser]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, isLoggedIn ? 'true' : 'false');
-  }, [isLoggedIn]);
+  useEffect(hookIsLogged, []);
 
   const value = useMemo(() => ({
     isLoggedIn, setLoggedIn, user, setUser,

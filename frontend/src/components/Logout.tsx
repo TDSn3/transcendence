@@ -5,7 +5,7 @@ import useAuth from '../contexts/Auth/useAuth';
 
 function Logout() {
   const navigate = useNavigate();
-  const { setLoggedIn, user, setUser } = useAuth();
+  const { setLoggedIn, user } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
@@ -20,16 +20,20 @@ function Logout() {
           throw new Error('Failed to log out');
         }
 
-        setLoggedIn(null);
-        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userLogin');
+        setLoggedIn(false);
         navigate('/');
       } catch (error) {
         console.error('Error during disconnection', error);
+
+        localStorage.removeItem('userLogin');
+        setLoggedIn(false);
+        navigate('/');
       }
     };
 
     performLogout();
-  }, [navigate, setLoggedIn, setUser, user]);
+  }, [navigate, setLoggedIn, user]);
 
   return (<> </>);
 }

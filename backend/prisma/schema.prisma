@@ -26,7 +26,7 @@ model User {
   lastName  String
   avatar    String
 
-  status    UserStatus  @default(ONLINE)
+  status  UserStatus  @default(ONLINE)
 }
 
 model Channel {
