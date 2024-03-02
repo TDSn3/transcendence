@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
@@ -11,7 +10,7 @@ import Logout from './components/Logout';
 
 import useAuth from './contexts/Auth/useAuth';
 
-import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
+import ChatRoutes from './components/Chat/ChatRoutes';
 
 function App() {
   const { isLoggedIn, user } = useAuth();
@@ -31,15 +30,15 @@ function App() {
   return (
     <div className="App container">
       <Navbar />
-        <Routes>
-			<Route path="/home" element={<Home />} />
-			<Route path="/profile" element={<Profile user={user} />} />
-			<Route path="/chat" element={<Chat />} />
-			{ChatRoutes()}
-			<Route path="/game" element={<Game />} />
-			<Route path="/logout" element={<Logout />} />
-      <Route path="*" element={<Navigate to="/home" />} />
-        </Routes>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/profile" element={<Profile user={user} />} />
+        <Route path="/chat" element={<Chat />} />
+        {ChatRoutes()}
+        <Route path="/game" element={<Game />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="*" element={<Navigate to="/home" />} />
+      </Routes>
     </div>
   );
 }

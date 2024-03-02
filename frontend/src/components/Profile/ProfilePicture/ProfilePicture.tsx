@@ -1,7 +1,7 @@
 import './profile-picture.css';
 
 interface ProfilePictureProps {
-  size: string;
+  size: string,
   imageUrl: string,
 }
 

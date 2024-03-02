@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User } from '../../utils/types';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 // import GameHistory from './GameHistory/GameHistory';
-import Switch from './SwitchButton/Switch';
+import AntSwitch from './SwitchButton/AntSwitch';
 
 import './profile.css';
 
@@ -42,7 +42,7 @@ function Profile({ user }: ProfileProps) {
           </div>
         </div>
         <div className="switch-style">
-          <Switch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
+          <AntSwitch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
         </div>
 
       </div>
