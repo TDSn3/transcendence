@@ -7,7 +7,10 @@ import {
 import axios from 'axios';
 
 import {
-  UserStatus, User, emptyUser, AuthResponse,
+  User,
+  emptyUser,
+  AuthResponse,
+  transformAuthResponseToUser,
 } from '../../utils/types';
 
 interface AuthContextType {
@@ -20,26 +23,6 @@ interface AuthContextType {
 const STORAGE_KEY = 'isLoggedIn';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// TODO: armoniser le back et front avec la db
-const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
-  id: '',
-  createdAt: authResponse.created,
-  updatedAt: -1, // TODO
-  TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,
-  isTwoFactorEnabled: authResponse.userData.isTwoFactorEnabled,
-
-  intraId: authResponse.userData.intraId,
-  email42: authResponse.userData.email42,
-  login: authResponse.userData.login,
-  firstName: authResponse.userData.firstName,
-  lastName: authResponse.userData.lastName,
-  avatar: authResponse.userData.avatar,
-
-  status: UserStatus.ONLINE, // TODO
-
-  accessToken: authResponse.accessToken,
-});
 
 interface AuthProviderProps {
   children: React.ReactNode,
@@ -57,8 +40,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
 
         if (response.status === 200) {
-          const responseValue: AuthResponse = response.data.user;
-          const userGoodData: User = transformAuthResponseToUser(responseValue);
+          const userData: AuthResponse = response.data.user;
+          const userGoodData: User = transformAuthResponseToUser(userData);
 
           setUser(userGoodData);
           setLoggedIn(true);

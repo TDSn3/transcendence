@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { User } from '../../utils/types';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 // import GameHistory from './GameHistory/GameHistory';
 import AntSwitch from './SwitchButton/AntSwitch';
+import { User } from '../../utils/types';
 
 import './profile.css';
 
@@ -12,8 +12,6 @@ interface ProfileProps {
 
 function Profile({ user }: ProfileProps) {
   const [isToggled, setIsToggled] = useState(false);
-  console.log('===> ', user);
-  console.log('isToggled', isToggled);
 
   return (
     <>

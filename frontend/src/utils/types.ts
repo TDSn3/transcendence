@@ -84,3 +84,23 @@ export interface AuthResponse {
   created: number,
   userData: UserData,
 }
+
+// TODO: armoniser le back et front avec la db
+export const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
+  id: '',
+  createdAt: authResponse.created,
+  updatedAt: -1, // TODO
+  TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,
+  isTwoFactorEnabled: authResponse.userData.isTwoFactorEnabled,
+
+  intraId: authResponse.userData.intraId,
+  email42: authResponse.userData.email42,
+  login: authResponse.userData.login,
+  firstName: authResponse.userData.firstName,
+  lastName: authResponse.userData.lastName,
+  avatar: authResponse.userData.avatar,
+
+  status: UserStatus.ONLINE, // TODO
+
+  accessToken: authResponse.accessToken,
+});
