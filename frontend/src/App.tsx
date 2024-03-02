@@ -13,7 +13,7 @@ import useAuth from './contexts/Auth/useAuth';
 import ChatRoutes from './components/Chat/ChatRoutes';
 
 function App() {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   if (!isLoggedIn) {
     console.log('isLoggedIn === false'); // TODO: bug quand on refresh, ne devrais pas passer ici
@@ -23,7 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signIn42" element={<SignIn42 />} />
           <Route path="/" element={<Navigate to="/login" />} />
-          {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </div>
     );

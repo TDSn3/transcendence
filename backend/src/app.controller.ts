@@ -20,16 +20,6 @@ export class AppController {
     return 'pong';
   }
 
-  // @Get('api/users')
-  // getUsers(): User[] {
-  //   return users;
-  // }
-
-  // @Get('api/users/:id')
-  // getUser(@Param('id') id: string): User {
-  //   return users.find((userValue) => userValue.id === id) as User; // TODO: remove "as User" by a verification function
-  // }
-
   // @Get('api/users-game-histories')
   // getUsersGameHistories(): UserGameHistory[] {
   //   return usersGameHistories;
