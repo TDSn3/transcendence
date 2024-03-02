@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 // import GameHistory from './GameHistory/GameHistory';
 import AntSwitch from './SwitchButton/AntSwitch';
-import { User } from '../../utils/types';
+import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 import typeGuard from '../../utils/typeGuard';
 
@@ -12,7 +12,7 @@ import './profile.css';
 function Profile() {
   const { login } = useParams();
   const [isToggled, setIsToggled] = useState(false);
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -17,31 +17,30 @@ function App() {
 
   console.log('isLoggedIn === ', isLoggedIn);
 
-  if (!isLoggedIn) {
-    console.log('isLoggedIn === false'); // TODO: bug quand on refresh, ne devrais pas passer ici
-    return (
-      <div className="App container">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signIn42" element={<SignIn42 />} />
-          <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </div>
-    );
-  }
   return (
     <div className="App container">
-      <Navbar />
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile/:login" element={<Profile />} />
-        <Route path="/chat" element={<Chat />} />
-        {ChatRoutes()}
-        <Route path="/game" element={<Game />} />
-        <Route path="/logout" element={<Logout />} />
-        <Route path="*" element={<Navigate to="/home" />} />
-      </Routes>
+      {
+        !isLoggedIn ? (
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signIn42" element={<SignIn42 />} />
+            <Route path="/" element={<Navigate to="/login" />} />
+          </Routes>
+        ) : (
+          <>
+            <Navbar />
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile/:login" element={<Profile />} />
+              <Route path="/chat" element={<Chat />} />
+              {ChatRoutes()}
+              <Route path="/game" element={<Game />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="*" element={<Navigate to="/home" />} />
+            </Routes>
+          </>
+        )
+      }
     </div>
   );
 }

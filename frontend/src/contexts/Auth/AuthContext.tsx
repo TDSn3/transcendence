@@ -45,8 +45,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(hookIsLogged, []);
 
   const value = useMemo(() => ({
-    isLoggedIn, setLoggedIn, user, setUser,
-  }), [isLoggedIn, user]);
+    user, setUser, isLoggedIn, setLoggedIn,
+  }), [user, isLoggedIn]);
 
   return (
     <AuthContext.Provider value={value}>
