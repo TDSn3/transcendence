@@ -115,26 +115,41 @@ If you test the database on local, you'll have to
 
 ``` mermaid
 sequenceDiagram
-
-    %% Login
-    
+    %% Login FakeUser 
 	note over front: /login
     rect rgb(220, 220, 255)
     note over front: <Login>
-    note over front: userServices <br/> .addFakeUser()
+    note over front: handleClick() <br/><br/> userServices <br/> .addFakeUser()
     end
     front->>back: POST /api/auth/FakeUsers
     note over back: AuthModule
-    note over back: authService <br/> .fakeUsers <br/> .saveUserData
+    note over back: authService <br/> .fakeUsers() <br/> .saveUserData()
     back->>database: create or update user
     database-->>back: user data
-    note over back: authService <br/> .generateToken
+    note over back: authService <br/> .generateToken()
     back-->>front: user data
     rect rgb(220, 220, 255)
-    note over front: setUser(user) <br/> setLoggedIn(true) <br/> localStorage
-    note over front: navigate('/home')
+    note over front: setUser(user) <br/><br/> setLoggedIn(true) <br/><br/> localStorage.setItem() <br/><br/> navigate('/home')
     end
     note over front: /home
     note over front: <Navbar> <Home>
+
+    %% Logout
+    note over front: <Navbar>
+    rect rgb(220, 220, 255)
+    note over front: <Logout>
+    note over front: authServices <br/> .logoutUser()
+    end
+    front->>back: POST /api/auth/logout
+    note over back: AuthModule
+    note over back: authService <br/> .logout()
+    back->>database: change user status to OFFLINE
+    database-->>back: user data
+    back-->>front: response
+    rect rgb(220, 220, 255)
+    note over front: setLoggedIn(false) <br/><br/> localStorage.removeItem() <br/><br/> navigate('/')
+    end
+    note over front: /login
+    note over front: <Login>
 
 ```
