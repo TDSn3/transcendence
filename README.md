@@ -116,10 +116,11 @@ If you test the database on local, you'll have to
 ``` mermaid
 sequenceDiagram
 
+    %% Login FakeUser 
 	note over front: /login
     rect rgb(220, 220, 255)
     note over front: <Login>
-    note over front: handleClick() <br/><br/> userServices <br/> .addFakeUser()
+    note over front: handleClick() <br/> userServices <br/> .addFakeUser()
     end
     front->>back: POST /api/auth/FakeUsers
     note over back: AuthModule
@@ -129,12 +130,12 @@ sequenceDiagram
     note over back: authService <br/> .generateToken()
     back-->>front: user data
     rect rgb(220, 220, 255)
-    note over front: setUser(user) <br/><br/> setLoggedIn(true) <br/><br/> localStorage.setItem() <br/><br/> navigate('/home')
+    note over front: setUser(user) <br/> setLoggedIn(true) <br/> localStorage.setItem() <br/> navigate('/home')
     end
     note over front: /home
     note over front: <Navbar> <Home>
 
-    note over front: <Navbar>
+    %% Logout
     rect rgb(220, 220, 255)
     note over front: <Logout>
     note over front: authServices <br/> .logoutUser()
@@ -146,7 +147,7 @@ sequenceDiagram
     database-->>back: user data
     back-->>front: response
     rect rgb(220, 220, 255)
-    note over front: setLoggedIn(false) <br/><br/> localStorage.removeItem() <br/><br/> navigate('/')
+    note over front: setLoggedIn(false) <br/> localStorage.removeItem() <br/> navigate('/')
     end
     note over front: /login
     note over front: <Login>
