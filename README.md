@@ -115,6 +115,7 @@ If you test the database on local, you'll have to
 
 ``` mermaid
 sequenceDiagram
+
     %% Login FakeUser 
 	note over front: /login
     rect rgb(220, 220, 255)
