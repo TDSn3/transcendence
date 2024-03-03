@@ -41,7 +41,12 @@ function Profile() {
 
           <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
 
-          <h3 style={{ marginLeft: 0 }}>{userProfile.login}</h3>
+          <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
+          <p>
+            {userProfile.firstName}
+            {' '}
+            {userProfile.lastName}
+          </p>
 
           <div className="profile-content">
             <div>

@@ -31,7 +31,7 @@ export enum UserStatus {
 }
 
 export interface User {
-  id: string,
+  id: number,
   createdAt: number,
   updatedAt: number,
   TwoFactorAuthSecret: string,
@@ -52,7 +52,7 @@ export interface User {
 }
 
 export const emptyUser: User = {
-  id: '',
+  id: 0,
   createdAt: 0,
   updatedAt: 0,
   TwoFactorAuthSecret: '',
@@ -93,7 +93,7 @@ export interface AuthResponse {
 
 // TODO: armoniser le back et front avec la db
 export const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
-  id: '',
+  id: -1,
   createdAt: authResponse.created,
   updatedAt: -1, // TODO
   TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,

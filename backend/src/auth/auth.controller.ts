@@ -23,11 +23,12 @@ export class AuthController {
         res.status(501).json({ message: 'Bruh...' });
       });
   }
+
   @ApiBody({ type: SignIn42Dto })
   @Post('FakeUsers')
   async FakeUsers(@Body() signIn42Dto: SignIn42Dto, @Res() res: Response) {
     return this.authService
-      .FakeUsers(signIn42Dto, res)
+      .fakeUsers(signIn42Dto, res)
       .then((user) => {
         res.status(200).json({
           message: 'User successfully signed in',
