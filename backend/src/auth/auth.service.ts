@@ -1,18 +1,14 @@
-// auth.service.ts
+import axios from 'axios';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto } from './dto';
-import * as argon from 'argon2';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SignInResponse42Dto } from './dto/sign-in-response-42.dto';
+import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
-import axios from 'axios';
-import { IntraUserDataDto } from './dto/intra-user-data.dto';
 import { Response } from 'express';
 import { Request } from 'express';
-import {  NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -44,28 +40,29 @@ export class AuthService {
     return signInResponse;
   }
 
-  async FakeUsers(signIn42Dto: SignIn42Dto,
+  async fakeUsers(
+    signIn42Dto: SignIn42Dto,
     res: Response,
   ): Promise<SignInResponse42Dto> {
     const fake = {
       id: 1,
-      email: "bob@mail.com",
-      login: "bob",
-      first_name: "bobby",
-      last_name: "fatass",
+      email: 'dummy@mail.com',
+      login: 'dummy',
+      first_name: 'John',
+      last_name: 'Doe',
       image: {
-        link: 'https://cdn.intra.42.fr/users/4eb155a3e26f47e520f51167907735e4/wnaseeve.jpg',
+        link: '',
         versions: {
-          large: 'https://cdn.intra.42.fr/users/dde92386d6828a531ed1f28735d9d732/large_wnaseeve.jpg',
-          medium: 'https://cdn.intra.42.fr/users/e8f1ca3c64e0ca7eb1a2f56ad30b814b/medium_wnaseeve.jpg',
-          small: 'https://cdn.intra.42.fr/users/bcb8d9431fa02476618e6f25ff61ec64/small_wnaseeve.jpg',
-          micro: 'https://cdn.intra.42.fr/users/fb9cedc9ab2c1601d41799dcf4160120/micro_wnaseeve.jpg'
-        }
-      }
-    }
+          large: '',
+          medium: '',
+          small: '',
+          micro: '',
+        },
+      },
+    };
 
     const user1 = await this.saveUserData(fake);
-    
+
     const signInResponse: SignInResponse42Dto = await this.generateToken(
       user1.intraId,
       user1.email42,
@@ -144,7 +141,7 @@ export class AuthService {
             login: userData.login,
             firstName: userData.first_name,
             lastName: userData.last_name,
-            avatar: userData.image.versions.small,
+            avatar: userData.image.versions.medium,
           },
         });
         return newUser;
@@ -224,7 +221,8 @@ export class AuthService {
     }
   }
 
-  async logout(res: Response, logOutUser?: any) {
+  // TODO: type userObject
+  async logout(res: Response, userObject: any) {
     try {
       res.clearCookie('isLogin', {
         httpOnly: false,
@@ -232,37 +230,39 @@ export class AuthService {
         sameSite: 'strict',
       });
 
-      if (logOutUser) {
-        const user1 = await this.prisma.user.update({
+      if (userObject && userObject.user) {
+        const user = await this.prisma.user.update({
           where: {
-            email42: logOutUser.user.userData.email42,
+            login: userObject.user.login,
           },
           data: {
             status: 'OFFLINE',
           },
         });
-        console.log('StatusUser:', user1);
+        console.log('StatusUser:', user);
+      } else {
+        throw new Error('Bad body');
       }
     } catch (error) {
-      throw "Problem with logout";
+      console.error('Logout error:', error);
+      throw new Error('Problem with logout');
     }
   }
 
   async checksession(req: Request): Promise<SignInResponse42Dto> {
     const token = req.cookies['isLogin'];
 
-    if (!token)
-      throw new ForbiddenException('No token found');
+    if (!token) throw new ForbiddenException('No token found');
 
     const decoded = this.jwtService.verify(token);
     console.log('decoded:', decoded);
-  
+
     const user = await this.prisma.user.findUnique({
       where: {
         email42: decoded.email42,
       },
     });
-  
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -280,8 +280,7 @@ export class AuthService {
         avatar: user.avatar,
       },
     };
-  
+
     return userData;
   }
-  
 }

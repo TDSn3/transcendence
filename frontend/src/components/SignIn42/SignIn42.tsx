@@ -27,6 +27,8 @@ function SignIn42(): React.ReactElement {
         setUser(user);
         setLoggedIn(true);
 
+        localStorage.setItem('userLogin', user.login);
+
         navigate('/home');
       } catch (error: unknown) {
         setLoggedIn(false);

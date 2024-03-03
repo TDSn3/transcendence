@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ProfilePicture from './ProfilePicture/ProfilePicture';
 // import GameHistory from './GameHistory/GameHistory';
 import AntSwitch from './SwitchButton/AntSwitch';
-import { User } from '../../utils/types';
+import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 import typeGuard from '../../utils/typeGuard';
 
@@ -12,7 +12,7 @@ import './profile.css';
 function Profile() {
   const { login } = useParams();
   const [isToggled, setIsToggled] = useState(false);
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -41,7 +41,12 @@ function Profile() {
 
           <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
 
-          <h3 style={{ marginLeft: 0 }}>{userProfile.login}</h3>
+          <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
+          <p>
+            {userProfile.firstName}
+            {' '}
+            {userProfile.lastName}
+          </p>
 
           <div className="profile-content">
             <div>
@@ -53,11 +58,11 @@ function Profile() {
             <div className="wins-losses">
               <p className="box">
                 Wins&nbsp;&nbsp;
-                <span className="number">NULL</span>
+                <span className="number">{userProfile.wins}</span>
               </p>
               <p className="box">
                 Losses&nbsp;&nbsp;
-                <span className="number">NULL</span>
+                <span className="number">{userProfile.losses}</span>
               </p>
             </div>
           </div>

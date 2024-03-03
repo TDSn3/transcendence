@@ -111,3 +111,45 @@ If you test the database on local, you'll have to
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
+## Note
+
+``` mermaid
+sequenceDiagram
+
+    %% Login FakeUser 
+	note over front: /login
+    rect rgb(220, 220, 255)
+    note over front: <Login>
+    note over front: handleClick() <br/> userServices <br/> .addFakeUser()
+    end
+    front->>back: POST /api/auth/FakeUsers
+    note over back: AuthModule
+    note over back: authService <br/> .fakeUsers() <br/> .saveUserData()
+    back->>database: create or update user
+    database-->>back: user data
+    note over back: authService <br/> .generateToken()
+    back-->>front: user data
+    rect rgb(220, 220, 255)
+    note over front: setUser(user) <br/> setLoggedIn(true) <br/> localStorage.setItem() <br/> navigate('/home')
+    end
+    note over front: /home
+    note over front: <Navbar> <Home>
+
+    %% Logout
+    rect rgb(220, 220, 255)
+    note over front: <Logout>
+    note over front: authServices <br/> .logoutUser()
+    end
+    front->>back: POST /api/auth/logout
+    note over back: AuthModule
+    note over back: authService <br/> .logout()
+    back->>database: change user status to OFFLINE
+    database-->>back: user data
+    back-->>front: response
+    rect rgb(220, 220, 255)
+    note over front: setLoggedIn(false) <br/> localStorage.removeItem() <br/> navigate('/')
+    end
+    note over front: /login
+    note over front: <Login>
+
+```

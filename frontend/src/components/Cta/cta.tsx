@@ -1,4 +1,4 @@
-import '../Cta/cta.css';
+import './cta.css';
 
 interface ButtonProps {
   text: string,
