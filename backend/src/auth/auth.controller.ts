@@ -1,38 +1,13 @@
-// auth.controller.ts
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Req,
-  Res,
-  Query,
-  UseGuards,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, Res, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { GetUser } from './decorator/get-user.decorator';
 import { Request, Response } from 'express';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { BadRequestException } from '@nestjs/common';
-import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
-import { IntraUserDataDto } from './dto/intra-user-data.dto';
-import { JwtGuard } from './guard/jwt.guard';
 
 @Controller('api/auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Get('signin42')
   async signin42(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
@@ -60,7 +35,7 @@ export class AuthController {
         });
       })
       .catch(() => {
-        res.status(501).json({ message: 'Problem with FakeUser service'});
+        res.status(501).json({ message: 'Problem with FakeUser service' });
       });
   }
 
@@ -71,7 +46,8 @@ export class AuthController {
       .logout(res, user)
       .then(() => {
         res.status(200).send({
-          message: 'User successfully logged out' });
+          message: 'User successfully logged out',
+        });
       })
       .catch(() => {
         res.status(501).send({ message: 'Logout doesnt work...' });
@@ -90,5 +66,4 @@ export class AuthController {
       res.status(501).json({ message: 'User is not logged in' });
     }
   }
-  
 }

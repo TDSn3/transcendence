@@ -7,7 +7,7 @@ interface SwitchProps {
 
 function AntSwitch({ isToggled, onToggle }: SwitchProps) {
   return (
-    <div className="two_fa">
+    <div>
       2FA
       &nbsp;&nbsp;
       <ConfigProvider

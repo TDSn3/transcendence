@@ -43,6 +43,8 @@ export interface User {
   firstName: string,
   lastName: string,
   avatar: string,
+  wins: number,
+  losses: number,
 
   status: UserStatus,
 
@@ -62,6 +64,8 @@ export const emptyUser: User = {
   firstName: '',
   lastName: '',
   avatar: '',
+  wins: 0,
+  losses: 0,
 
   status: UserStatus.OFFLINE,
 
@@ -77,6 +81,8 @@ interface UserData {
   isTwoFactorEnabled: boolean,
   lastName: string,
   login: string,
+  wins: number,
+  losses: number,
 }
 
 export interface AuthResponse {
@@ -99,6 +105,8 @@ export const transformAuthResponseToUser = (authResponse: AuthResponse): User =>
   firstName: authResponse.userData.firstName,
   lastName: authResponse.userData.lastName,
   avatar: authResponse.userData.avatar,
+  wins: 0,
+  losses: 0,
 
   status: UserStatus.ONLINE, // TODO
 

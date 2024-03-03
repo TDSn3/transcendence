@@ -25,6 +25,8 @@ model User {
   firstName String 
   lastName  String
   avatar    String
+  // wins      Int
+  // Losses    Int
 
   status  UserStatus  @default(ONLINE)
 }

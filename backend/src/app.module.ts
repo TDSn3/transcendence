@@ -10,13 +10,14 @@ import { SocketModule } from './game/socket.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    // Global
+    PrismaModule,
+
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
     UsersModule,
     ChannelsModule,
-    PrismaModule,
     SocketModule,
   ],
   controllers: [AppController],

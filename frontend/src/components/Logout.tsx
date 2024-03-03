@@ -24,7 +24,7 @@ function Logout() {
         setLoggedIn(false);
         navigate('/');
       } catch (error) {
-        console.error('Error during disconnection', error);
+        console.error('Error during disconnection', error); // TODO: fix backend bug
 
         localStorage.removeItem('userLogin');
         setLoggedIn(false);

@@ -53,11 +53,11 @@ function Profile() {
             <div className="wins-losses">
               <p className="box">
                 Wins&nbsp;&nbsp;
-                <span className="number">NULL</span>
+                <span className="number">{userProfile.wins}</span>
               </p>
               <p className="box">
                 Losses&nbsp;&nbsp;
-                <span className="number">NULL</span>
+                <span className="number">{userProfile.losses}</span>
               </p>
             </div>
           </div>
