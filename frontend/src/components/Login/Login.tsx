@@ -25,7 +25,7 @@ function Login() {
       setUser(user);
       setLoggedIn(true);
 
-      window.localStorage.setItem('userLogin', user.login);
+      localStorage.setItem('userLogin', user.login);
 
       navigate('/home');
     } catch (error: unknown) {

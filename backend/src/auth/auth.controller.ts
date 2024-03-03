@@ -40,18 +40,19 @@ export class AuthController {
       });
   }
 
+  // TODO: type userObject
   // @UseGuards(JwtGuard)
   @Post('logout')
-  async logout(@Res() res: Response, @Body() user: string) {
+  async logout(@Res() res: Response, @Body() userObject: any) {
     return this.authService
-      .logout(res, user)
+      .logout(res, userObject)
       .then(() => {
         res.status(200).send({
           message: 'User successfully logged out',
         });
       })
       .catch(() => {
-        res.status(501).send({ message: 'Logout doesnt work...' });
+        res.status(501).send({ message: 'Logout error' });
       });
   }
 

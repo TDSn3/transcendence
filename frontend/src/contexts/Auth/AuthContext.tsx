@@ -29,7 +29,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({ ...emptyUser });
 
   const hookIsLogged = () => {
-    const userLogin = window.localStorage.getItem('userLogin');
+    const userLogin = localStorage.getItem('userLogin');
 
     if (userLogin && userLogin !== '') {
       console.log(userLogin, ' is already connected.');

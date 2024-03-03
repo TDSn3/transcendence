@@ -221,7 +221,8 @@ export class AuthService {
     }
   }
 
-  async logout(res: Response, logOutUser?: any) {
+  // TODO: type userObject
+  async logout(res: Response, userObject: any) {
     try {
       res.clearCookie('isLogin', {
         httpOnly: false,
@@ -229,19 +230,22 @@ export class AuthService {
         sameSite: 'strict',
       });
 
-      if (logOutUser) {
-        const user1 = await this.prisma.user.update({
+      if (userObject && userObject.user) {
+        const user = await this.prisma.user.update({
           where: {
-            email42: logOutUser.user.userData.email42,
+            login: userObject.user.login,
           },
           data: {
             status: 'OFFLINE',
           },
         });
-        console.log('StatusUser:', user1);
+        console.log('StatusUser:', user);
+      } else {
+        throw new Error('Bad body');
       }
     } catch (error) {
-      throw 'Problem with logout';
+      console.error('Logout error:', error);
+      throw new Error('Problem with logout');
     }
   }
 
