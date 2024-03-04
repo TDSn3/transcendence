@@ -31,7 +31,7 @@ export enum UserStatus {
 }
 
 export interface User {
-  id: number,
+  id: string,
   createdAt: string,
   updatedAt: string,
   TwoFactorAuthSecret: string,
@@ -55,7 +55,7 @@ export interface User {
 }
 
 export const emptyUser: User = {
-  id: 0,
+  id: '',
   createdAt: '',
   updatedAt: '',
   TwoFactorAuthSecret: '',
