@@ -5,15 +5,20 @@ import UserListItem from './UserListItem';
 interface UserListProps {
   searchValue: string,
   userList: User[],
+  setUserShowProfile: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
-function UserList({ searchValue, userList }: UserListProps) {
+function UserList({
+  searchValue, userList, setUserShowProfile,
+}: UserListProps) {
   const filteredUser = userList.filter((userValue) => (searchValue !== '' && userValue.login.toLowerCase().includes(searchValue.toLowerCase())));
 
   return (
     <>
       {
-        filteredUser.map(((userValue) => (<UserListItem key={uuidv4()} user={userValue} />)))
+        filteredUser.map(((userValue) => (
+          <UserListItem key={uuidv4()} user={userValue} setUserShowProfile={setUserShowProfile} />
+        )))
       }
     </>
   );

@@ -17,6 +17,7 @@ function SignIn42(): React.ReactElement {
 
     if (!code) {
       setErrorSignIn('No authorization code found');
+      navigate('/login');
       return;
     }
 

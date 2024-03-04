@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ProfilePicture from './ProfilePicture/ProfilePicture';
 // import GameHistory from './GameHistory/GameHistory';
-import AntSwitch from './SwitchButton/AntSwitch';
 import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 import typeGuard from '../../utils/typeGuard';
+import ProfileInformation from './ProfileInformation/ProfileInformation';
 
 import './profile.css';
 
 function Profile() {
   const { login } = useParams();
-  const [isToggled, setIsToggled] = useState(false);
+  const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
 
   useEffect(() => {
@@ -37,40 +36,11 @@ function Profile() {
   if (userProfile) {
     return (
       <>
-        <div className="page profile-style">
-
-          <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
-
-          <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
-          <p>
-            {userProfile.firstName}
-            {' '}
-            {userProfile.lastName}
-          </p>
-
-          <div className="profile-content">
-            <div>
-              <p className="box">
-                Rank&nbsp;&nbsp;
-                <span className="number">NULL</span>
-              </p>
-            </div>
-            <div className="wins-losses">
-              <p className="box">
-                Wins&nbsp;&nbsp;
-                <span className="number">{userProfile.wins}</span>
-              </p>
-              <p className="box">
-                Losses&nbsp;&nbsp;
-                <span className="number">{userProfile.losses}</span>
-              </p>
-            </div>
-          </div>
-          <div className="switch-style">
-            <AntSwitch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
-          </div>
-
-        </div>
+        <ProfileInformation
+          userProfile={userProfile}
+          isToggled={isToggled}
+          setIsToggled={setIsToggled}
+        />
 
         <div className="page">
 

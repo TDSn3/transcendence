@@ -3,10 +3,12 @@ import { User } from '../../utils/types';
 import userServices from '../../services/user';
 import Search from '../Search/Search';
 import UserList from '../UserList/UserList';
+import ProfileInformation from '../Profile/ProfileInformation/ProfileInformation';
 
 function Home() {
   const [searchValue, setSearchValue] = useState<string>('');
   const [userList, setUserList] = useState<User []>([]);
+  const [userShowProfile, setUserShowProfile] = useState<User | null>(null);
 
   const hookUserList = () => {
     userServices
@@ -24,18 +26,32 @@ function Home() {
   useEffect(hookUserList, []);
 
   return (
-    <div className="page">
-      <h3>Home</h3>
-      <Search
-        placeholder="Search"
-        searchValue={searchValue}
-        handleSearchChange={handleSearchChange}
-      />
-      <UserList
-        searchValue={searchValue}
-        userList={userList}
-      />
-    </div>
+    <>
+      <div className="page">
+        <h3>Home</h3>
+        <Search
+          placeholder="Search"
+          searchValue={searchValue}
+          handleSearchChange={handleSearchChange}
+        />
+        <UserList
+          searchValue={searchValue}
+          userList={userList}
+          setUserShowProfile={setUserShowProfile}
+        />
+      </div>
+      {
+        userShowProfile ? (
+          <ProfileInformation
+            userProfile={userShowProfile}
+            isToggled={false}
+            setIsToggled={() => {}}
+          />
+        ) : (
+          <> </>
+        )
+      }
+    </>
   );
 }
 
