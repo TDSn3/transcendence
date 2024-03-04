@@ -1,9 +1,9 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
-import Home from './components/Home';
+import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
-import Chat from './components/Chat';
+import Chat from './components/Chat/Chat';
 import Game from './components/Game/Game';
 import SignIn42 from './components/SignIn42/SignIn42';
 import Logout from './components/Logout';
