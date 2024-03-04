@@ -7,7 +7,20 @@ import { BadRequestException } from '@nestjs/common';
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
-
+  // {
+  //   id: '75bd25cc-6532-4cc3-9bce-e9e7e9c9ed2c',
+  //   createdAt: 2024-03-04T09:12:29.721Z,
+  //   updatedAt: 2024-03-04T16:32:12.575Z,
+  //   twoFactorAuthSecret: null,
+  //   isTwoFactorAuthEnabled: false,
+  //   intraId: 1,
+  //   email42: 'dummy@mail.com',
+  //   login: 'dummy',
+  //   firstName: 'John',
+  //   lastName: 'Doe',
+  //   avatar: '',
+  //   status: 'ONLINE'
+  // }
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany();
     console.log(users);

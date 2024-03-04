@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cta from '../Cta/cta';
 import useAuth from '../../contexts/Auth/useAuth';
-import userServices from '../../services/user';
+import authServices from '../../services/auth';
 
 import './login.css';
 
@@ -20,7 +20,7 @@ function Login() {
     event.preventDefault();
 
     try {
-      const user = await userServices.addFakeUser();
+      const user = await authServices.addFakeUser();
 
       setUser(user);
       setLoggedIn(true);

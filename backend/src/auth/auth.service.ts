@@ -18,12 +18,11 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async signin42(
-    signIn42Dto: SignIn42Dto,
-    res: Response,
-  ): Promise<SignInResponse42Dto> {
+  // NOTE: typer la réponse
+  async signin42(signIn42Dto: SignIn42Dto, res: Response) {
     const ft_token = await this.exchangeCodeForFtToken(signIn42Dto.code);
     const userData = await this.fetchDataWithFtToken(ft_token);
+
     const user = await this.saveUserData(userData);
 
     // if (user.isTwoFactorEnabled) {}
@@ -37,15 +36,19 @@ export class AuthService {
       res,
     );
 
-    return signInResponse;
+    const userGoodData = {
+      ...user,
+      twoFactorAuthSecret: '',
+      isTwoFactorAuthEnabled: false,
+      accessToken: signInResponse.accessToken,
+    };
+
+    return userGoodData;
   }
 
-  async fakeUsers(
-    signIn42Dto: SignIn42Dto,
-    res: Response,
-  ): Promise<SignInResponse42Dto> {
+  // NOTE: typer la réponse
+  async fakeUsers(signIn42Dto: SignIn42Dto, res: Response) {
     const fake = {
-      id: 1,
       email: 'dummy@mail.com',
       login: 'dummy',
       first_name: 'John',
@@ -72,8 +75,15 @@ export class AuthService {
       user1.avatar,
       res,
     );
-    // console.log('signInResponse: ', signInResponse);
-    return signInResponse;
+
+    const userGoodData = {
+      ...user1,
+      twoFactorAuthSecret: '',
+      isTwoFactorAuthEnabled: false,
+      accessToken: signInResponse.accessToken,
+    };
+
+    return userGoodData;
   }
 
   async exchangeCodeForFtToken(code: string): Promise<string> {

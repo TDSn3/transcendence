@@ -17,10 +17,6 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
   const isUserIsUserProfile = user.id === userProfile.id;
   const location = useLocation();
 
-  console.log(location);
-  console.log('1 =====> ', isUserIsUserProfile);
-  console.log('2 =====> ', user.id);
-  console.log('3 =====> ', userProfile.id);
   return (
     <div className="page profile-style">
 
