@@ -1,4 +1,7 @@
 .search {
+	margin-left: var(--margin-medium);
+	margin-right: var(--margin-medium);
+
 	padding: var(--margin-medium);
 	padding-top: var(--margin-small);
 	padding-bottom: var(--margin-small);
