@@ -31,6 +31,8 @@ function Login() {
     } catch (error: unknown) {
       setLoggedIn(false);
 
+      localStorage.removeItem('userLogin');
+
       if (error instanceof Error) {
         console.error(error.message);
       } else {

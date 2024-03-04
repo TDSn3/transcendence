@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
@@ -14,18 +14,26 @@ export class UsersController {
   }
 
   @Get('id/:id')
-  findAllById(@Param('id') id: string): Promise<User> {
-    return this.usersService.findAllById(+id);
+  findById(@Param('id') id: string): Promise<User> {
+    return this.usersService.findById(id);
   }
 
   @Get('login/:login')
-  findAllByLogin(@Param('login') login: string): Promise<User> {
-    return this.usersService.findAllByLogin(login);
+  findByLogin(@Param('login') login: string): Promise<User> {
+    return this.usersService.findByLogin(login);
   }
 
   @Get('login/me/:login')
-  async findOneByLogin(@Param('login') login: string): Promise<User> {
+  findOneByLogin(@Param('login') login: string): Promise<{ login: string }> {
     return this.usersService.findOneByLogin(login);
+  }
+
+  @Post('id/ad-friend/:id')
+  adFriend(
+    @Param('id') id: string,
+    @Body() idUserToAddAsFriend: string,
+  ): Promise<User> {
+    return this.usersService.adFriend(id, idUserToAddAsFriend);
   }
 
   // @Patch('login/:login')

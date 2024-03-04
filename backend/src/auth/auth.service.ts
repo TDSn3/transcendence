@@ -49,6 +49,7 @@ export class AuthService {
   // NOTE: typer la réponse
   async fakeUsers(signIn42Dto: SignIn42Dto, res: Response) {
     const fake = {
+      id: 1,
       email: 'dummy@mail.com',
       login: 'dummy',
       first_name: 'John',
@@ -64,20 +65,20 @@ export class AuthService {
       },
     };
 
-    const user1 = await this.saveUserData(fake);
+    const user = await this.saveUserData(fake);
 
     const signInResponse: SignInResponse42Dto = await this.generateToken(
-      user1.intraId,
-      user1.email42,
-      user1.login,
-      user1.firstName,
-      user1.lastName,
-      user1.avatar,
+      user.intraId,
+      user.email42,
+      user.login,
+      user.firstName,
+      user.lastName,
+      user.avatar,
       res,
     );
 
     const userGoodData = {
-      ...user1,
+      ...user,
       twoFactorAuthSecret: '',
       isTwoFactorAuthEnabled: false,
       accessToken: signInResponse.accessToken,
@@ -133,15 +134,17 @@ export class AuthService {
           email42: userData.email,
         },
       });
+
       if (userAlreadyExist) {
         const updateUser = await this.prisma.user.update({
           where: {
-            email42: userData.email,
+            id: userAlreadyExist.id,
           },
           data: {
             status: 'ONLINE',
           },
         });
+
         return updateUser;
       } else {
         const newUser = await this.prisma.user.create({
@@ -243,7 +246,7 @@ export class AuthService {
       if (userObject && userObject.user) {
         const user = await this.prisma.user.update({
           where: {
-            login: userObject.user.login,
+            id: userObject.user.id,
           },
           data: {
             status: 'OFFLINE',

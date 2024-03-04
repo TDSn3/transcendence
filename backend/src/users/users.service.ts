@@ -7,33 +7,22 @@ import { BadRequestException } from '@nestjs/common';
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
-  // {
-  //   id: '75bd25cc-6532-4cc3-9bce-e9e7e9c9ed2c',
-  //   createdAt: 2024-03-04T09:12:29.721Z,
-  //   updatedAt: 2024-03-04T16:32:12.575Z,
-  //   twoFactorAuthSecret: null,
-  //   isTwoFactorAuthEnabled: false,
-  //   intraId: 1,
-  //   email42: 'dummy@mail.com',
-  //   login: 'dummy',
-  //   firstName: 'John',
-  //   lastName: 'Doe',
-  //   avatar: '',
-  //   status: 'ONLINE'
-  // }
+
   async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
-    console.log(users);
+    const users = await this.prisma.user.findMany({
+      include: { friends: true },
+    });
     return users;
   }
 
-  async findAllById(id: number): Promise<User> {
+  async findById(id: string): Promise<User> {
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
 
     const user = await this.prisma.user.findUnique({
-      where: { email42 },
+      where: { id },
+      include: { friends: true },
     });
 
     if (!user) {
@@ -43,27 +32,30 @@ export class UsersService {
     return user;
   }
 
-  async findAllByLogin(login: string): Promise<User> {
+  async findByLogin(login: string): Promise<User> {
     if (!login) {
       throw new BadRequestException('login is required');
     }
 
-    const user = await this.prisma.user.findUnique({ where: { login } });
+    const user = await this.prisma.user.findUnique({
+      where: { login },
+      include: { friends: true },
+    });
 
     if (!user) {
       throw new NotFoundException(`User with username ${login} not found`);
     }
-    console.log(user);
+
     return user;
   }
 
-  async findOneByLogin(login: string): Promise<User | null> {
+  async findOneByLogin(login: string): Promise<{ login: string }> {
     try {
       if (!login) {
         throw new BadRequestException('login is required');
       }
 
-      const user = await this.prisma.user.findUnique({
+      const loginValue = await this.prisma.user.findUnique({
         where: {
           login: login,
         },
@@ -72,12 +64,11 @@ export class UsersService {
         },
       });
 
-      if (!user) {
+      if (!loginValue) {
         throw new NotFoundException(`User with username ${login} not found`);
       }
 
-      console.log(user);
-      return user;
+      return loginValue;
     } catch (error) {
       if (
         error instanceof NotFoundException ||
@@ -89,12 +80,22 @@ export class UsersService {
     }
   }
 
-  // async update(login: string): Promise<User> {
-  //   return this.prisma.user.update({
-  //     where: { login },
-  //     data,
-  //   });
-  // }
+  async adFriend(id: string, idUserToAddAsFriend: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: {
+          friends: {
+            connect: { id: idUserToAddAsFriend },
+          },
+        },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to add a friend');
+    }
+  }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
