@@ -1,8 +1,14 @@
 /* eslint-disable prettier/prettier */
 
+export enum UserStatus {
+  ONLINE,
+  OFFLINE,
+  PLAYING,
+}
+
 export interface User {
   id: string,
-  status: string,
+  status: UserStatus,
 }
 
 // Interface for when server emits events to clients.
