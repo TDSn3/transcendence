@@ -38,7 +38,9 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.3.3",
     "@nestjs/swagger": "^7.3.0",
+    "@nestjs/websockets": "^10.3.3",
     "@prisma/client": "^5.9.0",
     "argon2": "^0.31.2",
     "axios": "^1.6.7",
@@ -55,6 +57,7 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.7.4",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {

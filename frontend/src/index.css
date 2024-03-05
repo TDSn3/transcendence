@@ -68,10 +68,10 @@ h3 {
 	font-family: var(--font-family-principal);
 	font-weight:500;
 	font-style: normal;
-	font-size: 34px;
+	font-size: 32px;
 }
 
-p {
+p, span, div {
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;

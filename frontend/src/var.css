@@ -1,6 +1,7 @@
 :root {
 	--font-family-principal: 'Helvetica Now Display', Helvetica, sans-serif;
 
+	--margin-small: 8px;
 	--margin-medium: 16px;
 	--margin-large: 32px;
 	

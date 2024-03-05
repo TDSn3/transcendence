@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: wnaseeve <wnaseeve@student.42.fr>          +#+  +:+       +#+         #
+#    By: tda-silv <tda-silv@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 16:32:49 by tda-silv          #+#    #+#              #
-#    Updated: 2024/02/27 11:20:19 by wnaseeve         ###   ########.fr        #
+#    Updated: 2024/03/02 09:19:36 by tda-silv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -128,8 +128,8 @@ kill_frontend:
 # **************************************************************************** #
 
 clean: down
-	@if [ $$(docker ps -a -q | wc -l) -gt 0 ]; then	\
-		docker rm -f $$(docker ps -a -q);			\
+	@if [ $$(docker ps -a -q | wc -l) -gt 0 ]; then		\
+		docker rm -f $$(docker ps -a -q);				\
 	fi
 	@if [ $$(docker images -a -q | wc -l) -gt 0 ]; then	\
 		docker rmi -f $$(docker images -a -q);			\

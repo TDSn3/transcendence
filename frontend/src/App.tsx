@@ -1,47 +1,50 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
-import Home from './components/Home';
+import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
-import Chat from './components/Chat';
-import Game from './components/Game/Game.js';
-import SignIn42 from './components/Login/SignIn42.js';
+import Chat from './components/Chat/Chat';
+import Game from './components/Game/Game';
+import SignIn42 from './components/SignIn42/SignIn42';
 import Logout from './components/Logout';
+import Friends from './components/Friends/Friends';
 
-import { useAuth } from './components/Login/AuthContext';
+import useAuth from './contexts/Auth/useAuth';
 
-import ChatRoutes from "./components/Chat/ChatRoutes.tsx";
+import ChatRoutes from './components/Chat/ChatRoutes';
 
+import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 
 function App() {
   const { isLoggedIn } = useAuth();
 
-  if (!isLoggedIn) {
-    return (
-      <div className="App container">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signIn42" element={<SignIn42 />} />
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
-      </div>
-    );
-  }
+  console.log('isLoggedIn === ', isLoggedIn);
 
   return (
     <div className="App container">
-      <Navbar />
-        <Routes>
-			<Route path="/home" element={<Home />} />
-			{/* <Route path="/profile" element={<Profile user={user} />} /> */}
-			<Route path="/chat" element={<Chat />} />
-			{ChatRoutes()}
-			<Route path="/game" element={<Game />} />
-			<Route path="/logout" element={<Logout />} />
-      <Route path="*" element={<Navigate to="/home" />} />
-        </Routes>
+      {
+        !isLoggedIn ? (
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signIn42" element={<SignIn42 />} />
+            <Route path="/" element={<Navigate to="/login" />} />
+          </Routes>
+        ) : (
+          <>
+            <Navbar />
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile/:login" element={<Profile />} />
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/chat" element={<Chat />} />
+              {ChatRoutes()}
+              <Route path="/game" element={<Game />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="*" element={<NotFoundPage />}/>
+            </Routes>
+          </>
+        )
+      }
     </div>
   );
 }
