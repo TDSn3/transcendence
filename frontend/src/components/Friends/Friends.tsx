@@ -29,7 +29,7 @@ function Friends() {
         {userWithFriends?.friends?.length ?? 0}
       </h3>
       {
-        userWithFriends.friends.map((value) => (
+        userWithFriends?.friends?.map((value) => (
           <div key={uuidv4()}>
             {' '}
             {value.login}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { User } from '../utils/types';
+import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/users`;
 
@@ -10,21 +11,7 @@ const getAll = async () => {
 
     return (data);
   } catch (error: unknown) {
-    let errorMessage = 'Error GET User by ID.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'Error GET all User.'));
   }
 };
 
@@ -34,21 +21,7 @@ const getUserById = async (id: string): Promise<User> => {
 
     return (data);
   } catch (error: unknown) {
-    let errorMessage = 'Error GET User by ID.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'Error GET User by ID.'));
   }
 };
 
@@ -58,21 +31,20 @@ const getUserByLogin = async (login: string): Promise<User> => {
 
     return (data);
   } catch (error: unknown) {
-    let errorMessage = 'Error GET User by LOGIN.';
+    throw new Error(errorMessage(error, 'Error GET User by LOGIN.'));
+  }
+};
 
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
+const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/ad-friend/${userId}`, {
+      idUserToAddAsFriend: userIdToAdd,
+    });
 
-    throw new Error(errorMessage);
+    console.log(data);
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error POST add friend.'));
   }
 };
 
@@ -80,4 +52,5 @@ export default {
   getAll,
   getUserById,
   getUserByLogin,
+  addFriend,
 };

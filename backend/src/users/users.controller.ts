@@ -2,6 +2,7 @@ import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
+import { AddFriendDto } from './dto/AddFriendDto';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -31,9 +32,10 @@ export class UsersController {
   @Post('id/ad-friend/:id')
   adFriend(
     @Param('id') id: string,
-    @Body() idUserToAddAsFriend: string,
+    @Body() addFriendDto: AddFriendDto,
   ): Promise<User> {
-    return this.usersService.adFriend(id, idUserToAddAsFriend);
+    console.log('=====>', addFriendDto.idUserToAddAsFriend);
+    return this.usersService.adFriend(id, addFriendDto.idUserToAddAsFriend);
   }
 
   // @Patch('login/:login')

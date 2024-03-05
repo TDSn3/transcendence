@@ -3,6 +3,7 @@ import { User } from '../../../utils/types';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
 import useAuth from '../../../contexts/Auth/useAuth';
+import userServices from '../../../services/user';
 
 import '../profile.css';
 
@@ -16,6 +17,12 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
   const { user } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id;
   const location = useLocation();
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    userServices.addFriend(user.id, userProfile.id);
+  };
 
   return (
     <div className="page profile-style">
@@ -58,7 +65,7 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
       }
       {
         !isUserIsUserProfile && !(/\/profile\/.+/.test(location.pathname)) ? (
-          <button type="button"> add friend </button>
+          <button type="button" onClick={handleClick}> add friend </button>
         ) : (
           <> </>
         )
