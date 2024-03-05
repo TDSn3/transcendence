@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { decodeToken } from "react-jwt";
+import { io } from 'socket.io-client';
 import axios from "axios";
 import Popup from "./Popup.tsx";
 import "./channels.css";
@@ -25,6 +26,11 @@ const Channel = (param: {id:number, name: string}) => {
 
 const Channels = () => {
 	const navigate = useNavigate();
+
+	const socket = io("http://localhost:5001/chat");
+	socket.on("ret", (payload: any) => {
+		console.log(payload);
+	});
 
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
