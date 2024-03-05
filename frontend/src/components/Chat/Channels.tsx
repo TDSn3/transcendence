@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Link } from "react-router-dom";
 import { decodeToken } from "react-jwt";
 import axios from "axios";
 import Popup from "./Popup.tsx";
@@ -9,22 +8,17 @@ import "./channels.css";
 
 const channelsNames = (await axios.get("http://localhost:5001/api/channels/names")).data;
 
-
-const Channel = ({name}: any) => {
+const Channel = (param: {id:number, name: string}) => {
 	const navigate = useNavigate();
 
-	const handleClick: any = (name: string) => {
-		console.log(name);
-		// axios.put("http://localhost:5001/api/channels/" + name, {})
-		// 	.then(() => {
-		// 		navigate("/chat/" + name);
-		// 	});
+	const handleClick: any = () => {
+		navigate("/chat/" + param.name);
+		axios.post("http://localhost:5001/api/channelMembers", {intraId: (decodeToken(document.cookie).sub), channelId: param.id })
 	}
 
 	return (
 		<div className="channel">
-			{/* <input type="button" value={name} onClick={handleClick(name)}/> */}
-			<button onClick={handleClick(name)}>{name}</button>
+			<input type="button" value={param.name} onClick={handleClick}/>
 		</div>
 	);
 }
@@ -32,26 +26,19 @@ const Channel = ({name}: any) => {
 const Channels = () => {
 	const navigate = useNavigate();
 
-	const [buttonPopup, setButtonPopup] = useState(false);
-	const [channelName, setChannelName] = useState("");
-	const [channelPassword, setChannelPassword] = useState("");
-	const [channelPrivate, setChannelPrivate] = useState(false);
+	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
+	const [channelName, setChannelName] = useState<string>("");
+	const [channelPassword, setChannelPassword] = useState<string>("");
+	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
-		if (channelName.length === 0 || channelName.includes(" ") || channelPassword.includes(" ")) {
-			console.log("your channel name or channel password is not valid !");
-			setChannelName("");
-			setChannelPassword("");
-			setChannelPrivate(false);
-		} else {
-			axios.post("http://localhost:5001/api/channels", {intraId: (decodeToken(document.cookie).sub), name: channelName, password: channelPassword, private: channelPrivate})
-				.then(() => {
-					navigate("/chat/" + channelName);
-					window.location.reload();
-				}
-			);
-		}
+		axios.post("http://localhost:5001/api/channels", {intraId: (decodeToken(document.cookie).sub), name: channelName, password: channelPassword, private: channelPrivate})
+			.then(() => {
+				navigate("/chat/" + channelName);
+				window.location.reload();
+			}
+		);
 	}
 
 	return (
@@ -64,7 +51,7 @@ const Channels = () => {
 			<div className="channels">
 				{
 					channelsNames.map((value: any) =>
-						<Channel key={value.name} name={value.name}/>
+						<Channel key={value.id} id={value.id} name={value.name}/>
 					)
 				}
 			</div>

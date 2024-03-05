@@ -16,9 +16,9 @@ export class ChannelsController {
 
   @Post()
   async create(@Body() param: { intraId: number, name: string, password: string, private: boolean }, @Res() res: Response) {
-    return this.channelService.create(param.intraId, param, res)
-      .then((chan) => {
-        res.status(200).json({ message: "Channel successfully created", chan });
+    return (this.channelService.create(param.intraId, param, res))
+      .then((param) => {
+        res.status(200).json({ message: "Channel successfully created", param });
     })
     .catch(() => {
     	res.status(501).json({ message: "Channel creation failed" });
