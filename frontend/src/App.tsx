@@ -40,7 +40,7 @@ function App() {
               {ChatRoutes()}
               <Route path="/game" element={<Game />} />
               <Route path="/logout" element={<Logout />} />
-              <Route path="*" element={<NotFoundPage />}/>
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </>
         )

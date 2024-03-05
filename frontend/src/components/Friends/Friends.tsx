@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from '../../utils/types';
 import userServices from '../../services/user';
 import useAuth from '../../contexts/Auth/useAuth';
+import FriendCard from './FriendCard';
+
+import './friends.css';
 
 function Friends() {
   const { user } = useAuth();
@@ -22,21 +25,21 @@ function Friends() {
   useEffect(hook, [user]);
 
   return (
-    <div>
+    <div className="void-page">
       <h3>
         Friends :
         {' '}
         {userWithFriends?.friends?.length ?? 0}
       </h3>
-      {
-        userWithFriends?.friends?.map((value) => (
-          <div key={uuidv4()}>
-            {' '}
-            {value.login}
-            {' '}
-          </div>
-        ))
-      }
+      <div>
+        {
+          userWithFriends?.friends?.map((userValue) => (
+            <div key={uuidv4()} className="friends-container">
+              <FriendCard user={userValue} />
+            </div>
+          ))
+        }
+      </div>
     </div>
   );
 }

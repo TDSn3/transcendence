@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { User } from '../../../utils/types';
-import ProfilePicture from '../ProfilePicture/ProfilePicture';
+import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
 import useAuth from '../../../contexts/Auth/useAuth';
 import userServices from '../../../services/user';
