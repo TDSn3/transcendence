@@ -11,49 +11,43 @@ export class AuthController {
 
   @Get('signin42')
   async signin42(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
-    return this.authService
-      .signin42(signIn42Dto, res)
-      .then((user) => {
-        res.status(200).json({
-          message: 'User successfully signed in',
-          user,
-        });
-      })
-      .catch(() => {
-        res.status(501).json({ message: 'Bruh...' });
+    try {
+      const user = await this.authService.signin42(signIn42Dto, res);
+      res.status(200).json({
+        message: 'User successfully signed in',
+        user,
       });
+    } catch {
+      res.status(501).json({ message: 'Bruh...' });
+    }
   }
 
   @ApiBody({ type: SignIn42Dto })
   @Post('FakeUsers')
   async FakeUsers(@Body() signIn42Dto: SignIn42Dto, @Res() res: Response) {
-    return this.authService
-      .fakeUsers(signIn42Dto, res)
-      .then((user) => {
-        res.status(200).json({
-          message: 'User successfully signed in',
-          user,
-        });
-      })
-      .catch(() => {
-        res.status(501).json({ message: 'Problem with FakeUser service' });
+    try {
+      const user = await this.authService.fakeUsers(signIn42Dto, res);
+      res.status(200).json({
+        message: 'User successfully signed in',
+        user,
       });
+    } catch {
+      res.status(501).json({ message: 'Problem with FakeUser service' });
+    }
   }
 
   // TODO: type userObject
   // @UseGuards(JwtGuard)
   @Post('logout')
   async logout(@Res() res: Response, @Body() userObject: any) {
-    return this.authService
-      .logout(res, userObject)
-      .then(() => {
-        res.status(200).send({
-          message: 'User successfully logged out',
-        });
-      })
-      .catch(() => {
-        res.status(501).send({ message: 'Logout error' });
+    try {
+      await this.authService.logout(res, userObject);
+      res.status(200).send({
+        message: 'User successfully logged out',
       });
+    } catch {
+      res.status(501).send({ message: 'Logout error' });
+    }
   }
 
   @Get('me')

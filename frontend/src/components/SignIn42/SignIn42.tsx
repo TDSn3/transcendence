@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
-import userServices from '../../services/user';
+import authServices from '../../services/auth';
 
 import './signIn42.css';
 
@@ -23,7 +23,7 @@ function SignIn42(): React.ReactElement {
 
     const fetchData = async () => {
       try {
-        const user = await userServices.authentication42(code);
+        const user = await authServices.authentication42(code);
 
         setUser(user);
         setLoggedIn(true);
@@ -33,6 +33,8 @@ function SignIn42(): React.ReactElement {
         navigate('/home');
       } catch (error: unknown) {
         setLoggedIn(false);
+
+        localStorage.removeItem('userLogin');
 
         if (error instanceof Error) {
           console.error(error.message);

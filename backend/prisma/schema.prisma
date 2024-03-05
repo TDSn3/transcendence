@@ -12,23 +12,26 @@ datasource db {
 
 model User {
   // Connexion process 
-  id                     String   @id @unique @default(uuid())
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  id                     String     @id @unique @default(uuid())
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
   twoFactorAuthSecret    String?
-  isTwoFactorAuthEnabled Boolean  @default(false)
+  isTwoFactorAuthEnabled Boolean    @default(false)
 
   // Profile process
-  intraId   Int         @unique
-  email42   String      @unique
-  login     String      @unique @db.VarChar(12)
-  firstName String 
-  lastName  String
-  avatar    String
-  // wins      Int
-  // Losses    Int
+  intraId                Int         @unique
+  email42                String      @unique
+  login                  String      @unique @db.VarChar(12)
+  firstName              String 
+  lastName               String
+  avatar                 String
+  wins                   Int         @default(0)
+  losses                 Int         @default(0)
 
-  status  UserStatus  @default(ONLINE)
+  status                 UserStatus  @default(ONLINE)
+
+  friends                User[]      @relation("UserFriends")
+  friendOf               User[]      @relation("UserFriends")
 }
 
 model Channel {

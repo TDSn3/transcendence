@@ -1,0 +1,33 @@
+.search {
+	margin-left: var(--margin-medium);
+	margin-right: var(--margin-medium);
+
+	padding: var(--margin-medium);
+	padding-top: var(--margin-small);
+	padding-bottom: var(--margin-small);
+
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 32px;
+	
+	border: 1.5px solid var(--color-medium-dark);
+	outline-color: var(--color-dark-soft);
+	border-radius: var(--border-radius-medium);
+
+	transition: border-color 0.3s ease, outline 0.3s ease;
+}
+
+.search:focus {
+	border: 1.5px solid var(--color-dark-soft);
+	outline: 3px solid var(--color-medium);
+}
+
+input::placeholder {
+	color: var(--color-medium-dark);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 32px;
+}
