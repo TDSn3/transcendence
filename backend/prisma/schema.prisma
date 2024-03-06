@@ -29,16 +29,24 @@ model User {
   losses                 Int            @default(0)
 
   status                 UserStatus     @default(ONLINE)
-  webSocketId            String[]
 
-  // relation to other tables
-  members	ChannelMember[]
-  message	Message[]
+  // Relation to other tables
+  statusWebSocketId      UserStatusWebSocketId[]  @relation("statusWebSocketId")
+  members                ChannelMember[]
+  message                Message[]
   friends                User[]         @relation("UserFriends")
   friendOf               User[]         @relation("UserFriends")
 
   historyGamesWon        GameHistory[]  @relation("WinningUser")
   historyGamesLost       GameHistory[]  @relation("LosingUser")
+}
+
+model UserStatusWebSocketId {
+  id          String  @id @unique @default(uuid())
+
+  user        User    @relation("statusWebSocketId", fields: [userId], references: [id])
+  userId      String
+  webSocketId String
 }
 
 model GameHistory {

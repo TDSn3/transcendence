@@ -101,7 +101,10 @@ export class UsersService {
     }
   }
 
-  async addUserWebSocketId(id: string, webSocketId: string): Promise<User> {
+  async addUserStatusWebSocketId(
+    id: string,
+    webSocketId: string,
+  ): Promise<User> {
     try {
       const user = await this.prisma.user.update({
         where: { id },

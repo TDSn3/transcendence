@@ -52,7 +52,7 @@ export class UsersStatusGateway {
       .then((user) => {
         printReceivedMessage(data, user);
 
-        this.usersService.addUserWebSocketId(user.id, client.id);
+        this.usersService.addUserStatusWebSocketId(user.id, client.id);
       })
       .catch((error) => {
         console.log(`Error: `, error);
