@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
@@ -141,7 +141,7 @@ export class AuthService {
             id: userAlreadyExist.id,
           },
           data: {
-            status: 'ONLINE',
+            status: UserStatus.ONLINE,
           },
         });
 
@@ -250,7 +250,7 @@ export class AuthService {
             id: userObject.user.id,
           },
           data: {
-            status: 'OFFLINE',
+            status: UserStatus.OFFLINE,
           },
         });
         // console.log('StatusUser:', user);

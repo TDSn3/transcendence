@@ -84,7 +84,7 @@ export class UsersStatusGateway {
         this.usersService
           .changeStatus(user.id, data.status)
           .then(() => {
-            this.server.emit('startGame', data);
+            this.server.emit('updateStatus', data);
           })
           .catch((error) => {
             console.log(`Error changeStatus: {\n`, error, '\n}');
