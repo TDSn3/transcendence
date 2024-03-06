@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, UserStatusWebSocketId } from '@prisma/client';
+import { User, UserStatus, UserStatusWebSocketId } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 import color from '../utils/color';
@@ -166,6 +166,19 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { status: newStatus },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to update user status');
+    }
   }
 }
 

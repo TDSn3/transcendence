@@ -157,6 +157,7 @@ export class AuthService {
             avatar: userData.image.versions.medium,
           },
         });
+
         return newUser;
       }
     } catch (error) {

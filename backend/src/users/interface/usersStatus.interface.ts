@@ -1,16 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { User, UserStatus } from '@prisma/client';
-
-export const enumToString = (enumToConvert: UserStatus) => {
-  if (enumToConvert === UserStatus.ONLINE) {
-    return ('ONLINE');
-  } else if (enumToConvert === UserStatus.OFFLINE) {
-    return ('OFFLINE');
-  } else {
-    return ('PLAYING');
-  }
-}
+import { User } from '@prisma/client';
 
 export type UserForStatusWebSocket = Pick<User, 'id' | 'status'>;
 

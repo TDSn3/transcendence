@@ -6,10 +6,9 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import {
   UserForStatusWebSocket,
-  enumToString,
   ServerToClientEvents,
   ClientToServerEvents,
 } from './interface/usersStatus.interface';
@@ -59,7 +58,7 @@ export class UsersStatusGateway {
     this.usersService
       .findById(data.id)
       .then((user) => {
-        printReceivedMessage(data, user);
+        printReceivedMessage(user, data.status);
 
         this.usersService
           .addUserStatusWebSocketId(user.id, client.id)
@@ -75,23 +74,20 @@ export class UsersStatusGateway {
       });
   }
 
-  @SubscribeMessage('startGame')
-  handleStartGame(
-    @MessageBody() data: UserForStatusWebSocket,
-    @ConnectedSocket() client: Socket,
-  ): void {
+  @SubscribeMessage('updateStatus')
+  handleStartGame(@MessageBody() data: UserForStatusWebSocket): void {
     this.usersService
       .findById(data.id)
       .then((user) => {
-        printReceivedMessage(data, user);
+        printReceivedMessage(user, data.status);
 
         this.usersService
-          .addUserStatusWebSocketId(user.id, client.id)
+          .changeStatus(user.id, data.status)
           .then(() => {
-            this.server.emit('message', data);
+            this.server.emit('startGame', data);
           })
           .catch((error) => {
-            console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
+            console.log(`Error changeStatus: {\n`, error, '\n}');
           });
       })
       .catch((error) => {
@@ -122,13 +118,13 @@ const printClientDisconnected = (client: Socket) => {
   );
 };
 
-const printReceivedMessage = (data: UserForStatusWebSocket, user: User) => {
+const printReceivedMessage = (user: User, content: string | UserStatus) => {
   console.log(
     color.BLUE,
     'Received message:',
     color.RESET,
     color.BOLD,
-    enumToString(data.status),
+    content,
     color.RESET,
     color.DIM,
     `from ${user.login}`,
