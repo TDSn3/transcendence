@@ -8,7 +8,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { User } from '@prisma/client';
 import {
-  UserWebSocket,
+  UserForStatusWebSocket,
   enumToString,
   ServerToClientEvents,
   ClientToServerEvents,
@@ -33,7 +33,7 @@ export class UsersStatusGateway {
   handleConnection(client: Socket) {
     printClientConnected(client);
 
-    this.server.emit('clientOnline', { id: client.id });
+    this.server.emit('clientOnline', { ClientId: client.id });
   }
 
   handleDisconnect(client: Socket) {
@@ -43,7 +43,7 @@ export class UsersStatusGateway {
       .removeUserWebSocketId(client.id)
       .then((deletedUserStatusWebSocketId) => {
         this.server.emit('clientOffline', {
-          id: deletedUserStatusWebSocketId.userId,
+          UserId: deletedUserStatusWebSocketId.userId,
         });
       })
       .catch((error) => {
@@ -53,7 +53,31 @@ export class UsersStatusGateway {
 
   @SubscribeMessage('message')
   handleMessage(
-    @MessageBody() data: UserWebSocket,
+    @MessageBody() data: UserForStatusWebSocket,
+    @ConnectedSocket() client: Socket,
+  ): void {
+    this.usersService
+      .findById(data.id)
+      .then((user) => {
+        printReceivedMessage(data, user);
+
+        this.usersService
+          .addUserStatusWebSocketId(user.id, client.id)
+          .then(() => {
+            this.server.emit('message', data);
+          })
+          .catch((error) => {
+            console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
+          });
+      })
+      .catch((error) => {
+        console.log(`Error findById: {\n`, error, '\n}');
+      });
+  }
+
+  @SubscribeMessage('startGame')
+  handleStartGame(
+    @MessageBody() data: UserForStatusWebSocket,
     @ConnectedSocket() client: Socket,
   ): void {
     this.usersService
@@ -98,7 +122,7 @@ const printClientDisconnected = (client: Socket) => {
   );
 };
 
-const printReceivedMessage = (data: UserWebSocket, user: User) => {
+const printReceivedMessage = (data: UserForStatusWebSocket, user: User) => {
   console.log(
     color.BLUE,
     'Received message:',

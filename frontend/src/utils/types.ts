@@ -54,14 +54,14 @@ export const emptyUser: User = {
 
 // Web socket
 
-export type UserWebSocket = Pick<User, 'id' | 'status'>;
+export type UserForStatusWebSocket = Pick<User, 'id' | 'status'>;
 
 export interface ServerToClientEvents {
-  message: (data: UserWebSocket) => void,
-  clientOnline: (data: { id: string }) => void,
-  clientOffline: (data: { id: string }) => void,
+  message: (data: UserForStatusWebSocket) => void,
+  clientOnline: (data: { ClientId: string }) => void,
+  clientOffline: (data: { UserId: string }) => void,
 }
 
 export interface ClientToServerEvents {
-  message: (data: UserWebSocket) => void,
+  message: (data: UserForStatusWebSocket) => void,
 }
