@@ -114,7 +114,7 @@ export class UsersService {
           where: { id: user.id },
           data: {
             statusWebSocketId: {
-              create: { webSocketId: webSocketId },
+              create: [{ webSocketId: webSocketId }],
             },
           },
         });

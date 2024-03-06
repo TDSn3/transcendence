@@ -31,7 +31,7 @@ model User {
   status                 UserStatus     @default(ONLINE)
 
   // Relation to other tables
-  statusWebSocketId      UserStatusWebSocketId?
+  statusWebSocketId      UserStatusWebSocketId[]
   members                ChannelMember[]
   message                Message[]
   friends                User[]         @relation("UserFriends")
@@ -45,7 +45,7 @@ model UserStatusWebSocketId {
   id          String  @id @unique @default(uuid())
 
   user        User    @relation(fields: [userId], references: [id])
-  userId      String  @unique
+  userId      String
   webSocketId String  @unique
 }
 
