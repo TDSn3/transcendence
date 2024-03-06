@@ -252,7 +252,7 @@ export class AuthService {
             status: 'OFFLINE',
           },
         });
-        console.log('StatusUser:', user);
+        // console.log('StatusUser:', user);
       } else {
         throw new Error('Bad body');
       }

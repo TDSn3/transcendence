@@ -29,6 +29,7 @@ model User {
   losses                 Int            @default(0)
 
   status                 UserStatus     @default(ONLINE)
+  webSocketId            String[]
 
   // relation to other tables
   members	ChannelMember[]

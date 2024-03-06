@@ -80,7 +80,7 @@ export class UsersService {
     }
   }
 
-  async adFriend(id: string, idUserToAddAsFriend: string): Promise<User> {
+  async addFriend(id: string, idUserToAddAsFriend: string): Promise<User> {
     try {
       const user = await this.prisma.user.update({
         where: { id },
@@ -91,11 +91,59 @@ export class UsersService {
         },
       });
 
-      return user;
+      if (user) {
+        return user;
+      }
+
+      throw new Error();
     } catch (error: unknown) {
       throw new Error('Failed to add a friend');
     }
   }
+
+  async addUserWebSocketId(id: string, webSocketId: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { webSocketId: { push: webSocketId } },
+      });
+
+      if (user) {
+        return user;
+      }
+
+      throw new Error();
+    } catch (error: unknown) {
+      throw new Error('Failed to add web socket id');
+    }
+  }
+
+  // async removeUserWebSocketId(webSocketId: string): Promise<User> {
+  //   try {
+  //     const users = await this.prisma.user.findMany({
+  //       where: { webSocketId: { has: webSocketId } },
+  //     });
+
+  //     const user = users[0];
+
+  //     if (user && users.length === 1) {
+  //       const filteredWebSocketId = user.webSocketId.filter(
+  //         (idValue) => idValue !== webSocketId,
+  //       );
+
+  //       const updatedUser = await this.prisma.user.update({
+  //         where: { id: user.id },
+  //         data: { webSocketId: { set: filteredWebSocketId } },
+  //       });
+
+  //       return updatedUser;
+  //     }
+
+  //     throw new Error();
+  //   } catch (error: unknown) {
+  //     throw new Error('Failed to remove web socket id');
+  //   }
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} user`;

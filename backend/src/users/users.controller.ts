@@ -30,12 +30,12 @@ export class UsersController {
   }
 
   @Post('id/ad-friend/:id')
-  adFriend(
+  addFriend(
     @Param('id') id: string,
     @Body() addFriendDto: AddFriendDto,
   ): Promise<User> {
     console.log('=====>', addFriendDto.idUserToAddAsFriend);
-    return this.usersService.adFriend(id, addFriendDto.idUserToAddAsFriend);
+    return this.usersService.addFriend(id, addFriendDto.idUserToAddAsFriend);
   }
 
   // @Patch('login/:login')

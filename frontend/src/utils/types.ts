@@ -1,29 +1,3 @@
-// export interface User {
-//   id: string,
-//   username: string,
-//   profilePictureUrl: string,
-//   rank: number,
-//   gamesWon: number,
-//   gamesLost: number,
-// }
-
-// export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
-
-// export interface Player {
-//   user: UserEssential,
-//   score: number,
-//   won: boolean,
-// }
-
-// export interface GameResult {
-//   players: [Player, Player],
-// }
-
-// export interface UserGameHistory {
-//   userId: string,
-//   gameHistory: GameResult[],
-// }
-
 export enum UserStatus {
   ONLINE,
   OFFLINE,
@@ -77,3 +51,17 @@ export const emptyUser: User = {
   friends: [],
   friendOf: [],
 };
+
+// Web socket
+
+export type UserWebSocket = Pick<User, 'id' | 'status'>;
+
+export interface ServerToClientEvents {
+  message: (data: UserWebSocket) => void,
+  clientOnline: (data: { id: string }) => void,
+  clientOffline: (data: { id: string }) => void,
+}
+
+export interface ClientToServerEvents {
+  message: (data: UserWebSocket) => void,
+}

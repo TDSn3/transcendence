@@ -6,17 +6,27 @@ export enum UserStatus {
   PLAYING,
 }
 
-export interface User {
+export const enumToString = (enumToConvert: UserStatus) => {
+  if (enumToConvert === UserStatus.ONLINE) {
+    return ('ONLINE');
+  } else if (enumToConvert === UserStatus.OFFLINE) {
+    return ('OFFLINE');
+  } else {
+    return ('PLAYING');
+  }
+}
+
+export interface UserWebSocket {
   id: string,
   status: UserStatus,
 }
 
-// Interface for when server emits events to clients.
 export interface ServerToClientEvents {
-  chat: (e: User) => void,
+  message: (data: UserWebSocket) => void,
+  clientOnline: (data: { id: string }) => void,
+  clientOffline: (data: { id: string }) => void,
 }
 
-// Interface for when clients emit events to the server.
 export interface ClientToServerEvents {
-  chat: (e: User) => void,
+  message: (data: UserWebSocket) => void,
 }
