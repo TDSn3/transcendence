@@ -47,7 +47,7 @@ export class UsersStatusGateway {
         });
       })
       .catch((error) => {
-        console.log(`Error: `, error);
+        console.log('Error removeUserWebSocketId: {\n', error, '\n}');
       });
   }
 
@@ -61,13 +61,18 @@ export class UsersStatusGateway {
       .then((user) => {
         printReceivedMessage(data, user);
 
-        this.usersService.addUserStatusWebSocketId(user.id, client.id);
+        this.usersService
+          .addUserStatusWebSocketId(user.id, client.id)
+          .then(() => {
+            this.server.emit('message', data);
+          })
+          .catch((error) => {
+            console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
+          });
       })
       .catch((error) => {
-        console.log(`Error: `, error);
+        console.log(`Error findById: {\n`, error, '\n}');
       });
-
-    this.server.emit('message', data);
   }
 }
 
