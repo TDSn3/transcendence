@@ -39,7 +39,16 @@ export class UsersStatusGateway {
   handleDisconnect(client: Socket) {
     printClientDisconnected(client);
 
-    this.server.emit('clientOffline', { id: client.id });
+    this.usersService
+      .removeUserWebSocketId(client.id)
+      .then((deletedUserStatusWebSocketId) => {
+        this.server.emit('clientOffline', {
+          id: deletedUserStatusWebSocketId.userId,
+        });
+      })
+      .catch((error) => {
+        console.log(`Error: `, error);
+      });
   }
 
   @SubscribeMessage('message')

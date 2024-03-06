@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@prisma/client';
+import { User, UserStatusWebSocketId } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
+import color from '../utils/color';
 
 @Injectable()
 export class UsersService {
@@ -106,13 +107,21 @@ export class UsersService {
     webSocketId: string,
   ): Promise<User> {
     try {
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: { webSocketId: { push: webSocketId } },
-      });
+      const user = await this.findById(id);
 
       if (user) {
-        return user;
+        const userUpdated = await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            statusWebSocketId: {
+              create: { webSocketId: webSocketId },
+            },
+          },
+        });
+
+        if (userUpdated) {
+          return userUpdated;
+        }
       }
 
       throw new Error();
@@ -121,34 +130,56 @@ export class UsersService {
     }
   }
 
-  // async removeUserWebSocketId(webSocketId: string): Promise<User> {
-  //   try {
-  //     const users = await this.prisma.user.findMany({
-  //       where: { webSocketId: { has: webSocketId } },
-  //     });
+  async removeUserWebSocketId(
+    webSocketId: string,
+  ): Promise<UserStatusWebSocketId> {
+    try {
+      const userStatusWebSocketId =
+        await this.prisma.userStatusWebSocketId.findUnique({
+          where: { webSocketId: webSocketId },
+        });
 
-  //     const user = users[0];
+      if (userStatusWebSocketId) {
+        const user = await this.findById(userStatusWebSocketId.userId);
 
-  //     if (user && users.length === 1) {
-  //       const filteredWebSocketId = user.webSocketId.filter(
-  //         (idValue) => idValue !== webSocketId,
-  //       );
+        if (user) {
+          const deletedUserStatusWebSocketId =
+            await this.prisma.userStatusWebSocketId.delete({
+              where: { id: userStatusWebSocketId.id },
+            });
 
-  //       const updatedUser = await this.prisma.user.update({
-  //         where: { id: user.id },
-  //         data: { webSocketId: { set: filteredWebSocketId } },
-  //       });
+          if (deletedUserStatusWebSocketId) {
+            printRemoveUserStatusWebSocketId(deletedUserStatusWebSocketId);
 
-  //       return updatedUser;
-  //     }
+            return deletedUserStatusWebSocketId;
+          }
+        }
 
-  //     throw new Error();
-  //   } catch (error: unknown) {
-  //     throw new Error('Failed to remove web socket id');
-  //   }
-  // }
+        throw new Error();
+      }
+
+      throw new Error();
+    } catch (error: unknown) {
+      throw new Error('Failed to remove web socket id');
+    }
+  }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
 }
+
+const printRemoveUserStatusWebSocketId = (
+  deletedUserStatusWebSocketId: UserStatusWebSocketId,
+) => {
+  console.log(
+    color.BOLD_RED,
+    'Remove UserStatusWebSocketId: ',
+    color.RESET,
+    color.DIM_RED,
+    '{\n webSocketId: ',
+    deletedUserStatusWebSocketId.webSocketId,
+    '\n }',
+    color.RESET,
+  );
+};
