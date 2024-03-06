@@ -36,6 +36,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   await app.listen(Number(config.BACKEND_PORT));
+
+  console.log('');
 }
 
 bootstrap();

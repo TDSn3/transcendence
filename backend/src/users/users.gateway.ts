@@ -6,6 +6,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { User } from '@prisma/client';
 import {
   UserWebSocket,
   enumToString,
@@ -13,6 +14,7 @@ import {
   ClientToServerEvents,
 } from './interface/usersStatus.interface';
 import { UsersService } from './users.service';
+import color from '../utils/color';
 
 @WebSocketGateway({
   cors: {
@@ -29,13 +31,13 @@ export class UsersStatusGateway {
   >();
 
   handleConnection(client: Socket) {
-    console.log(`New client connected with the id: ${client.id}`);
+    printClientConnected(client);
 
     this.server.emit('clientOnline', { id: client.id });
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected with the id: ${client.id}`);
+    printClientDisconnected(client);
 
     this.server.emit('clientOffline', { id: client.id });
   }
@@ -48,9 +50,7 @@ export class UsersStatusGateway {
     this.usersService
       .findById(data.id)
       .then((user) => {
-        console.log(
-          `Received message: ${enumToString(data.status)} from ${user.login}`,
-        );
+        printReceivedMessage(data, user);
 
         this.usersService.addUserWebSocketId(user.id, client.id);
       })
@@ -61,3 +61,39 @@ export class UsersStatusGateway {
     this.server.emit('message', data);
   }
 }
+
+const printClientConnected = (client: Socket) => {
+  console.log(
+    color.GREEN,
+    'New client connected',
+    color.RESET,
+    color.DIM_GREEN,
+    `id: ${client.id}`,
+    color.RESET,
+  );
+};
+
+const printClientDisconnected = (client: Socket) => {
+  console.log(
+    color.RED,
+    'Client disconnected',
+    color.RESET,
+    color.DIM_RED,
+    `id: ${client.id}`,
+    color.RESET,
+  );
+};
+
+const printReceivedMessage = (data: UserWebSocket, user: User) => {
+  console.log(
+    color.BLUE,
+    'Received message:',
+    color.RESET,
+    color.BOLD,
+    enumToString(data.status),
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};

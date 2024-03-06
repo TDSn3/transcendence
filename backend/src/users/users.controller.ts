@@ -34,7 +34,6 @@ export class UsersController {
     @Param('id') id: string,
     @Body() addFriendDto: AddFriendDto,
   ): Promise<User> {
-    console.log('=====>', addFriendDto.idUserToAddAsFriend);
     return this.usersService.addFriend(id, addFriendDto.idUserToAddAsFriend);
   }
 
