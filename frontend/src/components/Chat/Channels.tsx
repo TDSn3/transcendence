@@ -27,11 +27,13 @@ const Channel = (param: {id:number, name: string}) => {
 const Channels = () => {
 	const navigate = useNavigate();
 
+	console.log("yeg");
 	const socket = io("http://localhost:5001/chat");
-	socket.on("ret", (payload: any) => {
+	socket.on("ret", (payload: string) => {
 		console.log(payload);
 	});
 
+	socket.emit("chat-connect");
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
