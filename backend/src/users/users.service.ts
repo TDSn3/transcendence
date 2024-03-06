@@ -164,8 +164,16 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async getStatus(id: string): Promise<{ status: boolean }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { statusWebSocketId: true },
+    });
+
+    if (user && user.statusWebSocketId.length > 0) {
+      return { status: true };
+    }
+    return { status: false };
   }
 
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {

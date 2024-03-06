@@ -12,13 +12,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
       },
     });
+    this.cleanUserStatusWebSocketId();
   }
 
   async onModuleInit() {
     await this.$connect();
   }
 
-  // async cleanDb() {
-  //   await this.user.deleteMany();
-  // }
+  async cleanUserStatusWebSocketId() {
+    await this.userStatusWebSocketId.deleteMany();
+  }
 }

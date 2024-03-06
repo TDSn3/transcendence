@@ -31,8 +31,6 @@ export class UsersStatusGateway {
 
   handleConnection(client: Socket) {
     printClientConnected(client);
-
-    this.server.emit('clientOnline', { ClientId: client.id });
   }
 
   handleDisconnect(client: Socket) {
@@ -41,8 +39,9 @@ export class UsersStatusGateway {
     this.usersService
       .removeUserWebSocketId(client.id)
       .then((deletedUserStatusWebSocketId) => {
-        this.server.emit('clientOffline', {
-          UserId: deletedUserStatusWebSocketId.userId,
+        this.server.emit('message', {
+          id: deletedUserStatusWebSocketId.userId,
+          status: UserStatus.OFFLINE,
         });
       })
       .catch((error) => {

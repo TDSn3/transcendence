@@ -19,6 +19,11 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  @Get('status/id/:id')
+  getStatus(@Param('id') id: string): Promise<{ status: boolean }> {
+    return this.usersService.getStatus(id);
+  }
+
   @Get('login/:login')
   findByLogin(@Param('login') login: string): Promise<User> {
     return this.usersService.findByLogin(login);

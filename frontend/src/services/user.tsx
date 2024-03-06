@@ -48,9 +48,21 @@ const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => 
   }
 };
 
+const getStatus = async (userId: string): Promise<{ status: boolean }> => {
+  try {
+    const { data } = await axios.get<{ status: boolean }>(`${url}/status/id/${userId}`);
+
+    console.log(data);
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET get status.'));
+  }
+};
+
 export default {
   getAll,
   getUserById,
   getUserByLogin,
   addFriend,
+  getStatus,
 };
