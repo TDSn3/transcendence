@@ -7,6 +7,7 @@ export class Paddle {
 	public readonly width:number;
 	public readonly height:number;
 	public readonly speed:number;
+	public websocket?:string;
 
 	constructor(side: "left" | "right") {
 		this.width = 10;

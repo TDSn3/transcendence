@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import PongIA from "./PongIA.tsx";
-import PongLocal from "./PongLocal.tsx";
+import PongGame from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
-import { eventNames } from "process";
 import { Socket } from "dgram";
 
 const Lobby = () => {
@@ -12,22 +10,9 @@ const Lobby = () => {
   const [BotvsBot1, setBotvsBot] = useState(false);
   const [gameInfos, setGameInfos] = useState<any>(null);
   const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
-  const [test, setTest] = useState<number>(0);
-
-  
-  
-//   const [gameState, setGameState] = useState(null);
+  const [displayButtons, setDisplayButtons] = useState<boolean>(true);
 
   const socketRef = useRef<any>(null);
-
-//   console.log(hookTab[0]);
-
-//   const sendPaddleUpdate = () => {
-// 	 if (hookTab[0] === true)
-// 		  socketRef.current.emit('leftPaddleMoveUp');
-// 	 if (hookTab[1] === true)
-// 		  socketRef.current.emit('leftPaddleMoveDown');
-//   }
 
   const handleKeyPress = (event: KeyboardEvent) => {
 	  
@@ -62,27 +47,18 @@ const Lobby = () => {
   }
 
   const sendHookTabInfo = (client: Socket) => {
-	// const hookTabInfos = {
-	// 	hookTabInfo: hookTab,
-	// }
 	client?.emit('hookTabInfo', hookTab);
   }
 
   useEffect(() => {
-	// sendPaddleUpdate();
 	sendHookTabInfo(socketRef.current);
   },[hookTab])
 
-
-
   useEffect(() => {
 
-
-	
     console.log("Composant Game monté");
 
     socketRef.current = io("http://localhost:5001/game");
-
 
     socketRef.current.on('connect', () => {
       console.log("Connecté au serveur WebSocket avec succès!");
@@ -103,6 +79,10 @@ const Lobby = () => {
 	socketRef.current.on('gameInfo', (gameInfo:any) => {
 		// console.log(gameInfo);
 		setGameInfos(gameInfo);
+	});
+
+	socketRef.current.on('startPVPGame', () => {
+		console.log("go pvp");
 	})
 
 	document.addEventListener('keydown', handleKeyPress);
@@ -121,7 +101,7 @@ const Lobby = () => {
     setIAPong(false);
     setBotvsBot(false);
 	joinGame('vsPlayer');
-    // setGameState(null);
+	setDisplayButtons(false);
   };
 
   const handleIAPong = () => {
@@ -129,7 +109,7 @@ const Lobby = () => {
     setIAPong(true);
     setBotvsBot(false);
 	joinGame('vsBot');
-    // setGameState(null);
+	setDisplayButtons(false);
 
     socketRef.current.emit('startIAPong');
   };
@@ -138,7 +118,7 @@ const Lobby = () => {
     setLocalPong(false);
     setIAPong(false);
     setBotvsBot(true);
-    // setGameState(null);
+	setDisplayButtons(false);
 
     socketRef.current.emit('startBotvsBot');
   };
@@ -150,11 +130,15 @@ const Lobby = () => {
 
   return (
     <div className="page">
-      <button onClick={handleLocalPong}>Jouer en local</button>
+		{displayButtons && ( 
+		  <>
+      <button onClick={handleLocalPong}>Jouer en PVP</button>
       <button onClick={handleIAPong}>Jouer contre l'ordi</button>
       <button onClick={handleBotvsBot}>Bot vs Bot</button>
-      {IAPong && <PongIA gameInfo={gameInfos}/>}
-      {localPong && <PongLocal />}
+	  </>
+		)}
+      {IAPong && <PongGame gameInfo={gameInfos}/>}
+      {localPong && <PongGame gameInfo={gameInfos}/>}
       {BotvsBot1 && <BotvsBot />}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import PongIA from "./PongIA.tsx";
-import PongLocal from "./PongLocal.tsx";
+import PongLocal from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
 import Lobby from "./Lobby.tsx";

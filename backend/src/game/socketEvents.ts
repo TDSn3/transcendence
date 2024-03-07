@@ -18,7 +18,7 @@ export class SocketEvents {
 
   handleConnection(client: Socket) {
     try {
-    //   console.log("Nouvelle connexion établie! client ID:", client.id);
+      console.log("Nouvelle connexion établie! client ID:", client.id);
 	  client.on('joinlobby', (lobbyID: string) => {
 		if (!this.lobbies[lobbyID] || this.lobbies[lobbyID].length < 2) {
 		client.join(lobbyID);
@@ -39,7 +39,7 @@ export class SocketEvents {
 	  });
 	  client.on('joinGame', (gameMode: string) => {
 			if (gameMode === 'vsBot') {
-				// console.log('Contre un robot')
+				console.log('Contre un robot')
 				this.pongGame.gameMode = 'vsBot';
 				this.sendGameInfo(client, gameMode);
 
@@ -49,25 +49,39 @@ export class SocketEvents {
 
 				}, 1000 / 60);
 			}
-			else if (gameMode === 'vsPlayer')
-				console.log('Contre un joueur')
+			else if (gameMode === 'vsPlayer') {
+				console.log('Contre un joueur');
+				this.pongGame.gameMode = 'vsPlayer';
+				const lobbyID:string = 'vsPlayerLobby';
+				client.join(lobbyID);
+				this.lobbies[lobbyID] = this.lobbies[lobbyID] || [];
+				this.lobbies[lobbyID].push(client.id);
+				if (!this.pongGame.leftPaddle.websocket)
+					this.pongGame.leftPaddle.websocket = client.id;
+				else
+					this.pongGame.rightPaddle.websocket = client.id;
+
+				console.log(`Client ${client.id} a join le lobby ${lobbyID}`);
+
+				if (this.lobbies[lobbyID].length === 2) {
+					console.log(`le lobby ${lobbyID} est pret a dema `)
+					this.server.to(lobbyID).emit('startPVPGame');
+					this.SendGameInfoRoom(lobbyID);
+					this.updateInterval = setInterval(() => {
+						this.pongGame.nextFrame();
+						this.SendGameInfoRoom(lobbyID);
+	
+					}, 1000 / 60);
+				}
+
+			}
+
 
 		});
 	client.on('hookTabInfo', (hookTabInfos:any) => {
-		// console.log("#AVANT", hookTabInfos);
 		this.pongGame.hookTabInfo = hookTabInfos;
-		// console.log('#APRES', this.pongGame.hookTabInfo);
+		this.pongGame.actualClient = client.id;
 	});
-		
-				// client.on('leftPaddleMoveUp', () => {
-				// 	this.pongGame.LeftPaddleMoveUp();
-				// 	this.sendGameInfo(client);
-				// });
-		
-				// client.on('leftPaddleMoveDown', () => {
-				// 	this.pongGame.LeftPaddleMoveDown();
-				// 	this.sendGameInfo(client);
-				// });
       client.on('disconnect', () => {
         console.log("Déconnexion du client:", client.id);
 		clearInterval(this.updateInterval);
@@ -96,7 +110,20 @@ export class SocketEvents {
 		score: this.pongGame.score,
 		gameMode: gameMode,
 	}
-	// console.log(gameInfo.leftPaddle);
 	client.emit('gameInfo', gameInfo);
   }
+  
+  private SendGameInfoRoom(lobbyId: string) {
+	const gameInfo = {
+		width: this.pongGame.width,
+		height: this.pongGame.height,
+		ball: this.pongGame.ball,
+		leftPaddle: this.pongGame.leftPaddle,
+		rightPaddle: this.pongGame.rightPaddle,
+		score: this.pongGame.score,
+	}
+	// console.log(gameInfo);
+	this.server.to(lobbyId).emit('gameInfo', gameInfo)
+}
+
 }

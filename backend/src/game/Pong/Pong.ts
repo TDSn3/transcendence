@@ -6,12 +6,14 @@ export class Pong {
 	public isStarted: boolean = false;
 	public isFinished: boolean = false;
 
+	public actualClient?: string;
+
 	public gameMode: string;
 
 	public readonly width: number = 800;
 	public readonly height: number = 500;
 
-	public ball: Ball =  new Ball(800, 480);
+	public ball: Ball =  new Ball(800, 500);
 
 	public leftPaddle:Paddle = new Paddle("left");
 	public rightPaddle:Paddle = new Paddle("right");
@@ -50,16 +52,35 @@ export class Pong {
 					this.rightPaddle.pos.y -= botSpeed;
 				}
 			}
-		}
-		if (this.hookTabInfo) {
-			// if (this.hookTabInfo[0] || this.hookTabInfo[1])
-			// console.log('#IN_PONG', this.hookTabInfo);
-			let move = 0;
-			if (this.hookTabInfo[0] && this.leftPaddle.pos.y + (this.leftPaddle.height / 2) > 0)
+			
+			if (this.hookTabInfo) {
+				let move = 0;
+				
+				if (this.hookTabInfo[0] && this.leftPaddle.pos.y + (this.leftPaddle.height / 2) > 0)
 				move -= 6;
 			if (this.hookTabInfo[1] && this.leftPaddle.pos.y + this.leftPaddle.height  - (this.leftPaddle.height / 2) < this.height)
 				move += 6;
 			this.leftPaddle.pos.y += move;
+			}
+		}
+		else if (this.gameMode === 'vsPlayer') {
+
+			if (this.hookTabInfo) {
+				let leftMove = 0;
+				let rightMove = 0;
+
+				if (this.hookTabInfo[0] && this.actualClient === this.leftPaddle.websocket && this.leftPaddle.pos.y + (this.leftPaddle.height / 2) > 0)
+					leftMove -= 6;
+				if (this.hookTabInfo[1] && this.actualClient === this.leftPaddle.websocket && this.leftPaddle.pos.y + this.leftPaddle.height - (this.leftPaddle.height / 2) < this.height)
+					leftMove += 6;
+					if (this.hookTabInfo[0] && this.actualClient === this.rightPaddle.websocket && this.rightPaddle.pos.y + (this.rightPaddle.height / 2 ) > 0)
+					rightMove -= 6;
+				if (this.hookTabInfo[1] && this.actualClient === this.rightPaddle.websocket && this.rightPaddle.pos.y + this.rightPaddle.height - (this.rightPaddle.height / 2) < this.height)
+					rightMove += 6;
+				this.leftPaddle.pos.y += leftMove;
+				this.rightPaddle.pos.y += rightMove;
+				
+			}
 		}
 	};
 
@@ -124,15 +145,4 @@ export class Pong {
 		if (this.score[0] === 5 || this.score[1] === 5)
 			this.isFinished = true;
 	}
-
-	public LeftPaddleMoveUp () {
-		if (this.leftPaddle.pos.y - 5 > 0)
-			this.leftPaddle.pos.y -= this.leftPaddle.speed;
-	}
-
-	public LeftPaddleMoveDown () {
-		if (this.leftPaddle.pos.y + this.leftPaddle.height + 5 < this.height)
-			this.leftPaddle.pos.y += this.leftPaddle.speed;
-	}
-
 }
