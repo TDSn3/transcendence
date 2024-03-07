@@ -164,16 +164,16 @@ export class UsersService {
     }
   }
 
-  async getStatus(id: string): Promise<{ status: boolean }> {
+  async getStatus(id: string): Promise<{ status: UserStatus }> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: { statusWebSocketId: true },
     });
 
     if (user && user.statusWebSocketId.length > 0) {
-      return { status: true };
+      return { status: UserStatus.ONLINE };
     }
-    return { status: false };
+    return { status: UserStatus.OFFLINE };
   }
 
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {

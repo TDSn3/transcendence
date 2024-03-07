@@ -18,8 +18,7 @@ function FriendCard({ user }: FriendCardProps) {
     userServices
       .getStatus(user.id)
       .then((data) => {
-        // TODO: change bool to type
-        if (data.status) {
+        if (data.status === UserStatus.ONLINE) {
           setUserStatus(UserStatus.ONLINE);
         } else {
           setUserStatus(UserStatus.OFFLINE);

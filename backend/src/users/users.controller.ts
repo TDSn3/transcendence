@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
 import { AddFriendDto } from './dto/AddFriendDto';
 
@@ -20,7 +20,7 @@ export class UsersController {
   }
 
   @Get('status/id/:id')
-  getStatus(@Param('id') id: string): Promise<{ status: boolean }> {
+  getStatus(@Param('id') id: string): Promise<{ status: UserStatus }> {
     return this.usersService.getStatus(id);
   }
 
