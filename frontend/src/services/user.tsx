@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { User } from '../utils/types';
+import { User, UserStatus } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/users`;
@@ -48,9 +48,21 @@ const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => 
   }
 };
 
+const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
+  try {
+    const { data } = await axios.get<{ status: UserStatus }>(`${url}/status/id/${userId}`);
+
+    console.log(data);
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET get status.'));
+  }
+};
+
 export default {
   getAll,
   getUserById,
   getUserByLogin,
   addFriend,
+  getStatus,
 };

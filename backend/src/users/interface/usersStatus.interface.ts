@@ -1,16 +1,13 @@
 /* eslint-disable prettier/prettier */
 
-export interface User {
-  id: string,
-  status: string,
-}
+import { User } from '@prisma/client';
 
-// Interface for when server emits events to clients.
+export type UserForStatusWebSocket = Pick<User, 'id' | 'status'>;
+
 export interface ServerToClientEvents {
-  chat: (e: User) => void,
+  message: (data: UserForStatusWebSocket) => void,
 }
 
-// Interface for when clients emit events to the server.
 export interface ClientToServerEvents {
-  chat: (e: User) => void,
+  message: (data: UserForStatusWebSocket) => void,
 }
