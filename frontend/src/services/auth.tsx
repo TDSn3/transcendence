@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { User } from '../utils/types';
+import errorMessage from '../utils/errorMessage';
 
 const logoutUser = async (user: User) => {
   try {
@@ -13,21 +14,7 @@ const logoutUser = async (user: User) => {
     console.error('Error during disconnection:', response.data);
     throw new Error('Failed to logout');
   } catch (error: unknown) {
-    let errorMessage = 'Error during disconnection.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'Error during disconnection.'));
   }
 };
 
@@ -48,21 +35,7 @@ const addFakeUser = async () => {
     console.error('Failed to create user:', response.data);
     throw new Error('Failed to create user');
   } catch (error: unknown) {
-    let errorMessage = 'Error creating user.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'Error creating user.'));
   }
 };
 
@@ -81,21 +54,7 @@ const authentication42 = async (code: string) => {
     console.error('User not found:', response.data);
     throw new Error('User not found');
   } catch (error: unknown) {
-    let errorMessage = 'User not found.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'User not found.'));
   }
 };
 

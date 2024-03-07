@@ -79,6 +79,9 @@ Aussi, cela elimine la nécessité de répéter la structure des données dans p
 `npx prima migrate deploy`: upload modifications 
 `npx prisma studio` : debug the database
 
+`npx prisma migrate dev --name name_migrate`
+`npx prisma generate`
+
 If you test the database on local, you'll have to 
 
 - Run ONLY the database on the docker-compose, so comment frontend and backend service

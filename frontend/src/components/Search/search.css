@@ -24,7 +24,7 @@
 	outline: 3px solid var(--color-medium);
 }
 
-input::placeholder {
+.search::placeholder {
 	color: var(--color-medium-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;

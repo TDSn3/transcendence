@@ -4,18 +4,17 @@ import Login from './components/Login/Login';
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
 import Chat from './components/Chat/Chat';
+import ChatRoutes from './components/Chat/ChatRoutes';
 import Game from './components/Game/Game';
 import SignIn42 from './components/SignIn42/SignIn42';
 import Logout from './components/Logout';
 import Friends from './components/Friends/Friends';
-
+import NotFoundPage from './components/NotFoundPage/NotFoundPage';
+import useSocket from './contexts/Socket/useSocket';
 import useAuth from './contexts/Auth/useAuth';
 
-import ChatRoutes from './components/Chat/ChatRoutes';
-
-import NotFoundPage from './components/NotFoundPage/NotFoundPage';
-
 function App() {
+  const { socket } = useSocket();
   const { isLoggedIn } = useAuth();
 
   console.log('isLoggedIn === ', isLoggedIn);
@@ -39,7 +38,7 @@ function App() {
               <Route path="/chat" element={<Chat />} />
               {ChatRoutes()}
               <Route path="/game" element={<Game />} />
-              <Route path="/logout" element={<Logout />} />
+              <Route path="/logout" element={<Logout socket={socket} />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </>

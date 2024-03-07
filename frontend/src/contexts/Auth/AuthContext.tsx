@@ -38,6 +38,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .then((userValue) => {
           setUser(userValue);
           setLoggedIn(true);
+        })
+        .catch((error: unknown) => {
+          setLoggedIn(false);
+
+          localStorage.removeItem('userLogin');
+
+          if (error instanceof Error) {
+            console.error(error.message);
+          } else {
+            console.error('Error creating user:', error);
+          }
         });
     }
   };
