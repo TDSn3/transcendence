@@ -1,7 +1,6 @@
 import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class IntraUserDataDto {
-
   @IsString()
   @IsOptional()
   TwoFactorAuthSecret?: string;

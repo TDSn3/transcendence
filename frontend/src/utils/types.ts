@@ -1,39 +1,13 @@
-// export interface User {
-//   id: string,
-//   username: string,
-//   profilePictureUrl: string,
-//   rank: number,
-//   gamesWon: number,
-//   gamesLost: number,
-// }
-
-// export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
-
-// export interface Player {
-//   user: UserEssential,
-//   score: number,
-//   won: boolean,
-// }
-
-// export interface GameResult {
-//   players: [Player, Player],
-// }
-
-// export interface UserGameHistory {
-//   userId: string,
-//   gameHistory: GameResult[],
-// }
-
 export enum UserStatus {
-  ONLINE,
-  OFFLINE,
-  PLAYING,
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  PLAYING = 'PLAYING',
 }
 
 export interface User {
-  id: number,
-  createdAt: number,
-  updatedAt: number,
+  id: string,
+  createdAt: string,
+  updatedAt: string,
   TwoFactorAuthSecret: string,
   isTwoFactorEnabled: boolean,
 
@@ -49,12 +23,15 @@ export interface User {
   status: UserStatus,
 
   accessToken: string,
+
+  friends: User[],
+  friendOf: User[],
 }
 
 export const emptyUser: User = {
-  id: 0,
-  createdAt: 0,
-  updatedAt: 0,
+  id: '',
+  createdAt: '',
+  updatedAt: '',
   TwoFactorAuthSecret: '',
   isTwoFactorEnabled: false,
 
@@ -70,45 +47,19 @@ export const emptyUser: User = {
   status: UserStatus.OFFLINE,
 
   accessToken: '',
+
+  friends: [],
+  friendOf: [],
 };
 
-interface UserData {
-  TwoFactorAuthSecret: string,
-  avatar: string,
-  email42: string,
-  firstName: string,
-  intraId: number,
-  isTwoFactorEnabled: boolean,
-  lastName: string,
-  login: string,
-  wins: number,
-  losses: number,
+// Web socket
+
+export type UserForStatusWebSocket = Pick<User, 'id' | 'status'>;
+
+export interface ServerToClientEvents {
+  message: (data: UserForStatusWebSocket) => void,
 }
 
-export interface AuthResponse {
-  accessToken: string,
-  created: number,
-  userData: UserData,
+export interface ClientToServerEvents {
+  message: (data: UserForStatusWebSocket) => void,
 }
-
-// TODO: armoniser le back et front avec la db
-export const transformAuthResponseToUser = (authResponse: AuthResponse): User => ({
-  id: -1,
-  createdAt: authResponse.created,
-  updatedAt: -1, // TODO
-  TwoFactorAuthSecret: authResponse.userData.TwoFactorAuthSecret,
-  isTwoFactorEnabled: authResponse.userData.isTwoFactorEnabled,
-
-  intraId: authResponse.userData.intraId,
-  email42: authResponse.userData.email42,
-  login: authResponse.userData.login,
-  firstName: authResponse.userData.firstName,
-  lastName: authResponse.userData.lastName,
-  avatar: authResponse.userData.avatar,
-  wins: 0,
-  losses: 0,
-
-  status: UserStatus.ONLINE, // TODO
-
-  accessToken: authResponse.accessToken,
-});

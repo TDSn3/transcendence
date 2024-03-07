@@ -1,100 +1,61 @@
 import axios from 'axios';
 
-import {
-  User,
-  AuthResponse,
-  transformAuthResponseToUser,
-} from '../utils/types';
+import { User, UserStatus } from '../utils/types';
+import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/users`;
 
 const getAll = async () => {
-  const { data } = await axios.get<User[]>(`${url}`);
-
-  return (data);
-};
-
-const getUserById = async (id: string): Promise<User> => {
-  const { data } = await axios.get<User>(`${url}/id/${id}`);
-
-  return (data);
-};
-
-const getUserByLogin = async (login: string): Promise<User> => {
-  const { data } = await axios.get<User>(`${url}/login/${login}`);
-
-  return (data);
-};
-
-const addFakeUser = async () => {
-  const fakeUser = {
-    code: 'fakeCode',
-    otp: 'fakeOtp',
-  };
-
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/FakeUsers`, fakeUser, { withCredentials: true });
+    const { data } = await axios.get<User[]>(`${url}`);
 
-    if (response.status === 200) {
-      const userData: AuthResponse = response.data.user;
-      const userGoodData: User = transformAuthResponseToUser(userData);
-
-      console.log('User data:', userGoodData);
-      return (userGoodData);
-    }
-    console.error('Failed to create user:', response.data);
-    throw new Error('Failed to create user');
+    return (data);
   } catch (error: unknown) {
-    let errorMessage = 'Error creating user.';
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
-
-    throw new Error(errorMessage);
+    throw new Error(errorMessage(error, 'Error GET all User.'));
   }
 };
 
-const authentication42 = async (code: string) => {
+const getUserById = async (id: string): Promise<User> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/auth/signin42`, {
-      params: { code },
-      withCredentials: true,
+    const { data } = await axios.get<User>(`${url}/id/${id}`);
+
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET User by ID.'));
+  }
+};
+
+const getUserByLogin = async (login: string): Promise<User> => {
+  try {
+    const { data } = await axios.get<User>(`${url}/login/${login}`);
+
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET User by LOGIN.'));
+  }
+};
+
+const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/ad-friend/${userId}`, {
+      idUserToAddAsFriend: userIdToAdd,
     });
 
-    if (response.status === 200) {
-      const userData: AuthResponse = response.data.user;
-      const userGoodData: User = transformAuthResponseToUser(userData);
-
-      console.log('User data:', userGoodData);
-      return (userGoodData);
-    }
-    console.error('User not found:', response.data);
-    throw new Error('User not found');
+    console.log(data);
+    return (data);
   } catch (error: unknown) {
-    let errorMessage = 'User not found.';
+    throw new Error(errorMessage(error, 'Error POST add friend.'));
+  }
+};
 
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        errorMessage += ` Data: ${JSON.stringify(error.response.data)}`;
-      } else if (error.request) {
-        errorMessage += ` No response. Data: ${error.request}`;
-      } else {
-        errorMessage += ` ${error.message}`;
-      }
-    } else if (error instanceof Error) {
-      errorMessage += ` Other than Axios: ${error.message}`;
-    }
+const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
+  try {
+    const { data } = await axios.get<{ status: UserStatus }>(`${url}/status/id/${userId}`);
 
-    throw new Error(errorMessage);
+    console.log(data);
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET get status.'));
   }
 };
 
@@ -102,6 +63,6 @@ export default {
   getAll,
   getUserById,
   getUserByLogin,
-  addFakeUser,
-  authentication42,
+  addFriend,
+  getStatus,
 };

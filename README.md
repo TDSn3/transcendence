@@ -79,6 +79,9 @@ Aussi, cela elimine la nécessité de répéter la structure des données dans p
 `npx prima migrate deploy`: upload modifications 
 `npx prisma studio` : debug the database
 
+`npx prisma migrate dev --name name_migrate`
+`npx prisma generate`
+
 If you test the database on local, you'll have to 
 
 - Run ONLY the database on the docker-compose, so comment frontend and backend service
@@ -105,6 +108,7 @@ If you test the database on local, you'll have to
 - - ` Part 2 ` react : https://fullstackopen.com/en/part0
 - - ` Part 9 ` typeScript : https://fullstackopen.com/en/part0
 - - ` Part 13 ` relational databases : https://fullstackopen.com/en/part0
+- - web socket : https://dev.to/delightfulengineering/nest-js-websockets-basics-35b8
 
 ## VS Code extension
 

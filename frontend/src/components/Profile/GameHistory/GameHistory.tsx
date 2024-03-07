@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { User, UserGameHistory } from '../../../utils/types';
-import ProfilePicture from '../ProfilePicture/ProfilePicture';
+import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import gameHistoryService from '../../../services/gameHistory';
 
 import './game-history.css';

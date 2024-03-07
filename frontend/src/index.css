@@ -53,6 +53,14 @@ body {
 	border-radius: 14px;
 }
 
+.void-page {
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin-medium);
+	flex-grow: 1;
+	flex-basis: 0;
+}
+
 h1 {
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
@@ -68,7 +76,7 @@ h3 {
 	font-family: var(--font-family-principal);
 	font-weight:500;
 	font-style: normal;
-	font-size: 34px;
+	font-size: 32px;
 }
 
 p, span, div {

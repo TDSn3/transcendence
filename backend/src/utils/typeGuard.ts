@@ -9,4 +9,7 @@ const parseString = (value: unknown): string => {
   return value;
 };
 
-export default { parseString };
+export default {
+  isString,
+  parseString,
+};

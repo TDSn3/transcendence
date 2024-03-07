@@ -1,0 +1,21 @@
+.user-list-item {
+	background-color: var(--color-medium);
+
+	margin-left: 16px;
+	margin-right: 16px;
+
+	padding-top: 6px;
+	padding-right: 14px;
+	padding-bottom: 6px;
+	padding-left: 14px;
+
+	border-radius: var(--border-radius-small);
+}
+
+.user-list-item:hover {
+	background-color: var(--color-medium-dark);
+}
+
+a {
+	text-decoration: none;
+}
