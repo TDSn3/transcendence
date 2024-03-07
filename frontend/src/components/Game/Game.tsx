@@ -9,16 +9,16 @@ import Lobby from "./Lobby.tsx";
 function Game() {
 
   const [lobby, setLobby] = useState(false);
-  const [buttonText, setButtonText] = useState("Join lobby");
+  const [buttonText, setButtonText] = useState("Play");
 
   const handleLobby = () => {
     // setLobby(true);
 	if (lobby) {
 		setLobby(false);
-		setButtonText("Join lobby");
+		setButtonText("Play");
 	} else {
 		setLobby(true);
-		setButtonText("Quit lobby")
+		setButtonText("Leave game")
 	}
    
   };

@@ -53,7 +53,7 @@ function drawGame() {
 				context.fillStyle = 'red';
 				context.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
 				context.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
-		}
+			}
 
 			const drawBall = () => {
 				context.beginPath();
@@ -204,8 +204,8 @@ useEffect(() => {
 			const directionY = Math.sin(angle);
 			
 			speed *= 1.05;
-			if (speed > 20)
-				speed = 20;
+			// if (speed > 20)
+			// 	speed = 20;
 			const newSpeedX = directionX * speed;
 			const newSpeedY = directionY * speed;
 
@@ -226,8 +226,8 @@ useEffect(() => {
 			const directionY = Math.sin(angle);
 			
 			speed *= 1.05;
-			if (speed > 20)
-				speed = 20;
+			// if (speed > 20)
+			// 	speed = 20;
 			const newSpeedX = directionX * speed;
 			const newSpeedY = directionY * speed;
 
