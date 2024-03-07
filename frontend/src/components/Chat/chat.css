@@ -1,21 +1,16 @@
-#kekw {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	overflow: auto;
-}
-
 .input-bar {
-	margin-top: auto;
 }
 
 .input-text {
-	width: 89%;
+	width: 95%;
+	box-sizing: border-box;
+	float: left;
 }
 
 .input-button {
-	width: 10%;
-	margin: auto;
+	width: 5%;
+	box-sizing: border-box;
+	float: left;
 }
 
 .message {

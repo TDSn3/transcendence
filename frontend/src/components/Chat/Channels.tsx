@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { decodeToken } from "react-jwt";
-import { io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import axios from "axios";
 import Popup from "./Popup.tsx";
 import "./channels.css";
-
+import { calc } from "antd/es/theme/internal";
 
 const channelsNames = (await axios.get("http://localhost:5001/api/channels/names")).data;
 
@@ -14,7 +14,7 @@ const Channel = (param: {id:number, name: string}) => {
 
 	const handleClick: any = () => {
 		navigate("/chat/" + param.name);
-		axios.post("http://localhost:5001/api/channelMembers", {intraId: (decodeToken(document.cookie).sub), channelId: param.id })
+		axios.post("http://localhost:5001/api/channelMembers", {intraId: (decodeToken(document.cookie).sub), channelId: param.id });
 	}
 
 	return (
@@ -27,13 +27,6 @@ const Channel = (param: {id:number, name: string}) => {
 const Channels = () => {
 	const navigate = useNavigate();
 
-	console.log("yeg");
-	const socket = io("http://localhost:5001/chat");
-	socket.on("ret", (payload: string) => {
-		console.log(payload);
-	});
-
-	socket.emit("chat-connect");
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
@@ -45,12 +38,14 @@ const Channels = () => {
 			.then(() => {
 				navigate("/chat/" + channelName);
 				window.location.reload();
-			}
-		);
+			})
+			.catch(() => {
+				console.log("problemz");
+			});
 	}
 
 	return (
-		<div>
+		<div id="kekw" className="page">
 			<div className="banner">
 				<input type="button" value="🏠" onClick={() => navigate("/home")}/>
 				<h3>Chat</h3>
@@ -63,7 +58,7 @@ const Channels = () => {
 					)
 				}
 			</div>
-			<Popup className="create" trigger={buttonPopup} setTrigger={setButtonPopup}>
+			<Popup className="create" trigger={buttonPopup} setTrigger={setButtonPopup} x="30px" y="75px">
 				<h4 className="create-title">Channel creation</h4>
 				<form className="create-form" onSubmit={handleSubmit}>
 					<input type="text" placeholder="Name" autoComplete="off" value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
