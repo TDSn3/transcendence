@@ -20,7 +20,6 @@ export class ChannelMembersService {
 			return (newChannelMember);
 		}
 		catch (error) {
-			res.status(501).json({message: 'ChannelMember creation failed', error: error.message});
 			throw error;
 		}
 	}

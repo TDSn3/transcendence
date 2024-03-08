@@ -33,6 +33,22 @@ export class UsersService {
     return user;
   }
 
+  async findByIntraId(id: number): Promise<User> {
+	if (!id) {
+	  throw new BadRequestException('User intraId is required');
+	}
+
+	const user = await this.prisma.user.findUnique({
+	  where: { intraId: id },
+	})
+
+	if (!user) {
+	  throw new NotFoundException(`User with ID ${id} not found`);
+	}
+
+	return (user);
+  }
+
   async findByLogin(login: string): Promise<User> {
     if (!login) {
       throw new BadRequestException('login is required');

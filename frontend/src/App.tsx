@@ -3,7 +3,6 @@ import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
-import ChatRoutes from './components/Chat/ChatRoutes';
 import Channels from './components/Chat/Channels';
 import Game from './components/Game/Game';
 import SignIn42 from './components/SignIn42/SignIn42';
@@ -12,6 +11,7 @@ import Friends from './components/Friends/Friends';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import useSocket from './contexts/Socket/useSocket';
 import useAuth from './contexts/Auth/useAuth';
+import ChatRoom from './components/Chat/ChatRoom';
 
 function App() {
   const { socket } = useSocket();
@@ -36,7 +36,7 @@ function App() {
               <Route path="/profile/:login" element={<Profile />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/chat" element={<Channels />} />
-              {ChatRoutes()}
+			  <Route path="/chat/:channelName" element={<ChatRoom />} />
               <Route path="/game" element={<Game />} />
               <Route path="/logout" element={<Logout socket={socket} />} />
               <Route path="*" element={<NotFoundPage />} />
