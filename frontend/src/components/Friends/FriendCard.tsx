@@ -53,10 +53,19 @@ function FriendCard({ user }: FriendCardProps) {
 
   return (
     <div className="friend-card">
+      <div className="overlay">Go to profile</div>
       <ProfilePicture size="128px" imageUrl={user.avatar} />
-      {user.login}
-      <br />
-      {userStatus === UserStatus.ONLINE ? 'ONLINE' : 'OFFLINE'}
+      <div className="text-container">
+        <div className="title">{user.login}</div>
+        <div className="subtitle">
+          {user.firstName}
+          {' '}
+          {user.lastName}
+        </div>
+      </div>
+      <div className={userStatus === UserStatus.ONLINE ? 'online' : 'offline'}>
+        {userStatus === UserStatus.ONLINE ? 'ONLINE' : 'OFFLINE'}
+      </div>
     </div>
   );
 }
