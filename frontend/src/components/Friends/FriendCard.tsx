@@ -1,18 +1,23 @@
-import { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { useState, useEffect, forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User, UserStatus, UserForStatusWebSocket } from '../../utils/types';
 import useSocket from '../../contexts/Socket/useSocket';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
+import Overlay from './Overlay';
 import userServices from '../../services/user';
 
 import './friend-card.css';
+import './overlay.css';
 
 interface FriendCardProps {
   user: User,
 }
 
-function FriendCard({ user }: FriendCardProps) {
+const FriendCard = forwardRef<HTMLDivElement, FriendCardProps>(({ user }, ref) => {
   const { socket } = useSocket();
   const [userStatus, setUserStatus] = useState<UserStatus>(UserStatus.OFFLINE);
+  const navigate = useNavigate();
 
   const hook = () => {
     userServices
@@ -51,9 +56,26 @@ function FriendCard({ user }: FriendCardProps) {
   };
   useEffect(hookSocket, [socket, user.id, user.login]);
 
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>
+  | React.KeyboardEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    navigate(`/profile/${user.login}`);
+  };
+
+  const container = document.getElementById('friends-page-id');
+  const overlayDiv = <Overlay ref={ref} text="Go to profile" />;
+
   return (
-    <div className="friend-card">
-      <div className="overlay">Go to profile</div>
+    <div
+      className="friend-card"
+      tabIndex={0}
+      onClick={handleClick}
+      aria-hidden="true"
+      role="button"
+      ref={ref}
+    >
+      {container ? ReactDOM.createPortal(overlayDiv, container) : overlayDiv}
       <ProfilePicture size="128px" imageUrl={user.avatar} />
       <div className="text-container">
         <div className="title">{user.login}</div>
@@ -68,6 +90,6 @@ function FriendCard({ user }: FriendCardProps) {
       </div>
     </div>
   );
-}
+});
 
 export default FriendCard;

@@ -1,4 +1,14 @@
-.friends-container {
+.friends-title{
+	flex-shrink: 0;
+}
+
+.friend-card-container-parent {
+	display: flex;
+
+	overflow-y: auto;
+}
+
+.friend-card-container {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--margin-medium);
