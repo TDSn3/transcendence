@@ -35,12 +35,6 @@ function Friends() {
           userWithFriends?.friends?.map((userValue) => (
             <div key={userValue.id} className="friend-card-container">
               <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
-              <FriendCard user={userValue} />
             </div>
           ))
         }

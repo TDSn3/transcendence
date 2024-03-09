@@ -12,9 +12,14 @@
 }
 
 .friend-card-container {
-	display: flex;
+	/* display: flex;
 	flex-wrap: wrap;
+	gap: var(--margin-medium); */
+
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
 	gap: var(--margin-medium);
+	width: 100%;	
 }
 
 .friend-card-container-parent::-webkit-scrollbar {
@@ -39,19 +44,20 @@
 .overlay {
 	display: flex;
     position: absolute;
-	top: 5%;
+	top: 40%;
 	left: 50%;
+
 	transform: translate(-50% , -50%);
 	
-	padding: 4px;
-	padding-left: 14px;
-	padding-right: 14px;
 	white-space: nowrap;
 
-	background-color: var(--color-light);
-
-	border: solid 1.33px var(--color-medium-dark);
-	border-radius: 999px;
+	color: var(--color-light);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	text-shadow: 0px 1px 14px var(--color-dark);
+	letter-spacing: 0.33px;
 
 	transition:
 		top 0.4s,
@@ -61,6 +67,32 @@
 }
 
 .friend-card:hover .overlay {
-	top: 0%;
+	top: 32.33%;
+    opacity: 1;
+}
+
+.background-overlay {
+    position: absolute;
+	top: 31.8%;
+	left: 50%;
+
+	width: 128px;
+	height: 128px;
+
+	transform: translate(-50% , -50%);
+
+	/* background-color: rgba(0, 0, 0, 0.5); */
+	background: linear-gradient(180deg, rgba(54, 53, 51, 0.00) 0%, #363533 100%);
+	border-radius: 999px;
+
+	transition:
+		top 0.4s,
+		opacity 0.2s;
+
+	opacity: 0;	
+}
+
+.friend-card:hover .background-overlay {
+	top: 31.8%;
     opacity: 1;
 }

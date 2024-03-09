@@ -35,7 +35,7 @@ body {
 
 .container {
 	display: flex;
-	flex-direction: row;
+	/* flex-direction: row; */
 	gap: var(--margin-medium);
 	height: 100%;
 }

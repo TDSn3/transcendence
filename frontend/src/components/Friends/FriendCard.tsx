@@ -68,7 +68,8 @@ function FriendCard({ user }: FriendCardProps) {
       aria-hidden="true"
       role="button"
     >
-      <div className="overlay">View profile</div>
+      <div className="background-overlay"> </div>
+      <div className="overlay">view profile</div>
       <ProfilePicture size="128px" imageUrl={user.avatar} />
       <div className="text-container">
         <div className="title">{user.login}</div>
