@@ -9,6 +9,7 @@ import './friends.css';
 function Friends() {
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
+  const [friendsList, setFriendsList] = useState<User[]>([]);
 
   const hook = () => {
     userServices
@@ -20,8 +21,12 @@ function Friends() {
         console.error(error);
       });
   };
+  useEffect(hook, [user, friendsList]);
 
-  useEffect(hook, [user]);
+  const friendsListHook = () => {
+    setFriendsList(userWithFriends?.friends?.map((userValue) => userValue));
+  };
+  useEffect(friendsListHook, [userWithFriends?.friends]);
 
   return (
     <div className="void-page" id="friends-page-id">
@@ -32,9 +37,13 @@ function Friends() {
       </h3>
       <div className="friend-card-container-parent">
         {
-          userWithFriends?.friends?.map((userValue) => (
+          friendsList?.map((userValue) => (
             <div key={userValue.id} className="friend-card-container">
-              <FriendCard user={userValue} />
+              <FriendCard
+                userFriend={userValue}
+                friendsList={friendsList}
+                setFriendsList={setFriendsList}
+              />
             </div>
           ))
         }

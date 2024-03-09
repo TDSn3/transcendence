@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Login from './components/Login/Login';
@@ -17,7 +18,7 @@ function App() {
   const { socket } = useSocket();
   const { isLoggedIn } = useAuth();
 
-  console.log('isLoggedIn === ', isLoggedIn);
+  useEffect(() => console.log('isLoggedIn === ', isLoggedIn), [isLoggedIn]);
 
   return (
     <div className="App container">

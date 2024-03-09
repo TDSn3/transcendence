@@ -2,23 +2,28 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, UserStatus, UserForStatusWebSocket } from '../../utils/types';
 import useSocket from '../../contexts/Socket/useSocket';
+import useAuth from '../../contexts/Auth/useAuth';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
 import userServices from '../../services/user';
+import XmarkIconoirButton from '../Buttons/XmarkIconoirButton/XmarkIconoirButton';
 
 import './friend-card.css';
 
 interface FriendCardProps {
-  user: User,
+  userFriend: User,
+  friendsList: User[],
+  setFriendsList: React.Dispatch<React.SetStateAction<User[]>>,
 }
 
-function FriendCard({ user }: FriendCardProps) {
+function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps) {
+  const { user } = useAuth();
   const { socket } = useSocket();
   const [userStatus, setUserStatus] = useState<UserStatus>(UserStatus.OFFLINE);
   const navigate = useNavigate();
 
   const hook = () => {
     userServices
-      .getStatus(user.id)
+      .getStatus(userFriend.id)
       .then((data) => {
         if (data.status === UserStatus.ONLINE) {
           setUserStatus(UserStatus.ONLINE);
@@ -30,15 +35,15 @@ function FriendCard({ user }: FriendCardProps) {
         console.error(error);
       });
   };
-  useEffect(hook, [user]);
+  useEffect(hook, [userFriend]);
 
   const hookSocket = () => {
     if (socket !== undefined) {
       const handleMessage = (data: UserForStatusWebSocket) => {
         console.log('Message from web socket: ', data);
 
-        if (data.id === user.id) {
-          console.log(`My friend ${user.login} changed status to ${data.status}`);
+        if (data.id === userFriend.id) {
+          console.log(`My friend ${userFriend.login} changed status to ${data.status}`);
           setUserStatus(data.status);
         }
       };
@@ -51,13 +56,29 @@ function FriendCard({ user }: FriendCardProps) {
 
     return (() => {});
   };
-  useEffect(hookSocket, [socket, user.id, user.login]);
+  useEffect(hookSocket, [socket, userFriend.id, userFriend.login]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>
   | React.KeyboardEvent<HTMLDivElement>) => {
     event.preventDefault();
 
     navigate(`/profile/${user.login}`);
+  };
+
+  const handleClickXmark = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    userServices
+      .deleteFriend(user.id, userFriend.id)
+      .then(() => {
+        const copyList = [...friendsList];
+
+        setFriendsList(copyList.filter((friend) => friend.id !== userFriend.id));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -70,13 +91,14 @@ function FriendCard({ user }: FriendCardProps) {
     >
       <div className="background-overlay"> </div>
       <div className="overlay">view profile</div>
-      <ProfilePicture size="128px" imageUrl={user.avatar} />
+      <XmarkIconoirButton handleClick={handleClickXmark} />
+      <ProfilePicture size="128px" imageUrl={userFriend.avatar} />
       <div className="text-container">
-        <div className="title">{user.login}</div>
+        <div className="title">{userFriend.login}</div>
         <div className="subtitle">
-          {user.firstName}
+          {userFriend.firstName}
           {' '}
-          {user.lastName}
+          {userFriend.lastName}
         </div>
       </div>
       <div className={userStatus === UserStatus.ONLINE ? 'online' : 'offline'}>

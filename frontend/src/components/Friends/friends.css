@@ -66,6 +66,10 @@
 	opacity: 0;
 }
 
+.friend-card:hover .xmark-iconoir-button {
+	opacity: 1;
+}
+
 .friend-card:hover .overlay {
 	top: 32.33%;
     opacity: 1;
