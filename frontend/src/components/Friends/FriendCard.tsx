@@ -62,7 +62,7 @@ function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps
   | React.KeyboardEvent<HTMLDivElement>) => {
     event.preventDefault();
 
-    navigate(`/profile/${user.login}`);
+    navigate(`/profile/${userFriend.login}`);
   };
 
   const handleClickXmark = (event: React.MouseEvent<HTMLButtonElement>) => {
