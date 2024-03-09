@@ -32,11 +32,13 @@ const Overlay = forwardRef<HTMLDivElement, FriendCardProps>(({ text }, ref) => {
 
       updateStyle();
       window.addEventListener('resize', updateStyle);
+      window.addEventListener('scroll', updateStyle, true);
 
       return () => {
         currentRef.removeEventListener('mouseenter', handleMouseEnter);
         currentRef.removeEventListener('mouseleave', handleMouseLeave);
         window.removeEventListener('resize', updateStyle);
+        window.removeEventListener('scroll', updateStyle, true);
       };
     }
 

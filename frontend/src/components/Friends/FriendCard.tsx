@@ -1,20 +1,17 @@
-import ReactDOM from 'react-dom';
-import { useState, useEffect, forwardRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, UserStatus, UserForStatusWebSocket } from '../../utils/types';
 import useSocket from '../../contexts/Socket/useSocket';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
-import Overlay from './Overlay';
 import userServices from '../../services/user';
 
 import './friend-card.css';
-import './overlay.css';
 
 interface FriendCardProps {
   user: User,
 }
 
-const FriendCard = forwardRef<HTMLDivElement, FriendCardProps>(({ user }, ref) => {
+function FriendCard({ user }: FriendCardProps) {
   const { socket } = useSocket();
   const [userStatus, setUserStatus] = useState<UserStatus>(UserStatus.OFFLINE);
   const navigate = useNavigate();
@@ -63,9 +60,6 @@ const FriendCard = forwardRef<HTMLDivElement, FriendCardProps>(({ user }, ref) =
     navigate(`/profile/${user.login}`);
   };
 
-  const container = document.getElementById('friends-page-id');
-  const overlayDiv = <Overlay ref={ref} text="Go to profile" />;
-
   return (
     <div
       className="friend-card"
@@ -73,9 +67,8 @@ const FriendCard = forwardRef<HTMLDivElement, FriendCardProps>(({ user }, ref) =
       onClick={handleClick}
       aria-hidden="true"
       role="button"
-      ref={ref}
     >
-      {container ? ReactDOM.createPortal(overlayDiv, container) : overlayDiv}
+      <div className="overlay">View profile</div>
       <ProfilePicture size="128px" imageUrl={user.avatar} />
       <div className="text-container">
         <div className="title">{user.login}</div>
@@ -90,6 +83,6 @@ const FriendCard = forwardRef<HTMLDivElement, FriendCardProps>(({ user }, ref) =
       </div>
     </div>
   );
-});
+}
 
 export default FriendCard;

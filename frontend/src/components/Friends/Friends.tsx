@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '../../utils/types';
 import userServices from '../../services/user';
 import useAuth from '../../contexts/Auth/useAuth';
@@ -23,8 +23,6 @@ function Friends() {
 
   useEffect(hook, [user]);
 
-  const friendCardRef = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
-
   return (
     <div className="void-page" id="friends-page-id">
       <h3 className="friends-title">
@@ -34,17 +32,17 @@ function Friends() {
       </h3>
       <div className="friend-card-container-parent">
         {
-          userWithFriends?.friends?.map((userValue) => {
-            if (!friendCardRef.current[userValue.id]) {
-              friendCardRef.current[userValue.id] = React.createRef<HTMLDivElement>();
-            }
-
-            return (
-              <div key={userValue.id} className="friend-card-container">
-                <FriendCard ref={friendCardRef.current[userValue.id]} user={userValue} />
-              </div>
-            );
-          })
+          userWithFriends?.friends?.map((userValue) => (
+            <div key={userValue.id} className="friend-card-container">
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+              <FriendCard user={userValue} />
+            </div>
+          ))
         }
       </div>
     </div>
