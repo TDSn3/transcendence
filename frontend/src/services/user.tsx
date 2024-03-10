@@ -41,6 +41,7 @@ const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => 
       idUserToAddAsFriend: userIdToAdd,
     });
 
+    console.log('New friend added.');
     return (data);
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add friend.'));
@@ -53,6 +54,7 @@ const deleteFriend = async (userId: string, userIdToDel: string): Promise<User> 
       idUserToDelAsFriend: userIdToDel,
     });
 
+    console.log('Friend deleted.');
     return (data);
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add friend.'));
