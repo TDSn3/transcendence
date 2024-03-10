@@ -40,8 +40,6 @@ function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps
   const hookSocket = () => {
     if (socket !== undefined) {
       const handleMessage = (data: UserForStatusWebSocket) => {
-        console.log('Message from web socket: ', data);
-
         if (data.id === userFriend.id) {
           console.log(`My friend ${userFriend.login} changed status to ${data.status}`);
           setUserStatus(data.status);
