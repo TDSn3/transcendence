@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Select, ConfigProvider } from 'antd';
 import { User } from '../../utils/types';
 
@@ -10,19 +11,21 @@ interface SearchProps {
   searchValue: string,
   setSearchValue: React.Dispatch<React.SetStateAction<string>>,
   userList: User[],
-  setUserShowProfile: React.Dispatch<React.SetStateAction<User | null>>,
 }
 
 function Search({
-  placeholder, searchValue, setSearchValue, userList, setUserShowProfile,
+  placeholder, searchValue, setSearchValue, userList,
 }: SearchProps) {
+  const navigate = useNavigate();
   const filteredUser = userList.filter((userValue) => (searchValue !== '' && userValue.login.toLowerCase().includes(searchValue.toLowerCase())));
 
   const handleDropdownChange = (value: string) => {
     const selectedUser = userList.find((user) => user.login === value);
 
     setSearchValue(value);
-    setUserShowProfile(selectedUser || null);
+    if (selectedUser) {
+      navigate(`/profile/${selectedUser.login}`);
+    }
   };
 
   return (
@@ -40,6 +43,7 @@ function Search({
       }}
     >
       <Select
+        className="search"
         showSearch
         placeholder={placeholder}
         value={searchValue || undefined}

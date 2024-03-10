@@ -1,21 +1,23 @@
-.friends-title{
+.friends-header{
+	display: flex;
+
+	justify-content: space-between;
+	gap: var(--margin-medium);
+
 	flex-shrink: 0;
+}
+
+.friends-title{
+	white-space: nowrap;
 }
 
 .friend-card-container-parent {
 	display: flex;
 
-	padding-top: 16px;
-	margin-top: -16px;
-
 	overflow-y: auto;
 }
 
 .friend-card-container {
-	/* display: flex;
-	flex-wrap: wrap;
-	gap: var(--margin-medium); */
-
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
 	gap: var(--margin-medium);

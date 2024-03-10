@@ -1,4 +1,4 @@
-.search {
+/* .search {
 	margin-left: var(--margin-medium);
 	margin-right: var(--margin-medium);
 
@@ -30,8 +30,37 @@
 	font-weight: normal;
 	font-style: normal;
 	font-size: 32px;
+} */
+
+.search {
+	width: 100%;
+	max-width: 384px;
+	height: 100%;
 }
 
 .ant-select-selector .ant-select-selection-placeholder {
 	color: var(--color-dark-soft);
+}
+
+.search .ant-select-selector .ant-select-selection-search-input {
+	font-size: 16px;
+}
+
+.search .ant-select-selector {
+	padding-left: 14px !important;
+	padding-right: 14px !important;
+	border-radius: var(--border-radius-medium);
+}
+
+.search .ant-select-selection-search {
+	padding-left: 3px !important;
+	padding-right: 3px !important;
+}
+
+.search .ant-select-selector:hover {
+	background-color: var(--color-light) !important;
+}
+  
+.search .ant-select-selector {
+	background-color: var(--color-light) !important;
 }

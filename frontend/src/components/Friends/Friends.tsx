@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { User } from '../../utils/types';
 import userServices from '../../services/user';
 import useAuth from '../../contexts/Auth/useAuth';
-import FriendCard from './FriendCard';
+import FriendCard from './FriendCard/FriendCard';
+import Search from '../Search/Search';
 
 import './friends.css';
 
@@ -10,6 +11,9 @@ function Friends() {
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
   const [friendsList, setFriendsList] = useState<User[]>([]);
+
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [userList, setUserList] = useState<User []>([]);
 
   const hook = () => {
     userServices
@@ -28,13 +32,33 @@ function Friends() {
   };
   useEffect(friendsListHook, [userWithFriends?.friends]);
 
+  const hookUserList = () => {
+    userServices
+      .getAll()
+      .then((usersListResponse) => {
+        console.log('userList : ', usersListResponse);
+        setUserList(usersListResponse);
+      });
+  };
+  useEffect(hookUserList, []);
+
   return (
     <div className="void-page" id="friends-page-id">
-      <h3 className="friends-title">
-        Friends :
-        {' '}
-        {userWithFriends?.friends?.length ?? 0}
-      </h3>
+      <div className="friends-header">
+        <div className="friends-title">
+          <h3>
+            Friends :
+            {' '}
+            {userWithFriends?.friends?.length ?? 0}
+          </h3>
+        </div>
+        <Search
+          placeholder="Search"
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          userList={userList}
+        />
+      </div>
       <div className="friend-card-container-parent">
         {
           friendsList?.map((userValue) => (

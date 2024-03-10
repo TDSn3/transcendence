@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, UserStatus, UserForStatusWebSocket } from '../../utils/types';
-import useSocket from '../../contexts/Socket/useSocket';
-import useAuth from '../../contexts/Auth/useAuth';
-import ProfilePicture from '../ProfilePicture/ProfilePicture';
-import userServices from '../../services/user';
-import XmarkIconoirButton from '../Buttons/XmarkIconoirButton/XmarkIconoirButton';
+import { User, UserStatus, UserForStatusWebSocket } from '../../../utils/types';
+import useSocket from '../../../contexts/Socket/useSocket';
+import useAuth from '../../../contexts/Auth/useAuth';
+import ProfilePicture from '../../ProfilePicture/ProfilePicture';
+import userServices from '../../../services/user';
+import XmarkIconoirButton from '../../Buttons/XmarkIconoirButton/XmarkIconoirButton';
 
 import './friend-card.css';
 
