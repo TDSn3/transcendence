@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
 import useAuth from '../../../contexts/Auth/useAuth';
 import userServices from '../../../services/user';
+import OtherProfilePublicInfo from './OtherProfilePublicInfo';
+import ReturnButton from '../../Buttons/ReturnButton/ReturnButton';
 
 import '../profile.css';
 
@@ -14,14 +17,27 @@ interface ProfileInformationProps {
 }
 
 function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInformationProps) {
+  const location = useLocation();
   const { user } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id;
-  const location = useLocation();
+  const [isFriend, setIsFriend] = useState<boolean | undefined>();
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    userServices.addFriend(user.id, userProfile.id);
+    userServices
+      .addFriend(user.id, userProfile.id)
+      .then(() => setIsFriend(true))
+      .catch((error) => console.error(error));
+  };
+
+  const handleDelFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    userServices
+      .deleteFriend(user.id, userProfile.id)
+      .then(() => setIsFriend(false))
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -60,14 +76,20 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
             <AntSwitch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
           </div>
         ) : (
-          <> </>
+          <OtherProfilePublicInfo
+            isFriend={isFriend}
+            setIsFriend={setIsFriend}
+            userProfile={userProfile}
+            handleAddFriendClick={handleAddFriendClick}
+            handleDelFriendClick={handleDelFriendClick}
+          />
         )
       }
       {
-        !isUserIsUserProfile && !(/\/profile\/.+/.test(location.pathname)) ? (
-          <button type="button" onClick={handleClick}> add friend </button>
-        ) : (
+        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
           <> </>
+        ) : (
+          <ReturnButton path="/friends" />
         )
       }
     </div>

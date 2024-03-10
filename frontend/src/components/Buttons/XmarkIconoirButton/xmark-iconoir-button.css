@@ -1,0 +1,37 @@
+.xmark-iconoir-button {
+	position: absolute;
+	top: 0%;
+	left: 100%;
+
+	transform: translate(-120% , 20%);
+	
+	display: flex;
+
+	padding: 0px;
+
+	background-color: var(--color-light);
+	color: var(--color-dark-soft);
+	border-style: solid;
+	border-width: 1px;
+	border-color: transparent;
+	border-radius: var(--border-radius-medium);
+
+	opacity: 0;
+
+	transition:
+		transform 0.4s,
+		opacity 0.4s,
+		background-color 0.2s;
+}
+
+.xmark-iconoir-button:hover {
+	cursor: pointer;
+
+	background-color: var(--color-warning-light);
+	color: var(--color-warning-dark);
+	border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-warning-medium);
+
+	opacity: 1;
+}

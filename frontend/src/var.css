@@ -14,4 +14,8 @@
 	--color-medium-dark: #E7E7E5;
 	--color-dark-soft: #B6B5AF;
 	--color-dark: #000000;
+
+	--color-warning-light: #fff7f7;
+	--color-warning-medium: #ffe6e6;
+	--color-warning-dark: #d64040;
 }

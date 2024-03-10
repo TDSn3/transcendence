@@ -16,6 +16,8 @@
 	padding-left: 14px;
   
 	border-radius: var(--border-radius-small);
+
+	cursor: pointer;
 }
 
 .clicked-item-style {
@@ -38,6 +40,8 @@
 	border-radius: var(--border-radius-small);
 
 	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+
+	cursor: pointer;
 }
 
 .item-style:hover {

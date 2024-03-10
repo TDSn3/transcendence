@@ -41,7 +41,20 @@ const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => 
       idUserToAddAsFriend: userIdToAdd,
     });
 
-    console.log(data);
+    console.log('New friend added.');
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error POST add friend.'));
+  }
+};
+
+const deleteFriend = async (userId: string, userIdToDel: string): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/del-friend/${userId}`, {
+      idUserToDelAsFriend: userIdToDel,
+    });
+
+    console.log('Friend deleted.');
     return (data);
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add friend.'));
@@ -52,7 +65,6 @@ const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
   try {
     const { data } = await axios.get<{ status: UserStatus }>(`${url}/status/id/${userId}`);
 
-    console.log(data);
     return (data);
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET get status.'));
@@ -64,5 +76,6 @@ export default {
   getUserById,
   getUserByLogin,
   addFriend,
+  deleteFriend,
   getStatus,
 };
