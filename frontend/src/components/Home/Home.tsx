@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { User } from '../../utils/types';
 import userServices from '../../services/user';
 import Search from '../Search/Search';
-import UserList from '../UserList/UserList';
 import ProfileInformation from '../Profile/ProfileInformation/ProfileInformation';
 
 function Home() {
@@ -19,10 +18,6 @@ function Home() {
       });
   };
 
-  const handleSearchChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => setSearchValue(event.target.value);
-
   useEffect(hookUserList, []);
 
   return (
@@ -32,10 +27,7 @@ function Home() {
         <Search
           placeholder="Search"
           searchValue={searchValue}
-          handleSearchChange={handleSearchChange}
-        />
-        <UserList
-          searchValue={searchValue}
+          setSearchValue={setSearchValue}
           userList={userList}
           setUserShowProfile={setUserShowProfile}
         />

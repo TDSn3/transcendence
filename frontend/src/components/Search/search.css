@@ -31,3 +31,7 @@
 	font-style: normal;
 	font-size: 32px;
 }
+
+.ant-select-selector .ant-select-selection-placeholder {
+	color: var(--color-dark-soft);
+}
