@@ -6,6 +6,7 @@ import AntSwitch from '../SwitchButton/AntSwitch';
 import useAuth from '../../../contexts/Auth/useAuth';
 import userServices from '../../../services/user';
 import OtherProfilePublicInfo from './OtherProfilePublicInfo';
+import ReturnButton from '../../Buttons/ReturnButton/ReturnButton';
 
 import '../profile.css';
 
@@ -82,6 +83,13 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
             handleAddFriendClick={handleAddFriendClick}
             handleDelFriendClick={handleDelFriendClick}
           />
+        )
+      }
+      {
+        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
+          <> </>
+        ) : (
+          <ReturnButton path="/friends" />
         )
       }
     </div>
