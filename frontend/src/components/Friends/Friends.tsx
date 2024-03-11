@@ -11,6 +11,7 @@ function Friends() {
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
   const [friendsList, setFriendsList] = useState<User[]>([]);
+  const [change, setChange] = useState<boolean>(false);
 
   const [searchValue, setSearchValue] = useState<string>('');
   const [userList, setUserList] = useState<User []>([]);
@@ -20,27 +21,21 @@ function Friends() {
       .getUserById(user.id)
       .then((userValue) => {
         setUserWithFriends(userValue);
+        setFriendsList(userValue?.friends?.map((userFriendValue) => userFriendValue));
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => { console.error(error); });
   };
-  useEffect(hook, [user, friendsList]);
-
-  const friendsListHook = () => {
-    setFriendsList(userWithFriends?.friends?.map((userValue) => userValue));
-  };
-  useEffect(friendsListHook, [userWithFriends?.friends]);
+  useEffect(hook, [user, change]);
 
   const hookUserList = () => {
     userServices
       .getAll()
-      .then((usersListResponse) => {
-        console.log('userList : ', usersListResponse);
-        setUserList(usersListResponse);
-      });
+      .then((usersListResponse) => { setUserList(usersListResponse); })
+      .catch((error) => { console.error(error); });
   };
   useEffect(hookUserList, []);
+
+  useEffect(() => console.log('Friend list : ', friendsList), [friendsList]);
 
   return (
     <div className="void-page" id="friends-page-id">
@@ -67,6 +62,8 @@ function Friends() {
                 userFriend={userValue}
                 friendsList={friendsList}
                 setFriendsList={setFriendsList}
+                change={change}
+                setChange={setChange}
               />
             </div>
           ))
