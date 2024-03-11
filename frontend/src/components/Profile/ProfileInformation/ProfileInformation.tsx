@@ -6,7 +6,7 @@ import AntSwitch from '../SwitchButton/AntSwitch';
 import useAuth from '../../../contexts/Auth/useAuth';
 import userServices from '../../../services/user';
 import OtherProfilePublicInfo from './OtherProfilePublicInfo';
-import ReturnButton from '../../Buttons/ReturnButton/ReturnButton';
+import ReturnButton from '../../Buttons/ButtonReturn/ReturnButton';
 
 import '../profile.css';
 
@@ -19,7 +19,7 @@ interface ProfileInformationProps {
 function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInformationProps) {
   const location = useLocation();
   const { user } = useAuth();
-  const isUserIsUserProfile = user.id === userProfile.id;
+  const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
 
   const handleAddFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
