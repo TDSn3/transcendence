@@ -7,6 +7,7 @@ import useAuth from '../../../contexts/Auth/useAuth';
 import userServices from '../../../services/user';
 import OtherProfilePublicInfo from './OtherProfilePublicInfo';
 import ReturnButton from '../../Buttons/ButtonReturn/ReturnButton';
+import Modal from '../../Modal/Modal';
 
 import '../profile.css';
 
@@ -21,6 +22,7 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
   const { user } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const handleAddFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -40,10 +42,35 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
       .catch((error) => console.error(error));
   };
 
+  const handleEditPhoto = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    setIsModalVisible(true);
+    console.log('Edit photo.');
+  };
+
   return (
     <div className="page profile-style">
-
-      <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
+      {
+        isModalVisible ? (
+          <Modal
+            title="Edit photo"
+            handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              setIsModalVisible(false);
+            }}
+            handleClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
+              setIsModalVisible(false);
+            }}
+          />
+        ) : (
+          <> </>
+        )
+      }
+      <div className="picture-container">
+        <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
+      </div>
 
       <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
       <p>
@@ -70,6 +97,15 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
           </p>
         </div>
       </div>
+      {
+        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
+          <button className="picture-overlay-background" type="button" aria-label="Edit photo" onClick={handleEditPhoto}>
+            <div className="picture-overlay-text">Edit photo</div>
+          </button>
+        ) : (
+          <> </>
+        )
+      }
       {
         isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
           <div className="switch-style">
