@@ -1,20 +1,24 @@
 import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import XmarkIconoirButtonOpacityOne from '../Buttons/XmarkIconoirButton/XmarkIconoirButtonOpacityOne';
-import ButtonRegular from '../Buttons/ButtonRegular/ButtonRegular';
+import ButtonRegularSubmit from '../Buttons/ButtonRegular/ButtonRegularSubmit';
 
 import './modal.css';
 
 interface ModalProps {
   title: string,
+  handleOnSubmitForm: (event: React.SyntheticEvent) => void,
+  formValue: string,
+  HandleFormOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
   handleXmarkButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
 function Modal({
   title,
+  handleOnSubmitForm,
+  formValue,
+  HandleFormOnChange,
   handleXmarkButtonClick,
-  handleClick,
 }: ModalProps) {
   const container = document.getElementById('before-root');
 
@@ -23,10 +27,15 @@ function Modal({
       <div className="modal-box">
         <XmarkIconoirButtonOpacityOne handleClick={handleXmarkButtonClick} />
         <h3 style={{ margin: 0 }}>{title}</h3>
-        <form className="form-style">
-          <input className="input-modal" placeholder="https://www.exemple.com" />
+        <form className="form-style" onSubmit={handleOnSubmitForm}>
+          <input
+            className="input-modal"
+            value={formValue}
+            onChange={HandleFormOnChange}
+            placeholder="https://www.exemple.com"
+          />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
-            <ButtonRegular icon={null} text="OK" handleClick={handleClick} />
+            <ButtonRegularSubmit text="OK" />
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
@@ -13,16 +13,25 @@ import '../profile.css';
 
 interface ProfileInformationProps {
   userProfile: User,
+  setUserProfile: React.Dispatch<React.SetStateAction<User | null>>,
   isToggled: boolean,
   setIsToggled: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInformationProps) {
+function ProfileInformation({
+  userProfile, setUserProfile, isToggled, setIsToggled,
+}: ProfileInformationProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [modalInputValue, setModalInputValue] = useState<string>('');
+
+  const hook = () => {
+    if (isUserIsUserProfile) setUserProfile(user);
+  };
+  useEffect(hook, [isUserIsUserProfile, setUserProfile, user]);
 
   const handleAddFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -46,7 +55,31 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
     event.preventDefault();
 
     setIsModalVisible(true);
-    console.log('Edit photo.');
+  };
+
+  const handleModalInputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setModalInputValue(event.target.value);
+  };
+
+  const handleOnSubmitForm = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+
+    console.log(`Avatar url: ${user.avatar}.`);
+    userServices
+      .updateAvatar(user.id, modalInputValue)
+      .then((updatedUser) => {
+        setUser((prevUser) => ({ ...prevUser, avatar: updatedUser.avatar }));
+        setIsModalVisible(false);
+        setModalInputValue('');
+
+        console.log(`New avatar url: ${updatedUser.avatar}.`);
+      })
+      .catch((error) => {
+        setIsModalVisible(false);
+        setModalInputValue('');
+
+        console.error(error);
+      });
   };
 
   return (
@@ -55,11 +88,10 @@ function ProfileInformation({ userProfile, isToggled, setIsToggled }: ProfileInf
         isModalVisible ? (
           <Modal
             title="Edit photo"
+            handleOnSubmitForm={handleOnSubmitForm}
+            formValue={modalInputValue}
+            HandleFormOnChange={handleModalInputOnChange}
             handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              setIsModalVisible(false);
-            }}
-            handleClick={(event: React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               setIsModalVisible(false);
             }}

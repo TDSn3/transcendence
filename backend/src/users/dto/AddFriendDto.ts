@@ -9,3 +9,8 @@ export class DeleteFriendDto {
   @IsString()
   idUserToDelAsFriend: string;
 }
+
+export class UpdateAvatarDto {
+  @IsString()
+  url: string;
+}

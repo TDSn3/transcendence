@@ -3,19 +3,17 @@ import { IconoirProvider } from 'iconoir-react';
 
 import './button-regular.css';
 
-interface ButtonRegularProps {
+interface ButtonRegularSubmitProps {
   icon?: React.ElementType,
   text: string,
-  handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-function ButtonRegular({
+function ButtonRegularSubmit({
   icon: Icon,
   text,
-  handleClick,
-}: ButtonRegularProps) {
+}: ButtonRegularSubmitProps) {
   return (
-    <button className="button-regular" type="button" aria-label="Delete this friend" onClick={handleClick}>
+    <button className="button-regular" type="submit">
       {
         Icon ? (
           <IconoirProvider
@@ -38,8 +36,8 @@ function ButtonRegular({
   );
 }
 
-ButtonRegular.defaultProps = {
+ButtonRegularSubmit.defaultProps = {
   icon: null,
 };
 
-export default ButtonRegular;
+export default ButtonRegularSubmit;

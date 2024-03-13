@@ -2,7 +2,11 @@ import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserStatus } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
-import { AddFriendDto, DeleteFriendDto } from './dto/AddFriendDto';
+import {
+  AddFriendDto,
+  DeleteFriendDto,
+  UpdateAvatarDto,
+} from './dto/AddFriendDto';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -51,5 +55,13 @@ export class UsersController {
       id,
       deleteFriendDto.idUserToDelAsFriend,
     );
+  }
+
+  @Post('id/avatar/:id')
+  updateAvatar(
+    @Param('id') id: string,
+    @Body() updateAvatarDto: UpdateAvatarDto,
+  ): Promise<User> {
+    return this.usersService.updateAvatar(id, updateAvatarDto.url);
   }
 }
