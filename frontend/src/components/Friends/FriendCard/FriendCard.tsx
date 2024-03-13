@@ -13,9 +13,17 @@ interface FriendCardProps {
   userFriend: User,
   friendsList: User[],
   setFriendsList: React.Dispatch<React.SetStateAction<User[]>>,
+  change: boolean,
+  setChange: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps) {
+function FriendCard({
+  userFriend,
+  friendsList,
+  setFriendsList,
+  change,
+  setChange,
+}: FriendCardProps) {
   const { user } = useAuth();
   const { socket } = useSocket();
   const [userStatus, setUserStatus] = useState<UserStatus>(UserStatus.OFFLINE);
@@ -31,9 +39,7 @@ function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps
           setUserStatus(UserStatus.OFFLINE);
         }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => { console.error(error); });
   };
   useEffect(hook, [userFriend]);
 
@@ -73,10 +79,9 @@ function FriendCard({ userFriend, friendsList, setFriendsList }: FriendCardProps
         const copyList = [...friendsList];
 
         setFriendsList(copyList.filter((friend) => friend.id !== userFriend.id));
+        setChange(!change);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => { console.error(error); });
   };
 
   return (
