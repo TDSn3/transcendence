@@ -21,6 +21,10 @@ export class Pong {
 	public hookTabInfo:any[] = [false, false];
 
 	public score:number[] = [0,0];
+	
+	public maxScore:number = 1000;
+
+	public countdown: number = 3;
 
 
 	public loop() {
@@ -39,7 +43,7 @@ export class Pong {
 	public updatePaddles() {
 		if (this.gameMode === 'vsBot') {
 
-			const botSpeed = 5;
+			const botSpeed = 6;
 			const targetY = this.ball.pos.y - this.rightPaddle.height / 2;
 
 			if (Math.abs(this.rightPaddle.pos.y - targetY) < botSpeed) {
@@ -64,7 +68,6 @@ export class Pong {
 			}
 		}
 		else if (this.gameMode === 'vsPlayer') {
-
 			if (this.hookTabInfo) {
 				let leftMove = 0;
 				let rightMove = 0;
@@ -79,23 +82,31 @@ export class Pong {
 					rightMove += 6;
 				this.leftPaddle.pos.y += leftMove;
 				this.rightPaddle.pos.y += rightMove;
-				
+				// console.log(this.leftPaddle.websocket);
 			}
 		}
 	};
 
 	private updateBall() {
 		if (this.ball.pos.y + 5 > this.height)
-			this.ball.speedY *= -1;
+			// this.ball.speedY *= -1;
+			this.ball.speedY = -Math.abs(this.ball.speedY);
 		else if (this.ball.pos.y - 5 < 0)
-		this.ball.speedY *= -1;
+			this.ball.speedY = Math.abs(this.ball.speedY);
+
+		// this.ball.speedY *= -1;
 
 
-		if (this.ball.pos.x - 5 < this.leftPaddle.width && this.ball.pos.y > this.leftPaddle.pos.y && this.ball.pos.y < this.leftPaddle.pos.y + this.leftPaddle.height) {
+		if (this.ball.pos.x - 5 < this.leftPaddle.width && this.ball.pos.y  + 5 > this.leftPaddle.pos.y && this.ball.pos.y - 5 < this.leftPaddle.pos.y + this.leftPaddle.height) {
 			let relativePosition = (this.ball.pos.y - this.leftPaddle.pos.y) / this.leftPaddle.height;
 			if (relativePosition > 0.66)
 				relativePosition = 0.66;
-			const angle = (relativePosition - 0.5) * Math.PI;
+			let angle = (relativePosition - 0.5) * Math.PI;
+			if (angle > 1.2)
+				angle = 1.2;
+			else if (angle < -1.2)
+				angle = -1.2;
+			// console.log(angle);
 			let speed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
 			const directionX = Math.cos(angle);
 			const directionY = Math.sin(angle);
@@ -106,11 +117,16 @@ export class Pong {
 			this.ball.speedX = directionX * speed;
 			this.ball.speedY = directionY * speed;
 		}
-		if (this.ball.pos.x + 5 > this.rightPaddle.pos.x && this.ball.pos.y > this.rightPaddle.pos.y && this.ball.pos.y < this.rightPaddle.pos.y + this.rightPaddle.height) {
+		if (this.ball.pos.x + 5 > this.rightPaddle.pos.x && this.ball.pos.y  + 5 > this.rightPaddle.pos.y && this.ball.pos.y - 5 < this.rightPaddle.pos.y + this.rightPaddle.height) {
 			let relativePosition = (this.ball.pos.y - this.rightPaddle.pos.y) / this.rightPaddle.height;
 			if (relativePosition > 0.66)
 				relativePosition = 0.66;
-			const angle = (relativePosition - 0.5) * Math.PI;
+			let angle = (relativePosition - 0.5) * Math.PI;
+			if (angle > 1.2)
+				angle = 1.2;
+			else if (angle < -1.2)
+				angle = -1.2;
+			// console.log(angle);
 			let speed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
 			const directionX = -Math.cos(angle);
 			const directionY = Math.sin(angle);
@@ -142,7 +158,7 @@ export class Pong {
 			this.score[0]++;
 			this.resetBall(5);
 		}
-		if (this.score[0] === 5 || this.score[1] === 5)
+		if (this.score[0] === this.maxScore || this.score[1] === this.maxScore)
 			this.isFinished = true;
 	}
 }

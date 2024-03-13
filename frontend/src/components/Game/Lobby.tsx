@@ -3,6 +3,7 @@ import PongGame from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
 import { Socket } from "dgram";
+import useAuth from "../../contexts/Auth/useAuth.tsx";
 
 const Lobby = () => {
   const [localPong, setLocalPong] = useState(false);
@@ -13,6 +14,8 @@ const Lobby = () => {
   const [displayButtons, setDisplayButtons] = useState<boolean>(true);
 
   const socketRef = useRef<any>(null);
+  const {user} = useAuth();
+
 
   const handleKeyPress = (event: KeyboardEvent) => {
 	  
@@ -124,8 +127,13 @@ const Lobby = () => {
   };
 
   const joinGame = (gameMode: string) => {
+	const paddleInfos = {
+		gameMode: gameMode,
+		avatar: user.avatar,
+		playerName: user.login,
+	}
 	if (socketRef)
-		socketRef.current.emit('joinGame', gameMode);
+		socketRef.current.emit('joinGame', paddleInfos);
   }
 
   return (
@@ -137,6 +145,10 @@ const Lobby = () => {
       <button onClick={handleBotvsBot}>Bot vs Bot</button>
 	  </>
 		)}
+	  {gameInfos === null && localPong && (
+		<p>Waiting for a game ...</p>
+		)}
+
       {IAPong && <PongGame gameInfo={gameInfos}/>}
       {localPong && <PongGame gameInfo={gameInfos}/>}
       {BotvsBot1 && <BotvsBot />}

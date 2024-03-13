@@ -8,6 +8,8 @@ export class Paddle {
 	public readonly height:number;
 	public readonly speed:number;
 	public websocket?:string;
+	public avatar?:string;
+	public playerName?:string;
 
 	constructor(side: "left" | "right") {
 		this.width = 10;

@@ -13,6 +13,7 @@ export class Ball {
 		this.speedX = (Math.random() > 0.5 ? 5 * Math.cos(this.angle) : 5 * -Math.cos(this.angle));
 		this.speedY = 5 * Math.sin(this.angle);
 		// this.speedY = 0;
+		// this.speedX = 3;
 	}
 
 

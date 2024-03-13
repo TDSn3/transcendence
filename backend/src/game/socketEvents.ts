@@ -12,7 +12,7 @@ export class SocketEvents {
   @WebSocketServer()
   server: Server;
 
-  private lobbies: Record<string, string[]> = {};
+  private lobbies: Record<string, {clients: string[], gameMode: string, pongGame: Pong}> = {};
   public pongGame: Pong = new Pong();
   private updateInterval;
 
@@ -20,32 +20,45 @@ export class SocketEvents {
     try {
       console.log("Nouvelle connexion établie! client ID:", client.id);
 	  client.on('joinlobby', (lobbyID: string) => {
-		if (!this.lobbies[lobbyID] || this.lobbies[lobbyID].length < 2) {
-		client.join(lobbyID);
+		console.log("#ETRANGE");
+		// if (!this.lobbies[lobbyID] || this.lobbies[lobbyID].length < 2) {
+		// client.join(lobbyID);
 
-		this.lobbies[lobbyID] = this.lobbies[lobbyID] || [];
-		this.lobbies[lobbyID].push(client.id);
+		// this.lobbies[lobbyID] = this.lobbies[lobbyID] || [];
+		// this.lobbies[lobbyID].push(client.id);
 
-		console.log(`Client ${client.id} a rejoint le lobby ${lobbyID}`)
-		if (this.lobbies[lobbyID].length === 2) {
-			console.log(`Le lobby ${lobbyID} est prêt à démarrer le jeu.`);
-			this.server.to(lobbyID).emit('startGame');
-		}
-		}
-		else {
-			console.log(`Le lobby ${lobbyID} est complet. Impossible de rejoindre.`);
-			this.server.to(client.id).emit('lobbyIsFull');
-		}
+		// console.log(`Client ${client.id} a rejoint le lobby ${lobbyID}`)
+		// if (this.lobbies[lobbyID].length === 2) {
+		// 	console.log(`Le lobby ${lobbyID} est prêt à démarrer le jeu.`);
+		// 	this.server.to(lobbyID).emit('startGame');
+		// }
+		// }
+		// else {
+		// 	console.log(`Le lobby ${lobbyID} est complet. Impossible de rejoindre.`);
+		// 	this.server.to(client.id).emit('lobbyIsFull');
+		// }
 	  });
 	  client.on('joinGame', (gameMode: string) => {
 			if (gameMode === 'vsBot') {
-				console.log('Contre un robot')
-				this.pongGame.gameMode = 'vsBot';
-				this.sendGameInfo(client, gameMode);
+				console.log('Contre un robot');
+				const lobbyID: string = `vsBotLobby_${client.id}`;
+				client.join(lobbyID);
+
+				const pongGame = new Pong();
+				this.lobbies[lobbyID] = {
+					clients: [client.id],
+					gameMode: 'vsBot',
+					pongGame: pongGame,
+				};
+				console.log(`Client ${client.id} a rejoint le lobby ${lobbyID}`);
+
+				// this.pongGame.gameMode = 'vsBot';
+				pongGame.gameMode = 'vsBot';
+				this.sendGameInfoPVE(client,pongGame, gameMode);
 
 				this.updateInterval = setInterval(() => {
-					this.pongGame.nextFrame();
-					this.sendGameInfo(client);
+					pongGame.nextFrame();
+					this.sendGameInfoPVE(client, pongGame);
 
 				}, 1000 / 60);
 			}
@@ -54,8 +67,8 @@ export class SocketEvents {
 				this.pongGame.gameMode = 'vsPlayer';
 				const lobbyID:string = 'vsPlayerLobby';
 				client.join(lobbyID);
-				this.lobbies[lobbyID] = this.lobbies[lobbyID] || [];
-				this.lobbies[lobbyID].push(client.id);
+				this.lobbies[lobbyID] = this.lobbies[lobbyID] || {clients: [], gameMode: '', pongGame: null};
+				this.lobbies[lobbyID].clients.push(client.id);
 				if (!this.pongGame.leftPaddle.websocket)
 					this.pongGame.leftPaddle.websocket = client.id;
 				else
@@ -63,7 +76,7 @@ export class SocketEvents {
 
 				console.log(`Client ${client.id} a join le lobby ${lobbyID}`);
 
-				if (this.lobbies[lobbyID].length === 2) {
+				if (this.lobbies[lobbyID].clients.length === 2) {
 					console.log(`le lobby ${lobbyID} est pret a dema `)
 					this.server.to(lobbyID).emit('startPVPGame');
 					this.SendGameInfoRoom(lobbyID);
@@ -87,8 +100,8 @@ export class SocketEvents {
 		clearInterval(this.updateInterval);
 		this.pongGame = new Pong();
 		for (const lobbyID in this.lobbies) {
-			this.lobbies[lobbyID] = this.lobbies[lobbyID].filter(id => id !== client.id);
-			if (this.lobbies[lobbyID].length === 0) {
+			this.lobbies[lobbyID].clients = this.lobbies[lobbyID].clients.filter(id => id !== client.id);
+			if (this.lobbies[lobbyID].clients.length === 0) {
 			  delete this.lobbies[lobbyID];
 			  console.log(`Le lobby ${lobbyID} a été supprimé car il est maintenant vide.`);
 			}
@@ -108,6 +121,19 @@ export class SocketEvents {
 		leftPaddle: this.pongGame.leftPaddle,
 		rightPaddle: this.pongGame.rightPaddle,
 		score: this.pongGame.score,
+		gameMode: gameMode,
+	}
+	client.emit('gameInfo', gameInfo);
+  }
+
+  private sendGameInfoPVE(client: Socket, pongGame:Pong, gameMode?: string,) {
+	const gameInfo = {
+		width: pongGame.width,
+		height: pongGame.height,
+		ball: pongGame.ball,
+		leftPaddle: pongGame.leftPaddle,
+		rightPaddle: pongGame.rightPaddle,
+		score: pongGame.score,
 		gameMode: gameMode,
 	}
 	client.emit('gameInfo', gameInfo);

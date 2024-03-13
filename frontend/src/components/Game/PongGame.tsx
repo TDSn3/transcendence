@@ -1,9 +1,11 @@
 
 import React, { useRef, useEffect } from "react";
+import GameHeader from "./GameHeader";
+import './PongGame.css';
+
 
 const PongGame = ({ gameInfo }: { gameInfo: any }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-//   console.log(gameInfo);
 
   const drawGame = () => {
     const canvas = canvasRef.current;
@@ -37,28 +39,44 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
 			context.fillStyle = 'white';
 			context.font = '20px Arial';
 			context.fillText(`${gameInfo.score[0]}`, gameInfo.width / 2 - 30, 30);
-			context.fillText(`${gameInfo.score[1]}`, gameInfo.width / 2 + 20, 30);
+			context.fillText(`${gameInfo.score[1]}`, gameInfo.width / 2 + 30, 30);
+		}
 
+		const drawCountdown = () => {
+			context.font = "50px Arial";
+			context.fillStyle = "white";
+			context.textAlign = "center";
+			context.fillText(`${gameInfo.countdown}`, gameInfo.width / 2, gameInfo.height / 2 - 30);
 		}
 
         drawPaddles();
         drawMiddleLine();
         drawBall();
+		if (gameInfo.countdown > 0)
+			drawCountdown();
 		drawScore();
+		// console.log(gameInfo.leftPaddle.avatar);
       }
     }
   };
 
   useEffect(() => {
-    // console.log('les infos', gameInfo);
-	if (gameInfo)
+	  if (gameInfo) {
+	 	console.log('countdown', gameInfo.countdown);
     	drawGame();
+	  }
   }, [gameInfo]);
 
+//   console.log();
   return (
-    <div>
-      <canvas ref={canvasRef} width={800} height={500} style={{ border: '0px solid #add8e6' }} />
-    </div>
+    <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+	{gameInfo && (
+	<>
+	  <GameHeader gameInfo={gameInfo} />
+      <canvas ref={canvasRef} width={800} height={500} className="canvas" />
+	</>
+	)}
+	  </div>
   );
 };
 
