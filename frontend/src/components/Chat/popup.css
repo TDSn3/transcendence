@@ -1,7 +1,5 @@
 .create-popup {
 	position: fixed;
-	/* top: 75px;
-	right: 30px; */
 	width: 20%;
 	height: auto;
 
@@ -47,3 +45,52 @@
 .create-title {
 	text-align: center;
 }
+
+.option-popup {
+	position: fixed;
+	width: 20%;
+	height: auto;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.option-popup-inner {
+	position: relative;
+	padding: 15px;
+	width: 100%;
+	max-width: 640px;
+	background-color: #8f96a3;
+	border-radius: 14px;
+}
+
+.option-popup-inner .option-close-btn {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 25px;
+	height: 25px;
+	border: none;
+	border-radius: 50%;
+}
+
+.option-form input[type="text"] {
+	display: flex;
+	flex-direction: column;
+	width: 98%;
+}
+
+.option-form-end {
+	display: flex;
+	flex-direction: row;
+}
+
+.option-form input[type="button"] {
+	margin-left: auto;
+}
+
+.option-title {
+	text-align: center;
+}
+

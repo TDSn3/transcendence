@@ -3,11 +3,11 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersStatusGateway } from './users.gateway';
-import { ChannelMembersService } from 'src/chat/channelMembers/channelMembers.service';
-import { ChannelMembersController } from 'src/chat/channelMembers/channelMembers.controler';
+import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
-  controllers: [UsersController, ChannelMembersController],
-  providers: [UsersService, ChannelMembersService, PrismaService, UsersStatusGateway],
+	imports: [PrismaModule],
+	controllers: [UsersController],
+	providers: [UsersService, PrismaService, UsersStatusGateway],
 })
 export class UsersModule {}

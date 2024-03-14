@@ -6,7 +6,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChannelMember, User, UserStatus } from '@prisma/client';
+import { User, UserStatus } from '@prisma/client';
 import {
   UserForStatusWebSocket,
   ServerToClientEvents,
@@ -14,7 +14,6 @@ import {
 } from './interface/usersStatus.interface';
 import { UsersService } from './users.service';
 import color from '../utils/color';
-import { ChannelMembersService } from 'src/chat/channelMembers/channelMembers.service';
 
 @WebSocketGateway({
   cors: {
@@ -93,24 +92,6 @@ export class UsersStatusGateway {
       .catch((error) => {
         console.log(`Error findById: {\n`, error, '\n}');
       });
-  }
-
-  @SubscribeMessage('chatJoin')
-  handleChatJoin(client: Socket, payload: { intraId: number, channelId: number }): void {
-	client.join(payload.channelId.toString());
-	this.channelMembersService.create(payload.intraId, payload.channelId, null);
-  }
-
-  @SubscribeMessage('chatSend')
-  handleChatSend(client: Socket, payload: { id: string, message: string }): void {
-	this.usersService.findById(payload.id)
-	  .then((user) => {
-		console.log(user.login);
-		console.log(payload.message);
-	  })
-	  .catch((error) => {
-		console.log(error);
-	  });
   }
 }
 

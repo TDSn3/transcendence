@@ -78,10 +78,10 @@ model Channel {
 model ChannelMember {
   id		Int				@id @unique @default(autoincrement())
 
-  channelId	Int
   userId	Int
-  channel	Channel			@relation(fields: [channelId], references: [id])
+  channelId	Int
   user		User			@relation(fields: [userId], references: [intraId])
+  channel	Channel			@relation(fields: [channelId], references: [id])
 
   muteEnd	DateTime?
   isMute	Boolean			@default(false)

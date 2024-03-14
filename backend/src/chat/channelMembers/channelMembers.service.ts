@@ -4,9 +4,9 @@ import { PrismaService } from "nestjs-prisma";
 
 @Injectable()
 export class ChannelMembersService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) {}
 
-	async create(intraId: number, channelId: number, res: any): Promise<ChannelMember> {
+	async create(intraId: number, channelId: number): Promise<ChannelMember> {
 		if (await this.isIn(channelId, intraId)) {
 			return (this.getChannelMember(channelId, intraId));
 		}

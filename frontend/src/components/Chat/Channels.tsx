@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import useSocket from "../../contexts/Socket/useSocket.tsx";
 import useAuth from '../../contexts/Auth/useAuth.tsx';
 import axios from "axios";
 import Popup from "./Popup.tsx";
@@ -9,19 +8,15 @@ import "./channels.css";
 interface ChannelProps {
 	id: number,
 	name: string,
-	socket: any,
-	user: any,
+	intraId: number,
 }
 
-const channelsNames = (await axios.get("http://localhost:5001/api/channels/names")).data
-
-const Channel = ({ id, name, socket, user }: ChannelProps) => {
+const Channel = ({ id, name, intraId }: ChannelProps) => {
 	const navigate = useNavigate();
 
 	const handleClick: any = () => {
-		socket.emit("chatJoin", { intraId: user.intraId, channelId: id });
+		axios.post("http://localhost:5001/api/channelMembers", { intraId: intraId, channelId: id });
 		navigate("/chat/" + name);
-		// axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelId: id });
 	}
 
 	return (
@@ -32,21 +27,27 @@ const Channel = ({ id, name, socket, user }: ChannelProps) => {
 }
 
 const Channels = () => {
-	const { socket } = useSocket();
 	const { user } = useAuth();
 	const navigate = useNavigate();
 
+	const [channelsNames, setChannelsNames] = useState<{id: number, name: string}[]>();
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
 
+	useEffect(() => {
+		const channelsNamesGetter = async () => {
+			setChannelsNames((await axios.get("http://localhost:5001/api/channels/names")).data);
+		}
+		channelsNamesGetter();
+	}, []);
+
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
-		axios.post("http://localhost:5001/api/channels", {intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate})
+		axios.post("http://localhost:5001/api/channels", { intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
 			.then(() => {
 				navigate("/chat/" + channelName);
-				window.location.reload();
 			})
 			.catch(() => {
 				console.log("problemz");
@@ -62,8 +63,8 @@ const Channels = () => {
 			</div>
 			<div className="channels">
 				{
-					channelsNames.map((value: any) =>
-						<Channel key={value.id} id={value.id} name={value.name} socket={socket} user={user}/>
+					channelsNames?.map((value: any) =>
+						<Channel key={value.id} id={value.id} name={value.name} intraId={user.intraId}/>
 					)
 				}
 			</div>

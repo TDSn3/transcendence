@@ -1,112 +1,36 @@
 import "./chat.css";
 
-export interface MessageProps {
+interface MessagesProps {
+	messages: any
+}
+
+interface MessageProps {
 	username: string,
-	profilePictureUrl: string,
+	avatar: string,
 	message: string,
 }
 
-const test: MessageProps[] = [
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hello",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "bob",
-		profilePictureUrl: "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg",
-		message: "BANANAAAA",
-	},
-	{
-		username: "djanusz",
-		profilePictureUrl: "https://cdn.intra.42.fr/users/cbaa9bc0d6c69dd4368bedefe259ede1/djanusz.jpg",
-		message: "Hmmmmmmmmm",
-	},
-]
-
-const Message = ({username, profilePictureUrl, message}: MessageProps) => {
-	const userlink: string = "http://localhost:3001/profile/" + {username};
+export const Message = ({username, avatar, message}: MessageProps) => {
 	return (
 		<div className="message">
-			<a href={userlink}><img className="profilePicture" src={profilePictureUrl} /></a>
+			<a href={`http://localhost:3000/profile/${username}`}><img className="profilePicture" src={avatar} /></a>
 			<div>
-				<a href={userlink} className="username">{username}</a><br />
+				<a href={`http://localhost:3000/profile/${username}`} className="username">{username}</a><br />
 				{message}
 			</div>
 		</div>
 	);
 }
 
-const Messages = () => {
+export const Messages = ({ messages }: MessagesProps) => {
+	console.log(messages);
 	return (
 		<div className="messages">
 			{
-				test.map((value: MessageProps, index: number) => (
-					<Message key={index} username={value.username} profilePictureUrl={value.profilePictureUrl} message={value.message} />
+				messages.map((value: any, index: number) => (
+					<Message key={index} username={value.member.login} avatar={value.member.avatar} message={value.content} />
 				))
 			}
 		</div>
 	);
 }
-
-export default Messages;

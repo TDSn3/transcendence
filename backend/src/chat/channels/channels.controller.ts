@@ -5,7 +5,6 @@ import { ChannelsService } from "./channels.service";
 import { Request, Response } from "express";
 import { Channel } from "@prisma/client";
 
-
 @Controller("api/channels")
 @ApiTags("channels")
 export class ChannelsController {
@@ -28,5 +27,20 @@ export class ChannelsController {
   @Get("names")
   async getAllNames(): Promise<{id: number, name: string}[]> {
 	return (this.channelService.getAllNames());
+  }
+
+  @Get(":channelName/check")
+  async channelNameChecker(@Param("channelName") channelName: string): Promise<boolean> {
+	return (this.channelService.channelNameChecker(channelName));
+  }
+
+  @Get(":channelName/getId")
+  async getChannelId(@Param("channelName") channelName: string): Promise<number> {
+	return (this.channelService.getChannelId(channelName));
+  }
+
+  @Get(":channelName/messages")
+  async getAllMessages(@Param("channelName") channelName: string): Promise<any> {
+	return (this.channelService.getAllMessages(channelName));
   }
 }
