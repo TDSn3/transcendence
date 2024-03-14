@@ -62,7 +62,7 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
 
   useEffect(() => {
 	  if (gameInfo) {
-	 	console.log('countdown', gameInfo.countdown);
+	 	// console.log('timer', gameInfo.timeLeft);
     	drawGame();
 	  }
   }, [gameInfo]);

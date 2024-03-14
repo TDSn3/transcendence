@@ -2,6 +2,7 @@
 	width: 800px;
 	display: flex;
 	justify-content: space-evenly;
+	align-items: flex-end;
   }
   
   .player {
@@ -14,3 +15,9 @@
 	border-radius: 50%;
 	border: 1px solid rgba(0, 0, 0, 0.74);
   }
+
+  .timer p{
+    text-align:end;
+    font-size: 30px;
+	color: rgba(0, 0, 0, 0.89);
+}

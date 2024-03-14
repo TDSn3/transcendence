@@ -25,6 +25,9 @@ export class Pong {
 	public maxScore:number = 1000;
 
 	public countdown: number = 3;
+	public timerStart:number;
+	public maxTime:number = 30;
+	public timeLeft:number = this.maxTime;
 
 
 	public loop() {
@@ -37,7 +40,17 @@ export class Pong {
 			this.updateBall();
 			this.updatePaddles();
 			this.updateScore();
+			this.updateTimer();
 		}
+	};
+
+
+	public updateTimer() {
+		const actualTime:number = Date.now();
+
+		this.timeLeft = this.maxTime -  (actualTime - this.timerStart) / 1000;
+		if (this.timeLeft <= 0)
+			this.isFinished = true; 
 	};
 
 	public updatePaddles() {

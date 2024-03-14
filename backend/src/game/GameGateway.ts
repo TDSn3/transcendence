@@ -17,7 +17,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 		client.on('joinGame', (PaddleInfo:any) => {
 			if (PaddleInfo.gameMode === 'vsBot') {
-				console.log('Contre le bot');
 				const lobbyID: string = `vsBotLobby_${client.id}`;
 				client.join(lobbyID);
 
@@ -59,8 +58,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		client.on('hookTabInfo', (hookTabInfos:any) => {
 			let lobby = this.findUserLobby(client.id);
 			// console.log(lobby);
-			lobby.pongGame.hookTabInfo = hookTabInfos;
-			lobby.pongGame.actualClient = client.id;
+			if (lobby) {
+				lobby.pongGame.hookTabInfo = hookTabInfos;
+				lobby.pongGame.actualClient = client.id;
+			}
 		});		
 	}
 	handleDisconnect(client: any) {
@@ -68,8 +69,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		for (const lobbyID in this.lobbies) {
 			for (let i = 0; i < this.lobbies[lobbyID].clients.length; i++) {
 				if (client.id === this.lobbies[lobbyID].clients[i]) {
-					// delete this.lobbies[lobbyID].clients[i];
 					this.lobbies[lobbyID].clients.splice(i, 1);
+					clearInterval(this.lobbies[lobbyID].updateInterval);
+
 					// console.log('le client', client.id);
 					// console.log('taille du lobby' ,this.lobbies[lobbyID].clients.length)
 					// console.log(this.lobbies[lobbyID].clients);

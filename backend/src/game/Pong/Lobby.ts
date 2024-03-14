@@ -28,20 +28,17 @@ export class Lobby {
 
 	public startGamePVE(client: Socket, gameMode: string): void {
 		this.pongGame.gameMode =  gameMode;
-		// this.sendGameInfo(client, gameMode);
 		const countdownInterval = setInterval(() => {
 			if (this.pongGame.countdown > 0) {
 				this.sendGameInfo(client, gameMode);
 				this.pongGame.countdown--;
 			} else {
 				clearInterval(countdownInterval);
-				// const startTime = new Date();
+				this.pongGame.timerStart = Date.now();
 				this.updateInterval = setInterval(() => {
 					this.pongGame.nextFrame();
 					this.sendGameInfo(client, gameMode);
-					// const currentTime = new Date();
-					// console.log((currentTime.getTime()  - startTime.getTime()) / 1000);
-					// if ()
+				
 				}, 1000 / 60); 
 			}
 		}, 1000);
@@ -58,6 +55,7 @@ export class Lobby {
 				this.pongGame.countdown--;
 			} else {
 				clearInterval(countdownInterval);
+				this.pongGame.timerStart = Date.now();
 				this.updateInterval = setInterval(() => {
 					this.pongGame.nextFrame();
 					this.sendGameInfoRoom(lobbyID);
@@ -88,6 +86,7 @@ export class Lobby {
 			score: this.pongGame.score,
 			gameMode: gameMode,
 			countdown: this.pongGame.countdown,
+			timeLeft: this.pongGame.timeLeft,
 		}
 		client.emit('gameInfo', gameInfo);
 	  };
@@ -102,6 +101,7 @@ export class Lobby {
 			score: this.pongGame.score,
 			gameMode : 'vsPlayer',
 			countdown: this.pongGame.countdown,
+			timeLeft: this.pongGame.timeLeft,
 		}
 		this.server.to(lobbyId).emit('gameInfo', gameInfo)
 	}

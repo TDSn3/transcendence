@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PongGame from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
+import NewGameMode from "./newGame.tsx";
 import io from "socket.io-client";
 import { Socket } from "dgram";
 import useAuth from "../../contexts/Auth/useAuth.tsx";
@@ -9,6 +10,7 @@ const Lobby = () => {
   const [localPong, setLocalPong] = useState(false);
   const [IAPong, setIAPong] = useState(false);
   const [BotvsBot1, setBotvsBot] = useState(false);
+  const [newGameMode, setNewGameMode] = useState(false);
   const [gameInfos, setGameInfos] = useState<any>(null);
   const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
   const [displayButtons, setDisplayButtons] = useState<boolean>(true);
@@ -126,6 +128,14 @@ const Lobby = () => {
     socketRef.current.emit('startBotvsBot');
   };
 
+  const handleNewGameMode = () => {
+		setLocalPong(false);
+   		setIAPong(false);
+   		setBotvsBot(false);
+		setNewGameMode(true);
+		setDisplayButtons(false);
+  }
+
   const joinGame = (gameMode: string) => {
 	const paddleInfos = {
 		gameMode: gameMode,
@@ -143,6 +153,7 @@ const Lobby = () => {
       <button onClick={handleLocalPong}>Jouer en PVP</button>
       <button onClick={handleIAPong}>Jouer contre l'ordi</button>
       <button onClick={handleBotvsBot}>Bot vs Bot</button>
+      <button onClick={handleNewGameMode}>En test</button>
 	  </>
 		)}
 	  {gameInfos === null && localPong && (
@@ -152,6 +163,7 @@ const Lobby = () => {
       {IAPong && <PongGame gameInfo={gameInfos}/>}
       {localPong && <PongGame gameInfo={gameInfos}/>}
       {BotvsBot1 && <BotvsBot />}
+      {newGameMode && <NewGameMode />}
     </div>
   );
 }
