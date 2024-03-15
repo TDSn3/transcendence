@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsUrl } from 'class-validator';
 
 export class AddFriendDto {
   @IsString()
@@ -12,5 +12,6 @@ export class DeleteFriendDto {
 
 export class UpdateAvatarDto {
   @IsString()
+  @IsUrl()
   url: string;
 }

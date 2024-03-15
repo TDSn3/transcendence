@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
@@ -8,6 +7,7 @@ import userServices from '../../../services/user';
 import OtherProfilePublicInfo from './OtherProfilePublicInfo';
 import ReturnButton from '../../Buttons/ButtonReturn/ReturnButton';
 import Modal from '../../Modal/Modal';
+import RankWinsLosses from './RankWinsLosses';
 
 import '../profile.css';
 
@@ -21,11 +21,11 @@ interface ProfileInformationProps {
 function ProfileInformation({
   userProfile, setUserProfile, isToggled, setIsToggled,
 }: ProfileInformationProps) {
-  const location = useLocation();
   const { user, setUser } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState<boolean>(false);
   const [modalInputValue, setModalInputValue] = useState<string>('');
 
   const hook = () => {
@@ -82,64 +82,88 @@ function ProfileInformation({
       });
   };
 
+  const handleEditLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    setIsLoginModalVisible(true);
+  };
+
+  const handleOnSubmitLoginForm = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+
+    console.log(`Login: ${user.login}.`);
+    userServices
+      .updateLogin(user.id, modalInputValue)
+      .then((updatedUser) => {
+        setUser((prevUser) => ({ ...prevUser, login: updatedUser.login }));
+        setIsLoginModalVisible(false);
+        setModalInputValue('');
+
+        console.log(`New login: ${updatedUser.login}.`);
+      })
+      .catch((error) => {
+        setIsLoginModalVisible(false);
+        setModalInputValue('');
+
+        console.error(error);
+      });
+  };
+
   return (
     <div className="page profile-style">
-      {
-        isModalVisible ? (
-          <Modal
-            title="Edit photo"
-            handleOnSubmitForm={handleOnSubmitForm}
-            formValue={modalInputValue}
-            HandleFormOnChange={handleModalInputOnChange}
-            handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-              event.preventDefault();
-              setIsModalVisible(false);
-            }}
-          />
-        ) : (
-          <> </>
-        )
-      }
+      {isModalVisible && (
+        <Modal
+          title="Edit photo"
+          placeholder="https://www.exemple.com"
+          handleOnSubmitForm={handleOnSubmitForm}
+          formValue={modalInputValue}
+          HandleFormOnChange={handleModalInputOnChange}
+          handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            setIsModalVisible(false);
+          }}
+        />
+      )}
+      {isLoginModalVisible && (
+        <Modal
+          title="Edit login"
+          placeholder="new login"
+          handleOnSubmitForm={handleOnSubmitLoginForm}
+          formValue={modalInputValue}
+          HandleFormOnChange={handleModalInputOnChange}
+          handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+            event.preventDefault();
+            setIsLoginModalVisible(false);
+          }}
+        />
+      )}
+
+      {!isUserIsUserProfile && (<ReturnButton path="/friends" />)}
+
       <div className="picture-container">
         <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
+        {isUserIsUserProfile && (
+          <button className="picture-overlay-background" type="button" aria-label="Edit photo" onClick={handleEditPhoto}>
+            <div className="picture-overlay-text">Edit photo</div>
+          </button>
+        )}
       </div>
 
-      <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
+      <div className={isUserIsUserProfile ? 'login-container' : ''}>
+        <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
+        {isUserIsUserProfile && (<button className="login-overlay" type="button" aria-label="Edit login" onClick={handleEditLogin}> </button>)}
+      </div>
+
       <p>
         {userProfile.firstName}
         {' '}
         {userProfile.lastName}
       </p>
 
-      <div className="profile-content">
-        <div>
-          <p className="box">
-            Rank&nbsp;&nbsp;
-            <span className="number">NULL</span>
-          </p>
-        </div>
-        <div className="wins-losses">
-          <p className="box">
-            Wins&nbsp;&nbsp;
-            <span className="number">{userProfile.wins}</span>
-          </p>
-          <p className="box">
-            Losses&nbsp;&nbsp;
-            <span className="number">{userProfile.losses}</span>
-          </p>
-        </div>
-      </div>
+      <RankWinsLosses userProfile={userProfile} />
+
       {
-        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
-          <button className="picture-overlay-background" type="button" aria-label="Edit photo" onClick={handleEditPhoto}>
-            <div className="picture-overlay-text">Edit photo</div>
-          </button>
-        ) : (
-          <> </>
-        )
-      }
-      {
-        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
+        isUserIsUserProfile ? (
           <div className="switch-style">
             <AntSwitch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
           </div>
@@ -151,13 +175,6 @@ function ProfileInformation({
             handleAddFriendClick={handleAddFriendClick}
             handleDelFriendClick={handleDelFriendClick}
           />
-        )
-      }
-      {
-        isUserIsUserProfile && /\/profile\/.+/.test(location.pathname) ? (
-          <> </>
-        ) : (
-          <ReturnButton path="/friends" />
         )
       }
     </div>

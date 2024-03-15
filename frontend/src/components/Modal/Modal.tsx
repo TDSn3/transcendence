@@ -7,6 +7,7 @@ import './modal.css';
 
 interface ModalProps {
   title: string,
+  placeholder: string,
   handleOnSubmitForm: (event: React.SyntheticEvent) => void,
   formValue: string,
   HandleFormOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
@@ -15,6 +16,7 @@ interface ModalProps {
 
 function Modal({
   title,
+  placeholder,
   handleOnSubmitForm,
   formValue,
   HandleFormOnChange,
@@ -32,7 +34,7 @@ function Modal({
             className="input-modal"
             value={formValue}
             onChange={HandleFormOnChange}
-            placeholder="https://www.exemple.com"
+            placeholder={placeholder}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
             <ButtonRegularSubmit text="OK" />

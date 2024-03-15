@@ -133,14 +133,14 @@
 }
 
 .picture-container {
-	opacity: 1;
+	position: relative;
 }
 
 .picture-overlay-background {
 	position: absolute;
-	top: 32px;
+	top: 53%;
 	left: 50%;
-	transform: translateX(-50%);
+	transform: translate(-50%, -50%);
 
 	padding: 0px;
 
@@ -189,5 +189,44 @@
 
 .picture-overlay-background:hover .picture-overlay-text {
 	top: 2%;
+	opacity: 1;
+}
+
+.login-container {
+	position: relative;
+	transition:
+		transform 0.2s;
+}
+
+.login-container:hover {
+	transform: scale(1.05) translateY(-4px);
+}
+
+.login-overlay {
+	position: absolute;
+	top: 77.5%;
+	right: 50%;
+	transform: translate(50%, -50%);
+
+	padding: 0px;
+
+	width: 136%;
+	height: 143%;
+
+	background: transparent;
+	border-style: solid;
+	border-width: 1.5px;
+	border-color: var(--color-medium-dark);
+	border-radius: 999px;
+
+	cursor: pointer;
+
+	transition:
+		opacity 0.2s;
+
+	opacity: 0;
+}
+
+.login-overlay:hover {
 	opacity: 1;
 }

@@ -31,16 +31,6 @@
 	}
 }
 
-@keyframes modalFadeOut {
-	from {
-	  top: 50%;
-	}
-	to {
-	  top: 55%;
-	  opacity: 0;
-	}
-  }
-
 .modal-box {
 	display: flex;
 	flex-direction: column;
@@ -91,6 +81,10 @@
 	border-radius: var(--border-radius-medium);
 
 	transition: border-color 0.3s ease, outline 0.3s ease;
+}
+
+.input-modal:hover {
+	border: 1.5px solid var(--color-dark-extra-soft);
 }
 
 .input-modal:focus {
