@@ -32,6 +32,8 @@ function Modal({
         <form className="form-style" onSubmit={handleOnSubmitForm}>
           <input
             className="input-modal"
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
             value={formValue}
             onChange={HandleFormOnChange}
             placeholder={placeholder}

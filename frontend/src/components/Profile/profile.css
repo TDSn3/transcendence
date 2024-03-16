@@ -204,14 +204,12 @@
 
 .login-overlay {
 	position: absolute;
-	top: 77.5%;
+	top: 80%;
 	right: 50%;
 	transform: translate(50%, -50%);
 
-	padding: 0px;
-
-	width: 136%;
-	height: 143%;
+	width: calc(100% + 32px);
+	height: calc(100% + 16px);
 
 	background: transparent;
 	border-style: solid;

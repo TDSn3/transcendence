@@ -1,4 +1,4 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsString, IsUrl, MaxLength, Matches } from 'class-validator';
 
 export class AddFriendDto {
   @IsString()
@@ -18,5 +18,7 @@ export class UpdateAvatarDto {
 
 export class UpdateLoginDto {
   @IsString()
+  @MaxLength(12)
+  @Matches(/^[a-z]+(-[a-z]+)*$/)
   newLogin: string;
 }

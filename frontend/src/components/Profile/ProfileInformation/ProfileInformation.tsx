@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
@@ -21,6 +22,7 @@ interface ProfileInformationProps {
 function ProfileInformation({
   userProfile, setUserProfile, isToggled, setIsToggled,
 }: ProfileInformationProps) {
+  const navigate = useNavigate();
   const { user, setUser } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
@@ -100,6 +102,9 @@ function ProfileInformation({
         setModalInputValue('');
 
         console.log(`New login: ${updatedUser.login}.`);
+
+        localStorage.setItem('userLogin', updatedUser.login);
+        navigate(`/profile/${updatedUser.login}`);
       })
       .catch((error) => {
         setIsLoginModalVisible(false);
@@ -121,6 +126,7 @@ function ProfileInformation({
           handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             setIsModalVisible(false);
+            setModalInputValue('');
           }}
         />
       )}
@@ -134,6 +140,7 @@ function ProfileInformation({
           handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
             event.preventDefault();
             setIsLoginModalVisible(false);
+            setModalInputValue('');
           }}
         />
       )}

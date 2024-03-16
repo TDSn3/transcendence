@@ -7,7 +7,7 @@ import {
   DeleteFriendDto,
   UpdateAvatarDto,
   UpdateLoginDto,
-} from './dto/AddFriendDto';
+} from './dto/Dto';
 
 @Controller('api/users')
 @ApiTags('users')
