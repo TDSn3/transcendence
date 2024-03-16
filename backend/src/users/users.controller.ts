@@ -6,6 +6,7 @@ import {
   AddFriendDto,
   DeleteFriendDto,
   UpdateAvatarDto,
+  UpdateLoginDto,
 } from './dto/AddFriendDto';
 
 @Controller('api/users')
@@ -63,5 +64,13 @@ export class UsersController {
     @Body() updateAvatarDto: UpdateAvatarDto,
   ): Promise<User> {
     return this.usersService.updateAvatar(id, updateAvatarDto.url);
+  }
+
+  @Post('id/login/:id')
+  updateLogin(
+    @Param('id') id: string,
+    @Body() updateLoginDto: UpdateLoginDto,
+  ): Promise<User> {
+    return this.usersService.updateLogin(id, updateLoginDto.newLogin);
   }
 }

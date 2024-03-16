@@ -15,3 +15,8 @@ export class UpdateAvatarDto {
   @IsUrl()
   url: string;
 }
+
+export class UpdateLoginDto {
+  @IsString()
+  newLogin: string;
+}
