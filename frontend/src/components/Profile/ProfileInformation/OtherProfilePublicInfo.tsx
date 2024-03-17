@@ -35,9 +35,6 @@ function OtherProfilePublicInfo({
   const isFriendHook = () => {
     const checkIfFriend = userWithFriends?.friends?.some((friend) => friend.id === userProfile.id);
 
-    if (checkIfFriend === undefined) {
-      console.error('SO IT\'S POSSIBLE !'); // TODO: investigate this, normally it's ok
-    }
     setIsFriend(checkIfFriend || false);
   };
   useEffect(isFriendHook, [userWithFriends?.friends, userProfile, setIsFriend]);

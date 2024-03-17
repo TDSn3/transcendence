@@ -71,6 +71,32 @@ const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
   }
 };
 
+const updateAvatar = async (userId: string, avatarUrl: string): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/avatar/${userId}`, {
+      url: avatarUrl,
+    });
+
+    console.log('Avatar updated.');
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error POST update avatar.'));
+  }
+};
+
+const updateLogin = async (userId: string, newLogin: string): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/login/${userId}`, {
+      newLogin,
+    });
+
+    console.log('Login updated.');
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error POST update login.'));
+  }
+};
+
 export default {
   getAll,
   getUserById,
@@ -78,4 +104,6 @@ export default {
   addFriend,
   deleteFriend,
   getStatus,
+  updateAvatar,
+  updateLogin,
 };

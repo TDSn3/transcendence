@@ -6,9 +6,9 @@ interface XmarkIconoirButtonProps {
   handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-function XmarkIconoirButton({ handleClick }: XmarkIconoirButtonProps) {
+function XmarkIconoirButtonOpacityOne({ handleClick }: XmarkIconoirButtonProps) {
   return (
-    <button className="xmark-iconoir-button" type="button" aria-label="Xmark button" onClick={handleClick}>
+    <button className="xmark-iconoir-button" style={{ opacity: 1 }} type="button" aria-label="Xmark button" onClick={handleClick}>
       <IconoirProvider
         iconProps={{
           strokeWidth: 1,
@@ -22,4 +22,4 @@ function XmarkIconoirButton({ handleClick }: XmarkIconoirButtonProps) {
   );
 }
 
-export default XmarkIconoirButton;
+export default XmarkIconoirButtonOpacityOne;

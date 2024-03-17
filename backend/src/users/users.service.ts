@@ -209,6 +209,32 @@ export class UsersService {
       throw new Error('Failed to update user status');
     }
   }
+
+  async updateAvatar(id: string, url: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { avatar: url },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to update url avatar');
+    }
+  }
+
+  async updateLogin(id: string, newLogin: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { login: newLogin },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to update login');
+    }
+  }
 }
 
 const printRemoveUserStatusWebSocketId = (

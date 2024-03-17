@@ -27,7 +27,7 @@ function Login() {
 
       localStorage.setItem('userLogin', user.login);
 
-      navigate('/home');
+      navigate(`/profile/${user.login}`);
     } catch (error: unknown) {
       setLoggedIn(false);
 

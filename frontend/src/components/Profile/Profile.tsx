@@ -29,6 +29,7 @@ function Profile() {
       <>
         <ProfileInformation
           userProfile={userProfile}
+          setUserProfile={setUserProfile}
           isToggled={isToggled}
           setIsToggled={setIsToggled}
         />

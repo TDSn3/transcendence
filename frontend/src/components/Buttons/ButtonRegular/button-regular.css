@@ -29,7 +29,14 @@
 	border-color: var(--color-dark-soft);
 	transform: translate(0%, -5%);
 	box-shadow: 0px 4px 16px 2px var(--color-medium);
-	/* box-shadow: 0px 2px 0px 0px var(--color-dark-soft); */
+}
+
+.button-regular:active {
+	cursor: pointer;
+
+	background-color: var(--color-medium-dark);
+	transform: translate(0%, 2%);
+	box-shadow: 0px 0px 0px 0px var(--color-medium);
 }
 
 .button-regular-text {
