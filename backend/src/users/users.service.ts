@@ -139,6 +139,44 @@ export class UsersService {
     }
   }
 
+  async addBlock(id: string, idUserToAddBlock: string): Promise<User> {
+	try {
+	  const user = await this.prisma.user.update({
+		where: { id },
+		data: {
+		  blocked: {
+			connect: { id: idUserToAddBlock },
+		  }
+		}
+	  });
+
+	  if (user)
+	  	return user;
+	  throw new Error();
+	} catch (error: unknown) {
+	  throw new Error('Failed to add a block');
+    }
+  }
+
+  async deleteBlock(id: string, idUserToDelBlock: string): Promise<User> {
+	try {
+	  const user = await this.prisma.user.update({
+		where: { id },
+		data: {
+		  blocked: {
+			disconnect: { id: idUserToDelBlock },
+		  }
+		}
+	  });
+
+	  if (user)
+	  	return user;
+	  throw new Error();
+	} catch (error: unknown) {
+	  throw new Error('Failed to delete a block');
+    }
+  }
+
   async addUserStatusWebSocketId(
     id: string,
     webSocketId: string,

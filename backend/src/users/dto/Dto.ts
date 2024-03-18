@@ -10,6 +10,16 @@ export class DeleteFriendDto {
   idUserToDelAsFriend: string;
 }
 
+export class AddBlockDto {
+  @IsString()
+  idUserToAddBlock: string;
+}
+
+export class DeleteBlockDto {
+  @IsString()
+  idUserToDelBlock: string;
+}
+
 export class UpdateAvatarDto {
   @IsString()
   @IsUrl()

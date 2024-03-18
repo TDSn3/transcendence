@@ -61,10 +61,10 @@ const ChatRoom = () => {
 		const fetchData = async () => {
 			if (!(await checkChannel(channelName !== undefined ? channelName : ""))) {
 				navigate("/chat");
+				console.log();
 			}
 			const messagesResponse = await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`);
 			setMessages(messagesResponse.data.map((value: MessageInfo) => value));
-			console.log("end fetch", messagesResponse);
 		};
 		fetchData();
 

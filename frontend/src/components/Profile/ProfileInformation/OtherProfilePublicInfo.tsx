@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UserPlus, UserXmark } from 'iconoir-react';
+import { UserPlus, UserXmark, Prohibition } from 'iconoir-react';
 import ButtonRegular from '../../Buttons/ButtonRegular/ButtonRegular';
 import ButtonRedHover from '../../Buttons/ButtonRedHover/ButtonRedHover';
 import useAuth from '../../../contexts/Auth/useAuth';
@@ -9,25 +9,38 @@ import userServices from '../../../services/user';
 interface PublicOtherProfileInfoProps {
   isFriend: boolean | undefined,
   setIsFriend: React.Dispatch<React.SetStateAction<boolean | undefined>>,
+  isBlocked: boolean | undefined,
+  setIsBlocked: React.Dispatch<React.SetStateAction<boolean | undefined>>,
   userProfile: User,
   handleAddFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
   handleDelFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
+  handleAddBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
+  handleDelBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
 function OtherProfilePublicInfo({
   isFriend,
   setIsFriend,
+  isBlocked,
+  setIsBlocked,
   userProfile,
   handleAddFriendClick,
   handleDelFriendClick,
+  handleAddBlockClick,
+  handleDelBlockClick,
 }: PublicOtherProfileInfoProps) {
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
+  const [userWithBlocked, setUserWithBlocked] = useState<User>(user);
 
   const hook = () => {
     userServices
       .getUserById(user.id)
       .then((userValue) => setUserWithFriends(userValue))
+      .catch((error) => console.error(error));
+	userServices
+      .getUserById(user.id)
+      .then((userValue) => setUserWithBlocked(userValue))
       .catch((error) => console.error(error));
   };
   useEffect(hook, [user]);
@@ -39,6 +52,13 @@ function OtherProfilePublicInfo({
   };
   useEffect(isFriendHook, [userWithFriends?.friends, userProfile, setIsFriend]);
 
+  const isBlockedHook = () => {
+	const checkIfBlock = userWithBlocked?.blocked?.some((blocked) => blocked.id === userProfile.id)
+
+	setIsBlocked(checkIfBlock || false);
+  }
+  useEffect(isBlockedHook, [userWithBlocked?.blocked, userProfile, setIsBlocked]);
+
   return (
     <div>
       {
@@ -48,6 +68,13 @@ function OtherProfilePublicInfo({
           <ButtonRegular icon={UserPlus} text="Add friend" handleClick={handleAddFriendClick} />
         )
       }
+	  {
+		isBlocked ? (
+			<ButtonRegular icon={Prohibition} text="Unblock" handleClick={handleDelBlockClick} />
+		) : (
+			<ButtonRedHover icon={Prohibition} text="Block" handleClick={handleAddBlockClick} />
+		)
+	  }
     </div>
   );
 }

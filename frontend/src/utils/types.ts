@@ -26,6 +26,8 @@ export interface User {
 
   friends: User[],
   friendOf: User[],
+  blocked: User[],
+  blockedOf: User[],
 }
 
 export const emptyUser: User = {
@@ -50,6 +52,8 @@ export const emptyUser: User = {
 
   friends: [],
   friendOf: [],
+  blocked: [],
+  blockedOf: [],
 };
 
 // Web socket

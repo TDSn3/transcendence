@@ -26,6 +26,7 @@ function ProfileInformation({
   const { user, setUser } = useAuth();
   const isUserIsUserProfile = user.id === userProfile.id; // TODO: state ?
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
+  const [isBlocked, setIsBlocked] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState<boolean>(false);
   const [modalInputValue, setModalInputValue] = useState<string>('');
@@ -52,6 +53,25 @@ function ProfileInformation({
       .then(() => setIsFriend(false))
       .catch((error) => console.error(error));
   };
+
+  const handleAddBlockClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+	event.preventDefault();
+
+	console.log("oui");
+	userServices
+	  .addBlock(user.id, userProfile.id)
+	  .then(() => setIsBlocked(true))
+	  .catch((error) => console.error(error));
+  }
+
+  const handleDelBlockClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+	event.preventDefault();
+
+	userServices
+	  .deleteBlock(user.id, userProfile.id)
+	  .then(() => setIsBlocked(false))
+	  .catch((error) => console.error(error));
+  }
 
   const handleEditPhoto = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -178,9 +198,13 @@ function ProfileInformation({
           <OtherProfilePublicInfo
             isFriend={isFriend}
             setIsFriend={setIsFriend}
+			isBlocked={isBlocked}
+			setIsBlocked={setIsBlocked}
             userProfile={userProfile}
             handleAddFriendClick={handleAddFriendClick}
             handleDelFriendClick={handleDelFriendClick}
+			handleAddBlockClick={handleAddBlockClick}
+			handleDelBlockClick={handleDelBlockClick}
           />
         )
       }

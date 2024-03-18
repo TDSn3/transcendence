@@ -41,6 +41,6 @@ export class ChannelsController {
 
   @Get(":channelName/messages")
   async getAllMessages(@Param("channelName") channelName: string): Promise<any> {
-	return (this.channelService.getAllMessages(channelName));
+	return (this.channelService.getAllMeaddBlockssages(channelName));
   }
 }

@@ -3,7 +3,9 @@ import { UsersService } from './users.service';
 import { User, UserStatus } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
 import {
+	AddBlockDto,
   AddFriendDto,
+  DeleteBlockDto,
   DeleteFriendDto,
   UpdateAvatarDto,
   UpdateLoginDto,
@@ -56,6 +58,22 @@ export class UsersController {
       id,
       deleteFriendDto.idUserToDelAsFriend,
     );
+  }
+
+  @Post('id/ad-block/:id')
+  addBlock(
+	@Param('id') id: string,
+	@Body() addBlockDto: AddBlockDto,
+  ): Promise<User> {
+	return this.usersService.addBlock(id, addBlockDto.idUserToAddBlock);
+  }
+
+  @Post('id/del-block/:id')
+  delBlock(
+	@Param('id') id: string,
+	@Body() deleteBlockDto: DeleteBlockDto,
+  ): Promise<User> {
+	return this.usersService.deleteBlock(id, deleteBlockDto.idUserToDelBlock);
   }
 
   @Post('id/avatar/:id')
