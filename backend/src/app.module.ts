@@ -9,6 +9,7 @@ import { ChannelsModule } from './chat/channels/channels.module';
 import { ChannelMembersModule } from './chat/channelMembers/channelMembers.module';
 import { ChatSocketModule } from './chat/chatSocket/chatSocket.module';
 import { SocketModule } from './game/socket.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SocketModule } from './game/socket.module';
     // Global
     PrismaModule,
 
+    PassportModule,
     AuthModule,
     UsersModule,
     ChannelsModule,

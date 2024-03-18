@@ -245,7 +245,8 @@ export class AuthService {
       });
 
       if (userObject && userObject.user) {
-        const user = await this.prisma.user.update({
+        // const user = await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             id: userObject.user.id,
           },
