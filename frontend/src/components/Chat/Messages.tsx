@@ -23,7 +23,6 @@ export const Message = ({username, avatar, message}: MessageProps) => {
 }
 
 export const Messages = ({ messages }: MessagesProps) => {
-	console.log(messages);
 	return (
 		<div className="messages">
 			{

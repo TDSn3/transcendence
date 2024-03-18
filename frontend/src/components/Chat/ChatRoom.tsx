@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { Messages, Message } from "./Messages.tsx";
+import { Messages } from "./Messages.tsx";
 import "./chat.css";
 import useAuth from '../../contexts/Auth/useAuth.tsx';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -13,6 +13,21 @@ interface InputBarProps {
 	user: any,
 	channelName: string,
 }
+
+interface MemberInfo {
+	login: string,
+	avatar: string
+}
+
+interface MessageInfo {
+	id: number,
+	createdAt: any,
+	userId: number,
+	channelId: number,
+	content: string,
+	member: MemberInfo
+}
+
 
 const InputBar = ({ socketRef, user, channelName }: InputBarProps) => {
 	const [message, setMessage] = useState<string>("");
@@ -37,29 +52,26 @@ const ChatRoom = () => {
 	const navigate = useNavigate();
 
 	const socketRef = useRef<any>(null);
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState<any[]>([]);
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [newChannelPassword, setNewChannelPassword] = useState<string>("");
 	const [newChannelPrivate, setNewChannelPrivate] = useState<boolean>(false);
 
 	useEffect(() => {
-		const channelChecker = async () => {
+		const fetchData = async () => {
 			if (!(await checkChannel(channelName !== undefined ? channelName : ""))) {
 				navigate("/chat");
 			}
-		}
-		const messagesGetter = async () => {
-			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
-		}
-		channelChecker();
-		messagesGetter();
+			const messagesResponse = await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`);
+			setMessages(messagesResponse.data.map((value: MessageInfo) => value));
+			console.log("end fetch", messagesResponse);
+		};
+		fetchData();
 
 		socketRef.current = io("http://localhost:5001/chat");
 		socketRef.current.emit("chatJoin", {intraId: user.intraId, channelName: channelName});
-		socketRef.current.on("chatReceive", (payload: {newMessage: any}) => {
-			console.log(payload.newMessage);
-			setMessages([...messages, payload.newMessage]);
-			// console.log(messages);
+		socketRef.current.on("chatReceive", (payload: {newMessage: MessageInfo}) => {
+			setMessages(prevMessages => [...prevMessages, payload.newMessage]);
 		});
 
 		return () => {
