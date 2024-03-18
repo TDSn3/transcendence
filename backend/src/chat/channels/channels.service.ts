@@ -58,6 +58,7 @@ export class ChannelsService {
 	}
 
 	async getAllMessages(channelName: string): Promise<Message[]> {
+		const channelId = await this.getChannelId(channelName);
 		const res = await this.prisma.message.findMany({
 			include: {
 				member: {
@@ -68,7 +69,7 @@ export class ChannelsService {
 				}
 			},
 			where: {
-				channelId: await this.getChannelId(channelName)
+				channelId: channelId
 			}
 		})
 		return (res);
