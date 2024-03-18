@@ -63,3 +63,21 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   message: (data: UserForStatusWebSocket) => void,
 }
+
+// Game history
+
+export interface AddGameHistory {
+  winningUserId: string,
+  winningUserScore: number,
+  losingUserId: string,
+  losingUserScore: number,
+}
+
+export interface GameHistory {
+  id: string,
+  playedAt: Date,
+  WinningUserId: string,
+  WinningUserScore: number,
+  LosingUserId: string,
+  LosingUserScore: number,
+}

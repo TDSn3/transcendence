@@ -1,6 +1,6 @@
 import { IsString, IsNumber } from 'class-validator';
 
-export class GameHistoryDto {
+export class AddGameHistoryDto {
   @IsString()
   winningUserId: string;
 

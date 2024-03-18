@@ -6,6 +6,9 @@ import useAuth from '../../../contexts/Auth/useAuth';
 import { User } from '../../../utils/types';
 import userServices from '../../../services/user';
 
+// test
+import gameHistoryServices from '../../../services/gameHistory';
+
 interface PublicOtherProfileInfoProps {
   isFriend: boolean | undefined,
   setIsFriend: React.Dispatch<React.SetStateAction<boolean | undefined>>,
@@ -39,6 +42,18 @@ function OtherProfilePublicInfo({
   };
   useEffect(isFriendHook, [userWithFriends?.friends, userProfile, setIsFriend]);
 
+  const handler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    gameHistoryServices
+      .addGameHistory({
+        winningUserId: '58206f2c-eb8f-4af4-8d80-0cb63e94acff',
+        winningUserScore: 5,
+        losingUserId: 'b8df40c6-7aed-4596-b963-f6165855658b',
+        losingUserScore: 3,
+      });
+  };
+
   return (
     <div>
       {
@@ -47,6 +62,9 @@ function OtherProfilePublicInfo({
         ) : (
           <ButtonRegular icon={UserPlus} text="Add friend" handleClick={handleAddFriendClick} />
         )
+      }
+      {
+        isFriend && (<ButtonRegular icon={UserPlus} text="TEST" handleClick={handler} />)
       }
     </div>
   );
