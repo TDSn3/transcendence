@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import GameHistory from './GameHistory/GameHistory';
+import GameHistory from './GameHistory/GameHistory';
 import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 import typeGuard from '../../utils/typeGuard';
@@ -38,7 +38,7 @@ function Profile() {
 
           <h3 className="game-history-title-style">Game History</h3>
 
-          {/* <GameHistory user={user} /> */}
+          <GameHistory />
 
         </div>
 

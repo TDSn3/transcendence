@@ -11,7 +11,12 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany({
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
     return users;
   }
@@ -23,7 +28,12 @@ export class UsersService {
 
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
 
     if (!user) {
@@ -40,7 +50,12 @@ export class UsersService {
 
     const user = await this.prisma.user.findUnique({
       where: { login },
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
 
     if (!user) {

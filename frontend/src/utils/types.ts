@@ -1,3 +1,25 @@
+// Game history
+
+export interface AddGameHistory {
+  winningUserId: string,
+  winningUserScore: number,
+  losingUserId: string,
+  losingUserScore: number,
+}
+
+export interface GameHistory {
+  id: string,
+  playedAt: Date,
+  WinningUser: User,
+  WinningUserId: string,
+  WinningUserScore: number,
+  LosingUser: User,
+  LosingUserId: string,
+  LosingUserScore: number,
+}
+
+// Other
+
 export enum UserStatus {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
@@ -26,6 +48,9 @@ export interface User {
 
   friends: User[],
   friendOf: User[],
+
+  historyGamesWon: GameHistory[],
+  historyGamesLost: GameHistory[],
 }
 
 export const emptyUser: User = {
@@ -50,6 +75,9 @@ export const emptyUser: User = {
 
   friends: [],
   friendOf: [],
+
+  historyGamesWon: [],
+  historyGamesLost: [],
 };
 
 // Web socket
@@ -62,22 +90,4 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   message: (data: UserForStatusWebSocket) => void,
-}
-
-// Game history
-
-export interface AddGameHistory {
-  winningUserId: string,
-  winningUserScore: number,
-  losingUserId: string,
-  losingUserScore: number,
-}
-
-export interface GameHistory {
-  id: string,
-  playedAt: Date,
-  WinningUserId: string,
-  WinningUserScore: number,
-  LosingUserId: string,
-  LosingUserScore: number,
 }
