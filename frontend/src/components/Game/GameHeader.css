@@ -17,7 +17,7 @@
   }
 
   .timer p{
-    text-align:end;
+    text-align:center;
     font-size: 30px;
 	color: rgba(0, 0, 0, 0.89);
 }

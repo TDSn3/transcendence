@@ -13,13 +13,13 @@ interface Paddle {
 	  speedX: number;
 	  speedY: number;
   }
-
+import './GameHeader.css'
+import { time } from 'console';
 import React, { useState, useEffect, useRef } from 'react';
-
 const NewGameMode = () => {
 const canvasRef = useRef<HTMLCanvasElement>(null);
 const [angleStart, setAngleStart] = useState(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
-const initialBallState = { x: 400, y: 200, speedX: Math.random() > 0.5 ? 10 * Math.cos(angleStart) : 10 * -Math.cos(angleStart), speedY: 10 * Math.sin(angleStart)};
+const initialBallState = { x: 400, y: 250, speedX: 5 * -Math.cos(angleStart), speedY: 5 * Math.sin(angleStart)};
 // const initialBallState = { x: 400, y: 250, speedX: 5, speedY: 0};
 const initialPaddleState = { left: 150, right: 150 };
 const [ball, setBall] = useState(initialBallState);
@@ -28,8 +28,6 @@ const [paddles, setPaddles] = useState(initialPaddleState);
 const [gameOver, setGameOver] = useState(false);
 const [gameRunning, setGameRunning] = useState(false);
 const ballRef = useRef(null);
-// const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 60 });
-// const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 790, y: 220, width: 10, height: 60 });
 const [goalSize, setGoalSize] = useState<number>(150);
 const [randomSpawn, setRandomSpawn] = useState(Math.round(Math.random() * (500 - goalSize)));
 
@@ -49,7 +47,11 @@ const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
 const [countdown, setCountDown] = useState(3);
 const [gameStarted, setGameStarted] = useState(false);
 const [countdownActive, setCountdownActive] = useState(false);
-const [colors, setColors] = useState<string[]>(["#f54542", "#f56f42","#f59942", "#f5da42", "#c2f542", "#87f542", "#42f548", "#42f599", "#42f5ef", "#42b9f5", "#4284f5", "#4242f5", "#8742f5", "#bc42f5", "#f542e6"]);
+const [colors, setColors] = useState<string>("#03fc66");
+const maxtime:number = 500
+const [timeLeft, setTimeLeft] = useState<number>(maxtime);
+const [startTimer, setStarTimer] =useState<number>(Date.now());
+// const [actualTime, setActualTime] = useState<number>(Date.now());
 
 const canvas = canvasRef.current;
 function drawGame() {
@@ -59,9 +61,9 @@ function drawGame() {
 		
 		if (context) {
 			const drawPaddles = () => {
-				console.log(colors);
+				// console.log(colors);
 				//dessiner le terrain et les paddles
-				context.fillStyle = colors[leftScore];
+				context.fillStyle = colors;
 				context.fillRect(BotPaddle1.x, BotPaddle1.y, BotPaddle1.width, BotPaddle1.height);
 				context.fillStyle = '#0cecf7';
 				context.fillRect(wallPadlle.x, wallPadlle.y, wallPadlle.width, wallPadlle.height);
@@ -129,12 +131,7 @@ function drawGame() {
 				context.fillText(`${leftScore}`, canvas.width / 2  -40, 30);
 				// context.fillText(`${RightScore}`, canvas.width / 2 + 20, 30);
 			}
-			const drawCountdown = (countdownText: number) => {
-				context.fillStyle = 'red';
-				context.font = '40px Arial';
-				context.fillText(`${countdownText}`, canvas.width / 2 -10, canvas.height / 2);
-			}
-
+			
 			drawGround();			
 			drawPaddles();
 			drawBall();
@@ -143,33 +140,6 @@ function drawGame() {
 		};
 	}
 }
-
-
-
-// const generateGradient = () => {
-// 	const steps = 15; // Nombre de couleurs dans le dégradé
-// 	const startColor = [255, 0, 0]; // Rouge (format RGB)
-// 	const endColor = [0, 255, 0]; // Rouge (format RGB)
-
-// 	const gradientColors = [];
-
-// 	// Calculer la différence entre les composantes RGB de départ et d'arrivée
-// 	const diffR = (endColor[0] - startColor[0]) / (steps - 1);
-// 	const diffG = (endColor[1] - startColor[1]) / (steps - 1);
-// 	const diffB = (endColor[2] - startColor[2]) / (steps - 1);
-
-// 	// Générer les couleurs du dégradé
-// 	for (let i = 0; i < steps; i++) {
-// 		const r = Math.round(startColor[0] + diffR * i);
-// 		const g = Math.round(startColor[1] + diffG * i);
-// 		const b = Math.round(startColor[2] + diffB * i);
-// 		const color = `rgb(${r},${g},${b})`;
-// 		gradientColors.push(color);
-// 	}
-
-// 	// Mise à jour de l'état avec le dégradé de couleurs
-// 	setColors(gradientColors);
-// };
 
 useEffect(() => {
 	if (gameRunning && canvas && !gameOver) {
@@ -228,17 +198,15 @@ useEffect(() => {
 			if (ball.y - 5 < 0)
 				setBall((prev) => ({ ...prev, y: 5, speedY: -prev.speedY }));
 			if (ball.x - 5 < 0)
-				setBall((prev) => ({ ...prev, x: 5, speedX: -prev.speedX }));
-			// if (ball.x + 5 > canvas.width)
-			// 	setBall((prev) => ({ ...prev, x: canvas.width - 5, speedX: -prev.speedX }));	
+				setBall((prev) => ({ ...prev, x: 5, speedX: -prev.speedX }));	
 		}
 		const UpdatePaddle = () => {
 			const speed = 7;
 			let move = 0;
 
-			if (hookTab[0])
+			if (hookTab[0] && BotPaddle1.y + (BotPaddle1.height / 2) > 0)
 				move -= speed;
-			if (hookTab[1])
+			if (hookTab[1] && BotPaddle1.y + BotPaddle1.height -  (BotPaddle1.height / 2) < canvas.height)
 				move += speed;
 			setBotPaddle1((prev) => ({...prev, y: prev.y + move}));
 		}
@@ -276,11 +244,11 @@ useEffect(() => {
 			setBall({
 				x: canvas.width / 2,
 				y: canvas.height / 2,
-				// radius: 5,
 				speedX: 5 * -Math.cos(angle),
-				speedY: 5 * Math.sin(angleStart)
+				speedY: 5 * Math.sin(angle)
 			});
-			setBallSpeed(0);
+			console.log(angle);
+			// setBallSpeed(0);
 		};
 
 		const updateDifficulty = () => {
@@ -289,12 +257,16 @@ useEffect(() => {
 			setRandomSpawn(Math.round(Math.random() * (500 - goalSize)));
 			setWallPaddle({ x: 790, y: 0, width: 10, height: randomSpawn});
 			setWallPaddle2({ x: 790, y: randomSpawn + goalSize, width: 10, height: 800 - randomSpawn + goalSize});
+			if (leftScore === 1)
+				setColors("#31fc03")
+			else if (leftScore === 3)
+				setColors("#d7fc03")
+			else if (leftScore === 5)
+				setColors("#fca903")
+			else if (leftScore === 7)
+				setColors("#fc2c03")
 			
 		}
-		// if (ball.x - 5 < 0 && !(ball.y > BotPaddle1.y && ball.y < BotPaddle1.y + BotPaddle1.height)) {
-		// 	setRightScore((prev) => prev + 1);
-		// 	resetBall(-Math.PI/4 + (Math.random() * (Math.PI/4) - (-Math.PI/4)));
-		// }
 		if (ball.x + 5 > canvas.width) {
 			setLeftScore((prev) => prev + 1);
 			updateDifficulty();
@@ -337,9 +309,22 @@ useEffect(() => {
 	
 		drawGame();
 		UpdatePaddle();
+		updateTimer();
 	
-		console.log(goalSize);
+		// console.log(goalSize);
 	};
+
+	const updateTimer = () => {
+		const actualTime:number = Date.now();
+
+		setTimeLeft(maxtime - (actualTime - startTimer) / 1000);
+		// console.log(startTimer);
+		if (timeLeft <= 0)
+			setGameOver(true);
+	};
+
+	
+
 	const intervalId = setInterval(updateGame, 15);
 	if (leftScore >= 10 || RightScore >= 10)
 		setGameOver(true);
@@ -360,6 +345,13 @@ const startGame = () => {
 	setGameRunning(true);
 };
 
+const formatTime = (second:number) => {
+	second = Math.round(timeLeft);
+	const minute = Math.floor(second / 60);
+	const remainingSeconds = second % 60;
+	return `${minute}:${remainingSeconds < 10 ? '0': ''}${remainingSeconds}`
+	
+}
 
 const restartGame = () => {
 	setBall(initialBallState);
@@ -375,6 +367,8 @@ const restartGame = () => {
 	setGoalSize(150);
 	// setBotPaddle(({ x: 790, y: 220, width: 10, height: 45 }));
 	setBallSpeed(0);
+	setTimeLeft(maxtime);
+	setStarTimer(Date.now());
 	setAngleStart(-Math.PI/4 + Math.random() * ((Math.PI/4) -  (-Math.PI/4)));
 };
 
@@ -387,7 +381,10 @@ return (
 		<button onClick={startGame}>Start</button>
         <button onClick={restartGame}>Restart</button>
         <button onClick={pauseGame}>Pause</button>
-      <canvas ref={canvasRef} width={800} height={500} style={{ border: '0px solid #add8e6' }} />
+		<div className="timer">
+			<p>{formatTime(timeLeft)}</p>
+		</div>
+      <canvas ref={canvasRef} width={800} height={500} className="canvas" />
 	  {gameOver ? leftScore === 5 ? (<p> Blue Win </p>): <p>Red Win</p> : <p></p>}
     </div>
   );
