@@ -13,31 +13,23 @@ function Profile() {
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await userServices.getUserByLogin(typeGuard.parseString(login));
-
-        setUserProfile(user);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('Error in Profile: ', error);
-        }
-
+  const hookUserList = () => {
+    userServices
+      .getUserByLogin(typeGuard.parseString(login))
+      .then((user) => setUserProfile(user))
+      .catch((error) => {
+        console.error(error);
         setUserProfile(null);
-      }
-    };
-
-    fetchUser();
-  }, [login]);
+      });
+  };
+  useEffect(hookUserList, [login]);
 
   if (userProfile) {
     return (
       <>
         <ProfileInformation
           userProfile={userProfile}
+          setUserProfile={setUserProfile}
           isToggled={isToggled}
           setIsToggled={setIsToggled}
         />

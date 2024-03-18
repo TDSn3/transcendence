@@ -29,8 +29,8 @@ const [gameOver, setGameOver] = useState(false);
 const [gameRunning, setGameRunning] = useState(false);
 const ballRef = useRef(null);
 // const [leftPaddle, setLeftPaddle] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 60 });
-const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 790, y: 220, width: 10, height: 45 });
-const [BotPaddle1, setBotPaddle1] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 45 });
+const [BotPaddle, setBotPaddle] = useState<Paddle>({ x: 790, y: 220, width: 10, height: 60 });
+const [BotPaddle1, setBotPaddle1] = useState<Paddle>({ x: 0, y: 220, width: 10, height: 60 });
 // const [ball, setBall] = useState<Ball>({
 // 	x: 250,
 // 	y: 150,
@@ -102,7 +102,6 @@ useEffect(() => {
 	const handleKeyPress = (event: KeyboardEvent) => {
 		if (canvas)
 			{
-				//gerer les deplacements des paddles
 				setHookTab(prev => {
 					let updatedTab = [...prev];
 
@@ -139,18 +138,9 @@ useEffect(() => {
 		
 	}
 
-	// const UpdatePaddle = () => {
-	// 	let move = 0;
 
-	// 	if (hookTab[0] === true && leftPaddle.y  >= 0)
-	// 		move -= 8;
-	// 	if (hookTab[1] === true && leftPaddle.y + leftPaddle.height <= canvas.height)
-	// 		move += 8;
-	// 	setLeftPaddle((prev) => ({...prev, y: prev.y + move}));
-	// }
 	
 	const updateGame = () => {
-		// mettre a jour le jeu
 		setBall((prevBall) => ({
 		...prevBall,
 		x: prevBall.x + prevBall.speedX,
@@ -162,63 +152,57 @@ useEffect(() => {
 			if (ball.y + 5 > canvas.height)
 				setBall((prev) => ({ ...prev, y: canvas.height - 5, speedY: -prev.speedY }));
 			if (ball.y - 5 < 0)
-				setBall((prev) => ({ ...prev, y: 5, speedY: -prev.speedY }));
-			// if (ball.x + 5 > canvas.width) 
-			// 		setBall((prev) => ({ ...prev, x: canvas.width - 5, speedX: -prev.speedX }));
-			// if (ball.x - 5 < 0) 
-			// 		setBall((prev) => ({ ...prev, x: 5, speedX: -prev.speedX }));
-			
+				setBall((prev) => ({ ...prev, y: 5, speedY: -prev.speedY }));			
 		}
 		
 		const moveBot = () => {
-			const botSpeed = 30; // Ajustez la vitesse du bot
+			const botSpeed = 10; 
 		  
-			// Calculer la coordonnée y cible pour le bot en fonction de la position de la balle
 			const targetY = ball.y - BotPaddle.height / 2;
+			if (ball.speedX > 0) {
 		  
-			// Si la différence entre la position actuelle du bot et la position cible est inférieure à la vitesse, déplacez directement le bot à la position cible
-			if (Math.abs(BotPaddle.y - targetY) < botSpeed +4) {
-			  setBotPaddle((prev) => ({ ...prev, y: targetY +4}));
-			} else {
-			  // Sinon, effectuez le déplacement normal
-			  if (BotPaddle.y + 20 < targetY) {
-				setBotPaddle((prev) => ({ ...prev, y: prev.y + botSpeed }));
-			  } else if (BotPaddle.y  -20 > targetY) {
-				setBotPaddle((prev) => ({ ...prev, y: prev.y - botSpeed }));
-			  }
-			}
-
-			if (Math.abs(BotPaddle1.y - targetY) < botSpeed +4) {
-				setBotPaddle1((prev) => ({ ...prev, y: targetY +4}));
-			  } else {
-				// Sinon, effectuez le déplacement normal
-				if (BotPaddle1.y < targetY) {
-				  setBotPaddle1((prev) => ({ ...prev, y: prev.y + botSpeed }));
-				} else if (BotPaddle1.y > targetY) {
-				  setBotPaddle1((prev) => ({ ...prev, y: prev.y - botSpeed }));
+				if (Math.abs(BotPaddle.y - targetY) < botSpeed +6) {
+				  setBotPaddle((prev) => ({ ...prev, y: targetY +6}));
+				} else {
+			  	if (BotPaddle.y + 20 < targetY) {
+					setBotPaddle((prev) => ({ ...prev, y: prev.y + botSpeed }));
+				  } else if (BotPaddle.y  -20 > targetY) {
+					setBotPaddle((prev) => ({ ...prev, y: prev.y - botSpeed }));
+			  	}
 				}
-			  }
+			}
+			if (ball.speedX < 0) {
+				if (Math.abs(BotPaddle1.y - targetY) < botSpeed +6) {
+					setBotPaddle1((prev) => ({ ...prev, y: targetY +6}));
+			 	 } else {
+					if (BotPaddle1.y < targetY) {
+				 	 setBotPaddle1((prev) => ({ ...prev, y: prev.y + botSpeed }));
+					} else if (BotPaddle1.y > targetY) {
+					  setBotPaddle1((prev) => ({ ...prev, y: prev.y - botSpeed }));
+					}
+			 	 }
+			}
 		  };
 		  
 
-		const resetBall = (speedX: number, speedY: number) => {
+		const resetBall = (angle: number) => {
 			setBall({
 				x: canvas.width / 2,
 				y: canvas.height / 2,
 				// radius: 5,
-				speedX: speedX,
-				speedY: speedY,
+				speedX: Math.random() > 0.5 ? 10 * Math.cos(angle) : 10 * -Math.cos(angle),
+				speedY: 10 * Math.sin(angleStart)
 			});
 			setBallSpeed(0);
 		};
 
 		if (ball.x - 5 < 0 && !(ball.y > BotPaddle1.y && ball.y < BotPaddle1.y + BotPaddle1.height)) {
 			setRightScore((prev) => prev + 1);
-			resetBall(-10, 0);
+			resetBall(-Math.PI/4 + (Math.random() * (Math.PI/4) - (-Math.PI/4)));
 		}
 		if (ball.x + 5 > canvas.width && !(ball.y > BotPaddle.y && ball.y < BotPaddle.y + BotPaddle.height)) {
 			setLeftScore((prev) => prev + 1);
-			resetBall(10, 0);
+			resetBall(-Math.PI/4 + (Math.random() * (Math.PI/4) - (-Math.PI/4)));
 		}
 
 		if (ball.x - 5 < BotPaddle1.x + BotPaddle1.width && ball.y > BotPaddle1.y && ball.y < BotPaddle1.y + BotPaddle1.height) {

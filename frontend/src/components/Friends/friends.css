@@ -1,5 +1,103 @@
-.friends-container {
+.friends-header{
 	display: flex;
-	flex-wrap: wrap;
+
+	justify-content: space-between;
 	gap: var(--margin-medium);
+
+	flex-shrink: 0;
+}
+
+.friends-title{
+	white-space: nowrap;
+}
+
+.friend-card-container-parent {
+	display: flex;
+
+	overflow-y: auto;
+}
+
+.friend-card-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
+	gap: var(--margin-medium);
+	width: 100%;	
+}
+
+.friend-card-container-parent::-webkit-scrollbar {
+	width: 24px;
+	background: transparent;
+}
+
+.friend-card-container-parent::-webkit-scrollbar-thumb {
+	background: var(--color-dark-soft);
+	border-radius: 100px;
+	border: 8px solid transparent;
+	background-clip: padding-box;
+}
+
+.friend-card-container-parent::-webkit-scrollbar-thumb:hover {
+	background:var(--color-dark);
+	border-radius: 100px;
+	border: 7px solid transparent;
+	background-clip: padding-box;
+}
+
+.overlay {
+	display: flex;
+    position: absolute;
+	top: 40%;
+	left: 50%;
+
+	transform: translate(-50% , -50%);
+	
+	white-space: nowrap;
+
+	color: var(--color-light);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+	text-shadow: 0px 1px 14px var(--color-dark);
+	letter-spacing: 0.33px;
+
+	transition:
+		top 0.4s,
+		opacity 0.2s;
+
+	opacity: 0;
+}
+
+.friend-card:hover .xmark-iconoir-button {
+	opacity: 1;
+}
+
+.friend-card:hover .overlay {
+	top: 32.33%;
+    opacity: 1;
+}
+
+.background-overlay {
+    position: absolute;
+	top: 31.8%;
+	left: 50%;
+
+	width: 128px;
+	height: 128px;
+
+	transform: translate(-50% , -50%);
+
+	background: linear-gradient(180deg, rgba(54, 53, 51, 0.00) 0%, #363533 100%);
+	border-radius: 999px;
+
+	transition:
+		top 0.4s,
+		opacity 0.2s;
+
+	opacity: 0;	
+}
+
+.friend-card:hover .background-overlay {
+	top: 31.8%;
+    opacity: 1;
 }

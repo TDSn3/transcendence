@@ -2,7 +2,12 @@ import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserStatus } from '@prisma/client';
 import { ApiTags } from '@nestjs/swagger';
-import { AddFriendDto } from './dto/AddFriendDto';
+import {
+  AddFriendDto,
+  DeleteFriendDto,
+  UpdateAvatarDto,
+  UpdateLoginDto,
+} from './dto/Dto';
 
 @Controller('api/users')
 @ApiTags('users')
@@ -42,13 +47,30 @@ export class UsersController {
     return this.usersService.addFriend(id, addFriendDto.idUserToAddAsFriend);
   }
 
-  // @Patch('login/:login')
-  // update(@Param('login') login: string): Promise<User> {
-  //   return this.usersService.updateData(login);
-  // }
+  @Post('id/del-friend/:id')
+  deleteFriend(
+    @Param('id') id: string,
+    @Body() deleteFriendDto: DeleteFriendDto,
+  ): Promise<User> {
+    return this.usersService.deleteFriend(
+      id,
+      deleteFriendDto.idUserToDelAsFriend,
+    );
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+  @Post('id/avatar/:id')
+  updateAvatar(
+    @Param('id') id: string,
+    @Body() updateAvatarDto: UpdateAvatarDto,
+  ): Promise<User> {
+    return this.usersService.updateAvatar(id, updateAvatarDto.url);
+  }
+
+  @Post('id/login/:id')
+  updateLogin(
+    @Param('id') id: string,
+    @Body() updateLoginDto: UpdateLoginDto,
+  ): Promise<User> {
+    return this.usersService.updateLogin(id, updateLoginDto.newLogin);
+  }
 }

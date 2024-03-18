@@ -1,73 +1,169 @@
-import { useState, useEffect } from "react";
-import PongIA from "./PongIA.tsx";
-import PongLocal from "./PongLocal.tsx";
+import { useState, useEffect, useRef } from "react";
+import PongGame from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
+import NewGameMode from "./newGame.tsx";
 import io from "socket.io-client";
+import { Socket } from "dgram";
+import useAuth from "../../contexts/Auth/useAuth.tsx";
 
 const Lobby = () => {
   const [localPong, setLocalPong] = useState(false);
   const [IAPong, setIAPong] = useState(false);
   const [BotvsBot1, setBotvsBot] = useState(false);
+  const [newGameMode, setNewGameMode] = useState(false);
+  const [gameInfos, setGameInfos] = useState<any>(null);
+  const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
+  const [displayButtons, setDisplayButtons] = useState<boolean>(true);
 
-//   const socket = io("http://localhost:5001");
+  const socketRef = useRef<any>(null);
+  const {user} = useAuth();
+
+
+  const handleKeyPress = (event: KeyboardEvent) => {
+	  
+	  setHookTab(prev => {
+		  let updatedTab = [...prev];
+ 
+		  if (event.key === 'w') {
+			  updatedTab[0] = true;
+		  }
+ 
+		  if (event.key === 's') {
+			  updatedTab[1] = true;
+		  }
+		  return updatedTab;
+	   });
+  }
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+	  
+	  setHookTab(prev => {
+		  let updatedTab = [...prev];
+		  
+		  if (event.key === 'w') {
+			  updatedTab[0] = false;
+		  }
+		  
+		  if (event.key === 's') {
+			  updatedTab[1] = false;
+		  }
+		  return updatedTab;
+	  });	  
+  }
+
+  const sendHookTabInfo = (client: Socket) => {
+	client?.emit('hookTabInfo', hookTab);
+  }
+
+  useEffect(() => {
+	sendHookTabInfo(socketRef.current);
+  },[hookTab])
+
+  useEffect(() => {
+
+    console.log("Composant Game monté");
+
+    socketRef.current = io("http://localhost:5001/game");
+
+    socketRef.current.on('connect', () => {
+      console.log("Connecté au serveur WebSocket avec succès!");
+    });
+
+    socketRef.current.on('connect_error', (error: any) => {
+      console.error("Erreur de connexion au serveur WebSocket :", error);
+    });
+
+    socketRef.current.on('startGame', () => {
+      console.log("c'est l'heure du dudu dududu DUEL !!!");
+    });
+
+    socketRef.current.on('lobbyIsFull', () => {
+      console.log("C'est plein mon reuf");
+    });
+
+	socketRef.current.on('gameInfo', (gameInfo:any) => {
+		// console.log(gameInfo);
+		setGameInfos(gameInfo);
+	});
+
+	socketRef.current.on('startPVPGame', () => {
+		console.log("go pvp");
+	})
+
+	document.addEventListener('keydown', handleKeyPress);
+	document.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      console.log("Composant Game démonté");
+	  document.removeEventListener('keypress', handleKeyPress);
+	  document.removeEventListener('keyup', handleKeyUp);
+      socketRef.current.disconnect();
+    };
+  }, []);
 
   const handleLocalPong = () => {
     setLocalPong(true);
     setIAPong(false);
     setBotvsBot(false);
+	joinGame('vsPlayer');
+	setDisplayButtons(false);
   };
 
   const handleIAPong = () => {
     setLocalPong(false);
     setIAPong(true);
     setBotvsBot(false);
+	joinGame('vsBot');
+	setDisplayButtons(false);
+
+    socketRef.current.emit('startIAPong');
   };
 
   const handleBotvsBot = () => {
     setLocalPong(false);
     setIAPong(false);
     setBotvsBot(true);
+	setDisplayButtons(false);
+
+    socketRef.current.emit('startBotvsBot');
   };
 
-  useEffect(() => {
-	  console.log("Composant Game monté");
-	  const socket = io("http://localhost:5001");
+  const handleNewGameMode = () => {
+		setLocalPong(false);
+   		setIAPong(false);
+   		setBotvsBot(false);
+		setNewGameMode(true);
+		setDisplayButtons(false);
+  }
 
-    socket.on('connect', () => {
-      console.log("Connecté au serveur WebSocket avec succès!");
-    });
-    socket.on('connect_error', (error) => {
-      console.error("Erreur de connexion au serveur WebSocket :", error);
-    });
-	socket.on('startGame', () => {
-		console.log("c'est l'heure du dudu dududu DUEL !!!");
-	})
+  const joinGame = (gameMode: string) => {
+	const paddleInfos = {
+		gameMode: gameMode,
+		avatar: user.avatar,
+		playerName: user.login,
+	}
+	if (socketRef)
+		socketRef.current.emit('joinGame', paddleInfos);
+  }
 
-	socket.on('lobbyIsFull', () => {
-		console.log("Cest plein mon reuf");
-	})
-    if (!socket.connected) {
-      console.log("Tentative de connexion au serveur WebSocket...");
-      socket.connect();
-    }
-	if (socket)
-		socket.emit('joinlobby', "lobby1");
-
-    return () => {
-      console.log("Composant Game démonté");
-      socket.disconnect();
-    };
-  }, []); // Empty dependency array ensures the effect runs only once on mount
-
-  
   return (
     <div className="page">
-      <button onClick={handleLocalPong}>Jouer en local</button>
+		{displayButtons && ( 
+		  <>
+      <button onClick={handleLocalPong}>Jouer en PVP</button>
       <button onClick={handleIAPong}>Jouer contre l'ordi</button>
       <button onClick={handleBotvsBot}>Bot vs Bot</button>
-      {IAPong && <PongIA />}
-      {localPong && <PongLocal />}
+      <button onClick={handleNewGameMode}>En test</button>
+	  </>
+		)}
+	  {gameInfos === null && localPong && (
+		<p>Waiting for a game ...</p>
+		)}
+
+      {IAPong && <PongGame gameInfo={gameInfos}/>}
+      {localPong && <PongGame gameInfo={gameInfos}/>}
       {BotvsBot1 && <BotvsBot />}
+      {newGameMode && <NewGameMode />}
     </div>
   );
 }

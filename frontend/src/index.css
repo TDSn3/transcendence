@@ -12,6 +12,12 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 	box-sizing: border-box;
 }
 
+.before-root {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	pointer-events: none;
+}
 
 html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
 	margin: 0;
@@ -35,7 +41,6 @@ body {
 
 .container {
 	display: flex;
-	flex-direction: row;
 	gap: var(--margin-medium);
 	height: 100%;
 }

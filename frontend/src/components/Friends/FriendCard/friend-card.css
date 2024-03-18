@@ -1,0 +1,88 @@
+.friend-card {
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--margin-medium);
+
+	align-content: center;
+	align-items: center;
+
+	background-color: var(--color-light);
+	padding: var(--border-radius-large);
+
+	box-sizing: border-box;
+	border: solid 1.33px transparent;
+	border-radius: var(--border-radius-large);
+	transition:
+	    box-shadow 0.4s,
+		border 0.4s;
+}
+
+.friend-card:hover {
+	border: solid 1.33px var(--color-dark-soft);
+	box-shadow: 0px 4px 32px 4px var(--color-medium-dark);
+
+	cursor: pointer;
+}
+
+.text-container {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	align-content: center;
+	align-items: center;
+}
+
+.title {
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: 500;
+	font-style: normal;
+	font-size: 24px;
+}
+
+.subtitle {
+	color: var(--color-dark-soft);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16px;
+}
+
+.online {
+	padding: 4px;
+	padding-left: 14px;
+	padding-right: 14px;
+	white-space: nowrap;
+
+	background-color: var(--color-light);
+
+	border: solid 1.33px var(--color-dark-soft);
+	border-radius: 999px;
+
+	color: var(--color-dark);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+}
+
+.offline {
+	padding: 4px;
+	padding-left: 14px;
+	padding-right: 14px;
+	white-space: nowrap;
+
+	background-color: var(--color-light);
+
+	border: solid 1.33px var(--color-medium-dark);
+	border-radius: 999px;
+
+	color: var(--color-dark-soft);
+	font-family: var(--font-family-principal);
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+}

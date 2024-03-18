@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
 import authServices from '../../services/auth';
 
-import './signIn42.css';
-
 function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +28,7 @@ function SignIn42(): React.ReactElement {
 
         localStorage.setItem('userLogin', user.login);
 
-        navigate('/home');
+        navigate(`/profile/${user.login}`);
       } catch (error: unknown) {
         setLoggedIn(false);
 
@@ -52,7 +50,7 @@ function SignIn42(): React.ReactElement {
   }
 
   return (
-    <div className="loader-container" />
+    <div> </div>
   );
 }
 

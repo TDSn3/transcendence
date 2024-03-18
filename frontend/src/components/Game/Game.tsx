@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import PongIA from "./PongIA.tsx";
-import PongLocal from "./PongLocal.tsx";
+import PongLocal from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
 import Lobby from "./Lobby.tsx";
@@ -9,16 +8,16 @@ import Lobby from "./Lobby.tsx";
 function Game() {
 
   const [lobby, setLobby] = useState(false);
-  const [buttonText, setButtonText] = useState("Join lobby");
+  const [buttonText, setButtonText] = useState("Play");
 
   const handleLobby = () => {
     // setLobby(true);
 	if (lobby) {
 		setLobby(false);
-		setButtonText("Join lobby");
+		setButtonText("Play");
 	} else {
 		setLobby(true);
-		setButtonText("Quit lobby")
+		setButtonText("Leave game")
 	}
    
   };
