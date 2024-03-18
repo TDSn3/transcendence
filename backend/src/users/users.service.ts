@@ -92,9 +92,7 @@ export class UsersService {
         },
       });
 
-      if (user) {
-        return user;
-      }
+      if (user) return user;
 
       throw new Error();
     } catch (error: unknown) {
