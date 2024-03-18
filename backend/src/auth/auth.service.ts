@@ -9,6 +9,8 @@ import { SignIn42Dto } from './dto/sign-in-42.dto';
 import { Response } from 'express';
 import { Request } from 'express';
 import { NotFoundException } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
+import { AuthTwoFAService } from './2fa/2faService';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,8 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private userService: UsersService,
+    private readonly auth2FAService: AuthTwoFAService,
   ) {}
 
   // NOTE: typer la réponse
@@ -38,8 +42,6 @@ export class AuthService {
 
     const userGoodData = {
       ...user,
-      twoFactorAuthSecret: '',
-      isTwoFactorAuthEnabled: false,
       accessToken: signInResponse.accessToken,
     };
 
@@ -245,7 +247,7 @@ export class AuthService {
       });
 
       if (userObject && userObject.user) {
-        const user = await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             id: userObject.user.id,
           },
@@ -296,5 +298,43 @@ export class AuthService {
     };
 
     return userData;
+  }
+
+  async verifyTwoFactorAuthenticationCode(user: any, code: string) {
+    try {
+      if (!user) {
+        return {
+          status: 400,
+          message: 'User not provided',
+          sucess: false,
+        };
+      }
+      const isCodeValid =
+        await this.auth2FAService.isTwoFactorAuthenticationCodeValid(
+          code,
+          user,
+        );
+      if (isCodeValid) {
+        // creer un  JWT token et le set dans cookie (httpOnly: true)
+        return {
+          status: 200,
+          message: 'User successfully signed in',
+          user,
+          sucess: true,
+        };
+      }
+      return {
+        status: 400,
+        message: 'Invalid code',
+        sucess: false,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: 500,
+        message: 'Server error',
+        sucess: false,
+      };
+    }
   }
 }

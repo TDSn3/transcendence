@@ -20,16 +20,13 @@ export class UsersService {
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
-
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: { friends: true },
     });
-
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-
     return user;
   }
 
@@ -233,6 +230,54 @@ export class UsersService {
       return user;
     } catch (error: unknown) {
       throw new Error('Failed to update login');
+    }
+  }
+
+  async addSecretTwoFA(id: string, secret: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { twoFactorAuthSecret: secret },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to add secret for two factor authentication');
+    }
+  }
+
+  async handleTwoFactorAuth(id: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+      });
+      if (!user) throw new NotFoundException(`User with ID ${id} not found`);
+      if (user.isTwoFactorAuthEnabled) {
+        return await this.prisma.user.update({
+          where: { id },
+          data: { isTwoFactorAuthEnabled: false, twoFactorAuthSecret: ' ' },
+        });
+      } else {
+        return await this.prisma.user.update({
+          where: { id },
+          data: { isTwoFactorAuthEnabled: true },
+        });
+      }
+    } catch (error: unknown) {
+      throw new Error('Failed to activate two factor authentication');
+    }
+  }
+
+  async addTwoFactorAuthSecret(id: string, secret: string): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { twoFactorAuthSecret: secret },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to update two factor authentication secret');
     }
   }
 }

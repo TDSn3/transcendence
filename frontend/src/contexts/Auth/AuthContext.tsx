@@ -37,6 +37,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       userServices.getUserByLogin(userLogin)
         .then((userValue) => {
           setUser(userValue);
+          console.log('userValue :', userValue);
           setLoggedIn(true);
         })
         .catch((error: unknown) => {

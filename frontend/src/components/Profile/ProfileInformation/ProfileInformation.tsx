@@ -17,10 +17,15 @@ interface ProfileInformationProps {
   setUserProfile: React.Dispatch<React.SetStateAction<User | null>>,
   isToggled: boolean,
   setIsToggled: React.Dispatch<React.SetStateAction<boolean>>,
+  handleQrCode: () => Promise<void>,
 }
 
 function ProfileInformation({
-  userProfile, setUserProfile, isToggled, setIsToggled,
+  userProfile,
+  setUserProfile,
+  isToggled,
+  setIsToggled,
+  handleQrCode,
 }: ProfileInformationProps) {
   const navigate = useNavigate();
   const { user, setUser } = useAuth();
@@ -59,7 +64,9 @@ function ProfileInformation({
     setIsModalVisible(true);
   };
 
-  const handleModalInputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleModalInputOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setModalInputValue(event.target.value);
   };
 
@@ -123,7 +130,9 @@ function ProfileInformation({
           handleOnSubmitForm={handleOnSubmitForm}
           formValue={modalInputValue}
           HandleFormOnChange={handleModalInputOnChange}
-          handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+          handleXmarkButtonClick={(
+            event: React.MouseEvent<HTMLButtonElement>,
+          ) => {
             event.preventDefault();
             setIsModalVisible(false);
             setModalInputValue('');
@@ -137,7 +146,9 @@ function ProfileInformation({
           handleOnSubmitForm={handleOnSubmitLoginForm}
           formValue={modalInputValue}
           HandleFormOnChange={handleModalInputOnChange}
-          handleXmarkButtonClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+          handleXmarkButtonClick={(
+            event: React.MouseEvent<HTMLButtonElement>,
+          ) => {
             event.preventDefault();
             setIsLoginModalVisible(false);
             setModalInputValue('');
@@ -145,45 +156,62 @@ function ProfileInformation({
         />
       )}
 
-      {!isUserIsUserProfile && (<ReturnButton path="/friends" />)}
+      {!isUserIsUserProfile && <ReturnButton path="/friends" />}
 
       <div className="picture-container">
         <ProfilePicture size="256px" imageUrl={userProfile.avatar} />
         {isUserIsUserProfile && (
-          <button className="picture-overlay-background" type="button" aria-label="Edit photo" onClick={handleEditPhoto}>
+          <button
+            className="picture-overlay-background"
+            type="button"
+            aria-label="Edit photo"
+            onClick={handleEditPhoto}
+          >
             <div className="picture-overlay-text">Edit photo</div>
           </button>
         )}
       </div>
 
       <div className={isUserIsUserProfile ? 'login-container' : ''}>
-        <h3 style={{ marginLeft: 0, marginBottom: -16 }}>{userProfile.login}</h3>
-        {isUserIsUserProfile && (<button className="login-overlay" type="button" aria-label="Edit login" onClick={handleEditLogin}> </button>)}
+        <h3 style={{ marginLeft: 0, marginBottom: -16 }}>
+          {userProfile.login}
+        </h3>
+        {isUserIsUserProfile && (
+          <button
+            className="login-overlay"
+            type="button"
+            aria-label="Edit login"
+            onClick={handleEditLogin}
+          >
+            {' '}
+          </button>
+        )}
       </div>
 
       <p>
         {userProfile.firstName}
-        {' '}
         {userProfile.lastName}
       </p>
 
       <RankWinsLosses userProfile={userProfile} />
 
-      {
-        isUserIsUserProfile ? (
-          <div className="switch-style">
-            <AntSwitch isToggled={isToggled} onToggle={() => setIsToggled(!isToggled)} />
-          </div>
-        ) : (
-          <OtherProfilePublicInfo
-            isFriend={isFriend}
-            setIsFriend={setIsFriend}
-            userProfile={userProfile}
-            handleAddFriendClick={handleAddFriendClick}
-            handleDelFriendClick={handleDelFriendClick}
+      {isUserIsUserProfile ? (
+        <div className="switch-style">
+          <AntSwitch
+            isToggled={isToggled}
+            onToggle={() => setIsToggled(!isToggled)}
+            handleQrCode={handleQrCode}
           />
-        )
-      }
+        </div>
+      ) : (
+        <OtherProfilePublicInfo
+          isFriend={isFriend}
+          setIsFriend={setIsFriend}
+          userProfile={userProfile}
+          handleAddFriendClick={handleAddFriendClick}
+          handleDelFriendClick={handleDelFriendClick}
+        />
+      )}
     </div>
   );
 }
