@@ -22,7 +22,7 @@ model User {
   intraId                Int            @unique
   email42                String         @unique
   login                  String         @unique @db.VarChar(12)
-  firstName              String 
+  firstName              String
   lastName               String
   avatar                 String
   wins                   Int            @default(0)
