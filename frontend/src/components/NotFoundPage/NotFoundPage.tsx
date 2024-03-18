@@ -1,6 +1,3 @@
-import React from 'react';
-// import './notfoundpage.css';
-
 function NotFoundPage() {
   return (
     <div>

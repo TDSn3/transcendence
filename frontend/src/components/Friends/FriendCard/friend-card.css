@@ -5,9 +5,6 @@
 	flex-direction: column;
 	gap: var(--margin-medium);
 
-	/* flex-wrap: wrap;
-	flex-grow: 1; */
-
 	align-content: center;
 	align-items: center;
 

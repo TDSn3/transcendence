@@ -38,6 +38,14 @@
 	box-shadow: 0px 4px 16px 2px var(--color-medium);
 }
 
+.return-button:active {
+	cursor: pointer;
+
+	background-color: var(--color-medium-dark);
+	transform: translate(16px, 16px);
+	box-shadow: 0px 0px 0px 0px var(--color-medium);
+}
+
 .return-button-text {
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);

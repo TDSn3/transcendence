@@ -33,8 +33,8 @@ function Search({
       theme={{
         components: {
           Select: {
-            colorPrimary: 'var(--color-dark)',
-            colorPrimaryHover: 'var(--color-dark-soft)',
+            colorPrimary: 'var(--color-dark-soft)',
+            colorPrimaryHover: 'var(--color-dark-extra-soft)',
             controlOutline: 'var(--color-medium)',
             optionActiveBg: 'var(--color-medium)',
             optionSelectedBg: 'var(--color-medium)',
