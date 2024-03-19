@@ -39,6 +39,11 @@ export class UsersController {
     return this.usersService.findOneByLogin(login);
   }
 
+  @Get(':id/blocked')
+  getBlockedUsers(@Param('id') id: string): Promise<any> {
+	return this.usersService.getBlockedUsers(id);
+  }
+
   @Post('id/ad-friend/:id')
   addFriend(
     @Param('id') id: string,
