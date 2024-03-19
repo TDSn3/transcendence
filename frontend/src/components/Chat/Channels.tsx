@@ -50,7 +50,7 @@ const Channels = () => {
 				navigate("/chat/" + channelName);
 			})
 			.catch(() => {
-				console.log("problemz");
+				console.log("channelName is not valid");
 			});
 	}
 

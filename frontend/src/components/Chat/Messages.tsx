@@ -1,7 +1,8 @@
 import "./chat.css";
 
 interface MessagesProps {
-	messages: any
+	messages: any,
+	blockedUsers: any
 }
 
 interface MessageProps {
@@ -22,13 +23,24 @@ export const Message = ({username, avatar, message}: MessageProps) => {
 	);
 }
 
-export const Messages = ({ messages }: MessagesProps) => {
+export const Messages = ({ messages, blockedUsers }: MessagesProps) => {
+	const isIn = (users: any, userToFind: any): boolean => {
+		for (const user of users) {
+			if (user.intraId === userToFind.intraId) {
+				return (true);
+			}
+		}
+		return (false);
+	}
 	return (
 		<div className="messages">
 			{
-				messages.map((value: any, index: number) => (
-					<Message key={index} username={value.member.login} avatar={value.member.avatar} message={value.content} />
-				))
+				messages.map((value: any, index: number) => {
+					if (!isIn(blockedUsers, value.member)) {
+						return (<Message key={index} username={value.member.login} avatar={value.member.avatar} message={value.content} />);
+					}
+					return (null);
+				})
 			}
 		</div>
 	);
