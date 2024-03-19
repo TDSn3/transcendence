@@ -48,6 +48,8 @@ export interface User {
 
   friends: User[],
   friendOf: User[],
+  blocked: User[],
+  blockedOf: User[],
 
   historyGamesWon: InterfaceGameHistory[],
   historyGamesLost: InterfaceGameHistory[],
@@ -75,6 +77,8 @@ export const emptyUser: User = {
 
   friends: [],
   friendOf: [],
+  blocked: [],
+  blockedOf: [],
 
   historyGamesWon: [],
   historyGamesLost: [],
