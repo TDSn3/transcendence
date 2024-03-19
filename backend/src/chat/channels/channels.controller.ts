@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res 
 import { ApiTags } from "@nestjs/swagger";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ChannelsService } from "./channels.service";
-import { Request, Response } from "express";
-import { Channel } from "@prisma/client";
+import { Response } from "express";
 
 @Controller("api/channels")
 @ApiTags("channels")
@@ -18,10 +17,11 @@ export class ChannelsController {
     return (this.channelService.create(param.intraId, param, res))
       .then((param) => {
         res.status(200).json({ message: "Channel successfully created", param });
-    })
-    .catch(() => {
-    	res.status(501).json({ message: "Channel creation failed" });
-    });
+      })
+      .catch(() => {
+        res.status(501).json({ message: "Channel creation failed" });
+      }
+	);
   }
 
   @Get("names")
@@ -41,6 +41,11 @@ export class ChannelsController {
 
   @Get(":channelName/messages")
   async getAllMessages(@Param("channelName") channelName: string): Promise<any> {
-	return (this.channelService.getAllMeaddBlockssages(channelName));
+	return (this.channelService.getAllMessages(channelName));
   }
+
+//   @Patch(":channelName/password")
+//   async passwordUpdate(@Param("channelName") channelName: string, @Body() newPassword: string): Promise<any> {
+// 	return (this.channelService.passwordUpdate(newPassword));
+//   }
 }
