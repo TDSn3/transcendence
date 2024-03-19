@@ -79,6 +79,7 @@
 
 .friend-card-picture-container {
 	position: relative;
+	margin-top: 16px;
 }
 
 .background-overlay {
