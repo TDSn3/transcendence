@@ -1,19 +1,12 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Req,
-  Res,
-  Query,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, Res, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthTwoFAService } from './2fa/2faService';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
+import { Verify2FABody } from './interface/qrCode';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -78,40 +71,36 @@ export class AuthController {
       res.status(501).json({ message: 'User is not logged in' });
     }
   }
-  @Get('generateQRCode/:id')
-  async generateQRCode(@Param('id') id: string, @Res() res) {
-    const user = await this.userService.findById(id);
-    if (user) {
-      const result =
-        await this.auth2FAService.generateTwoFactorAuthenticationSecret(
-          user.id,
-          user.email42,
-        );
-      res.status(200).json(result);
-    } else {
-      res.status(404).json({ message: 'User not found' });
-    }
-  }
+
   @Post('verify-2fa')
-  async verifyTwoFactorAuthenticationCode(@Body() body, @Res() res: Response) {
+  async verifyTwoFactorAuthenticationCode(
+    @Body() body: Verify2FABody,
+    @Res() res: Response,
+  ): Promise<Response<any, Record<string, any>>> {
     try {
       const { code, user } = body;
-      const data = await this.authService.verifyTwoFactorAuthenticationCode(
-        user,
-        code,
-      );
-      if (data.sucess) {
-        res.status(200).send('Code verified');
-      } else {
-        res.status(data.status).send(data.message);
-      }
+      if (!user) throw new BadRequestException('User is required');
+
+      const isSuccess =
+        await this.authService.verifyTwoFactorAuthenticationCode(user, code);
+
+      if (isSuccess) return res.status(HttpStatus.OK).send('Code verified');
     } catch (error) {
+      if (error.message === 'Invalid code') {
+        return res.status(HttpStatus.BAD_REQUEST).send(error.message);
+      }
       console.error(error);
-      return res.status(500).send('Error while verifying code');
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send('Error while verifying code');
     }
   }
+
   @Post('2fa')
-  async handleTwoFactorAuth(@Body() body, @Res() res: Response) {
+  async handleTwoFactorAuth(
+    @Body() body,
+    @Res() res: Response,
+  ): Promise<Response<any, Record<string, any>>> {
     try {
       const { userData } = body;
       await this.auth2FAService.generateQRCode(userData.id, res);

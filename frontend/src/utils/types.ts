@@ -9,7 +9,7 @@ export interface User {
   createdAt: string,
   updatedAt: string,
   TwoFactorAuthSecret: string,
-  isTwoFactorEnabled: boolean,
+  isTwoFactorAuthEnabled: boolean,
 
   intraId: number,
   email42: string,
@@ -33,7 +33,7 @@ export const emptyUser: User = {
   createdAt: '',
   updatedAt: '',
   TwoFactorAuthSecret: '',
-  isTwoFactorEnabled: false,
+  isTwoFactorAuthEnabled: false,
 
   intraId: 0,
   email42: '',

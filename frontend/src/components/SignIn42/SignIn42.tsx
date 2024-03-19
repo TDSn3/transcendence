@@ -24,8 +24,6 @@ function SignIn42(): React.ReactElement {
         const user = await authServices.authentication42(code);
 
         setUser(user);
-        localStorage.setItem('userLogin', user.login);
-        console.log('user 333 :', user);
         if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
         else {
           setLoggedIn(true);

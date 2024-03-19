@@ -5,6 +5,8 @@ export interface User {
   rank: number,
   gamesWon: number,
   gamesLost: number,
+  isTwoFactorAuthEnabled: boolean,
+  twoFactorAuthSecret?: string,
 }
 
 export type UserEssential = Omit<User, 'rank' | 'gamesWon' | 'gamesLost'>;
