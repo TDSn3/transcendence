@@ -1,5 +1,9 @@
-import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io';
+import { ChannelsService } from "../channels/channels.service";
+import { ChannelMembersService } from "../channelMembers/channelMembers.service";
+import { MessagesService } from "../messages/messages.service";
+import { User } from "@prisma/client";
 
 @WebSocketGateway({
 	namespace: "/chat",
@@ -11,61 +15,26 @@ export class ChatSocketGateway {
 	@WebSocketServer()
 	server: Server;
 
+	constructor(private channelsService: ChannelsService, private channelMembersService: ChannelMembersService, private messagesService: MessagesService) {}
+
 	handleConnection(socket: Socket) {
-		socket.emit("coucou");
 		console.log("+", socket.id);
 	}
 
 	handleDisconnect(socket: Socket) {
 		console.log("-", socket.id);
 	}
+
+	@SubscribeMessage("chatJoin")
+	async handleChatJoin(client: Socket, payload: { intraId: number, channelName: string }) {
+		const channelId = await this.channelsService.getChannelId(payload.channelName);
+		client.join(payload.channelName);
+		this.channelMembersService.create(payload.intraId, channelId);
+	}
+
+	@SubscribeMessage("chatSend")
+	async handleChatSend(client: Socket, payload: { user: User, channelName: string, message: string }) {
+		const channelId = await this.channelsService.getChannelId(payload.channelName);
+		this.server.to(payload.channelName).emit("chatReceive", { newMessage: await this.messagesService.create(payload.user.intraId, channelId, payload.message) });
+	}
 }
-
-
-// CHATGPT:
-// import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
-// import { Server, Socket } from 'socket.io';
-
-// @WebSocketGateway({
-//   cors: {
-//     origin: '*',
-//   },
-// })
-// export class ChatSocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
-//   @WebSocketServer()
-//   server: Server;
-
-//   channels: { [channel: string]: number } = {}; // Keep track of active users in each channel
-
-//   // When a client connects
-//   handleConnection(socket: Socket) {
-//     socket.on('join', (channel: string) => {
-//       socket.join(channel); // Join the specified channel
-//       if (!this.channels[channel]) {
-//         this.channels[channel] = 0;
-//       }
-//       this.channels[channel]++;
-//       this.server.to(channel).emit('users', this.channels[channel]); // Send the current user count to all clients in the channel
-//     });
-//   }
-
-//   // When a client disconnects
-//   handleDisconnect(socket: Socket) {
-//     socket.on('leave', (channel: string) => {
-//       if (this.channels[channel]) {
-//         this.channels[channel]--;
-//         this.server.to(channel).emit('users', this.channels[channel]); // Send the current user count to all clients in the channel
-//       }
-//       socket.leave(channel); // Leave the specified channel
-//     });
-//   }
-
-//   // Example message handler
-//   @SubscribeMessage('message')
-//   handleMessage(client: Socket, payload: any): void {
-//     const channel = Object.keys(client.rooms).find(room => room !== client.id); // Find the channel the client is in
-//     if (channel) {
-//       client.to(channel).emit('message', payload); // Broadcast the message to all clients in the channel except the sender
-//     }
-//   }
-// }

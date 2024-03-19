@@ -11,7 +11,12 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     const users = await this.prisma.user.findMany({
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
     return users;
   }
@@ -23,7 +28,12 @@ export class UsersService {
 
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
 
     if (!user) {
@@ -33,6 +43,22 @@ export class UsersService {
     return user;
   }
 
+  async findByIntraId(id: number): Promise<User> {
+	if (!id) {
+	  throw new BadRequestException('User intraId is required');
+	}
+
+	const user = await this.prisma.user.findUnique({
+	  where: { intraId: id },
+	})
+
+	if (!user) {
+	  throw new NotFoundException(`User with ID ${id} not found`);
+	}
+
+	return (user);
+  }
+
   async findByLogin(login: string): Promise<User> {
     if (!login) {
       throw new BadRequestException('login is required');
@@ -40,7 +66,12 @@ export class UsersService {
 
     const user = await this.prisma.user.findUnique({
       where: { login },
-      include: { friends: true },
+      include: {
+        friends: true,
+        friendOf: true,
+        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+      },
     });
 
     if (!user) {
@@ -92,9 +123,7 @@ export class UsersService {
         },
       });
 
-      if (user) {
-        return user;
-      }
+      if (user) return user;
 
       throw new Error();
     } catch (error: unknown) {
@@ -120,6 +149,44 @@ export class UsersService {
       throw new Error();
     } catch (error: unknown) {
       throw new Error('Failed to delete a friend');
+    }
+  }
+
+  async addBlock(id: string, idUserToAddBlock: string): Promise<User> {
+	try {
+	  const user = await this.prisma.user.update({
+		where: { id },
+		data: {
+		  blocked: {
+			connect: { id: idUserToAddBlock },
+		  }
+		}
+	  });
+
+	  if (user)
+	  	return user;
+	  throw new Error();
+	} catch (error: unknown) {
+	  throw new Error('Failed to add a block');
+    }
+  }
+
+  async deleteBlock(id: string, idUserToDelBlock: string): Promise<User> {
+	try {
+	  const user = await this.prisma.user.update({
+		where: { id },
+		data: {
+		  blocked: {
+			disconnect: { id: idUserToDelBlock },
+		  }
+		}
+	  });
+
+	  if (user)
+	  	return user;
+	  throw new Error();
+	} catch (error: unknown) {
+	  throw new Error('Failed to delete a block');
     }
   }
 

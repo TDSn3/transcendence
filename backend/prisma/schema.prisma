@@ -22,7 +22,7 @@ model User {
   intraId                Int            @unique
   email42                String         @unique
   login                  String         @unique @db.VarChar(12)
-  firstName              String 
+  firstName              String
   lastName               String
   avatar                 String
   wins                   Int            @default(0)
@@ -34,6 +34,8 @@ model User {
   statusWebSocketId      UserStatusWebSocketId[]
   members                ChannelMember[]
   message                Message[]
+  blocked                User[]			@relation("UserBlock")
+  blockedOf              User[]			@relation("UserBlock")
   friends                User[]         @relation("UserFriends")
   friendOf               User[]         @relation("UserFriends")
 
@@ -78,10 +80,10 @@ model Channel {
 model ChannelMember {
   id		Int				@id @unique @default(autoincrement())
 
-  channelId	Int
   userId	Int
-  channel	Channel			@relation(fields: [channelId], references: [id])
+  channelId	Int
   user		User			@relation(fields: [userId], references: [intraId])
+  channel	Channel			@relation(fields: [channelId], references: [id])
 
   muteEnd	DateTime?
   isMute	Boolean			@default(false)

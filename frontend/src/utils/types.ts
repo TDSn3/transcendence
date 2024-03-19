@@ -1,3 +1,25 @@
+// Game history
+
+export interface AddGameHistory {
+  winningUserId: string,
+  winningUserScore: number,
+  losingUserId: string,
+  losingUserScore: number,
+}
+
+export interface InterfaceGameHistory {
+  id: string,
+  playedAt: Date,
+  WinningUser: User,
+  WinningUserId: string,
+  WinningUserScore: number,
+  LosingUser: User,
+  LosingUserId: string,
+  LosingUserScore: number,
+}
+
+// Other
+
 export enum UserStatus {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
@@ -26,6 +48,11 @@ export interface User {
 
   friends: User[],
   friendOf: User[],
+  blocked: User[],
+  blockedOf: User[],
+
+  historyGamesWon: InterfaceGameHistory[],
+  historyGamesLost: InterfaceGameHistory[],
 }
 
 export const emptyUser: User = {
@@ -50,6 +77,11 @@ export const emptyUser: User = {
 
   friends: [],
   friendOf: [],
+  blocked: [],
+  blockedOf: [],
+
+  historyGamesWon: [],
+  historyGamesLost: [],
 };
 
 // Web socket

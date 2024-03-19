@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Channel } from '@prisma/client';
+import { Channel, Message } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
 export class ChannelsService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) {}
 
 	async create(intraId: number, param: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
 		try {
@@ -18,12 +18,10 @@ export class ChannelsService {
 							{ userId: intraId, isAdmin: true, isOwner: true }
 						]
 					}
-				},
+				}
 			});
 			return (newChannel);
-		}
-		catch (error) {
-			res.status(501).json({ message: 'Channel creation failed', error: error.message });
+		} catch (error) {
 			throw error;
 		}
 	}
@@ -36,5 +34,44 @@ export class ChannelsService {
 			}
 		});
 		return (channelsNames);
+	}
+
+	async channelNameChecker(channelName: string): Promise<boolean> {
+		const res = await this.prisma.channel.findUnique({
+			where: {
+				name: channelName
+			}
+		});
+		return (res !== null ? true : false);
+	}
+
+	async getChannelId(channelName: string): Promise<number> {
+		const res = await this.prisma.channel.findUnique({
+			where: {
+				name: channelName
+			},
+			select: {
+				id: true
+			}
+		});
+		return (res.id);
+	}
+
+	async getAllMessages(channelName: string): Promise<Message[]> {
+		const channelId = await this.getChannelId(channelName);
+		const res = await this.prisma.message.findMany({
+			include: {
+				member: {
+					select: {
+						login: true,
+						avatar: true,
+					}
+				}
+			},
+			where: {
+				channelId: channelId
+			}
+		})
+		return (res);
 	}
 }

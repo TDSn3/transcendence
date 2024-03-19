@@ -1,47 +1,66 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { User, UserGameHistory } from '../../../utils/types';
+import { User, InterfaceGameHistory } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
-import gameHistoryService from '../../../services/gameHistory';
-
-import './game-history.css';
+import userServices from '../../../services/user';
 
 interface GameHistoryProps {
-  user: User,
+  userProfile: User,
 }
 
-const defaultUserGameHistory: UserGameHistory = {
-  userId: '',
-  gameHistory: [],
-};
+function GameHistory({ userProfile }: GameHistoryProps) {
+  const [userWithAllData, setUserWithAllData] = useState<User>(userProfile);
+  const [gameHistory, setGameHistory] = useState<InterfaceGameHistory[]>([]);
 
-function GameHistory({ user }: GameHistoryProps) {
-  const [userGameHistory, setGameHistory] = useState<UserGameHistory>(defaultUserGameHistory);
+  const hookSetUserWithAllData = () => {
+    if (userProfile?.id) {
+      userServices
+        .getUserById(userProfile.id)
+        .then((userValue) => { setUserWithAllData(userValue); })
+        .catch((error) => { console.error(error); });
+    }
+  };
+  useEffect(hookSetUserWithAllData, [userProfile]);
 
-  useEffect(() => {
-    gameHistoryService.getUserGameHistory(user.id)
-      .then((data) => { setGameHistory(data); });
-  }, [user.id]);
+  const hookSetGameHistory = () => {
+    if (userProfile?.id) {
+      const historyGamesWon = userWithAllData.historyGamesWon.map((value) => value);
+      const historyGamesLost = userWithAllData.historyGamesLost.map((value) => value);
+      const historyGames = [...historyGamesWon, ...historyGamesLost]
+        .sort((a, b) => {
+          const dateA = new Date(a.playedAt);
+          const dateB = new Date(b.playedAt);
+
+          return (dateB.getTime() - dateA.getTime());
+        });
+
+      setGameHistory(historyGames.map((value) => value));
+    }
+  };
+  useEffect(
+    hookSetGameHistory,
+    [userProfile, userWithAllData.historyGamesLost, userWithAllData.historyGamesWon],
+  );
 
   return (
     <div className="game-result-container">
       {
-        userGameHistory.gameHistory.map((value) => (
+        gameHistory?.map((value) => (
           <div key={uuidv4()} className="game-result">
             <div className="game-result-item-start">
-              <ProfilePicture size="64px" imageUrl={value.players[0].user.profilePictureUrl} />
-              {value.players[0].user.username}
+              <ProfilePicture size="64px" imageUrl={value.WinningUser.avatar} marginBottom />
+              {value.WinningUser.login}
             </div>
 
             <div className="game-result-item-middle ">
-              <span className={`${value.players[0].won ? 'big-number-won' : 'big-number-lose'}  left`}>{value.players[0].score}</span>
+              <span className="big-number-won">{value.WinningUserScore}</span>
               <span className="big-number-won">&nbsp;&nbsp;-&nbsp;&nbsp;</span>
-              <span className={`${value.players[1].won ? 'big-number-won' : 'big-number-lose'} right`}>{value.players[1].score}</span>
+              <span className="big-number-lose">{value.LosingUserScore}</span>
             </div>
 
             <div className="game-result-item-end">
-              {value.players[1].user.username}
-              <ProfilePicture size="64px" imageUrl={value.players[1].user.profilePictureUrl} />
+              {value.LosingUser.login}
+              <ProfilePicture size="64px" imageUrl={value.LosingUser.avatar} marginBottom />
             </div>
           </div>
         ))

@@ -61,6 +61,28 @@ const deleteFriend = async (userId: string, userIdToDel: string): Promise<User> 
   }
 };
 
+const addBlock = async (userId: string, userIdToAdd: string): Promise<User> => {
+  try {
+	const { data } = await axios.post<User>(`${url}/id/ad-block/${userId}`, {
+		idUserToAddBlock: userIdToAdd,
+	});
+	return (data);
+  } catch (error: unknown) {
+	throw new Error(errorMessage(error, 'Error POST add block.'))
+  }
+}
+
+const deleteBlock = async (userId: string, userIdToDel: string): Promise<User> => {
+	try {
+	  const { data } = await axios.post<User>(`${url}/id/del-block/${userId}`, {
+		idUserToDelBlock: userIdToDel,
+	  })
+	  return (data);
+	} catch (error: unknown) {
+	  throw new Error(errorMessage(error, 'Error POST del block.'))
+	}
+}
+
 const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
   try {
     const { data } = await axios.get<{ status: UserStatus }>(`${url}/status/id/${userId}`);
@@ -103,6 +125,8 @@ export default {
   getUserByLogin,
   addFriend,
   deleteFriend,
+  addBlock,
+  deleteBlock,
   getStatus,
   updateAvatar,
   updateLogin,

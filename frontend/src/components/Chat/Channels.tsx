@@ -1,43 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { decodeToken } from "react-jwt";
-import { Socket } from 'socket.io-client';
+import useAuth from '../../contexts/Auth/useAuth.tsx';
 import axios from "axios";
 import Popup from "./Popup.tsx";
 import "./channels.css";
-import { calc } from "antd/es/theme/internal";
 
-const channelsNames = (await axios.get("http://localhost:5001/api/channels/names")).data;
+interface ChannelProps {
+	id: number,
+	name: string,
+	intraId: number,
+}
 
-const Channel = (param: {id:number, name: string}) => {
+const Channel = ({ id, name, intraId }: ChannelProps) => {
 	const navigate = useNavigate();
 
 	const handleClick: any = () => {
-		navigate("/chat/" + param.name);
-		axios.post("http://localhost:5001/api/channelMembers", {intraId: (decodeToken(document.cookie).sub), channelId: param.id });
+		axios.post("http://localhost:5001/api/channelMembers", { intraId: intraId, channelId: id });
+		navigate("/chat/" + name);
 	}
 
 	return (
 		<div className="channel">
-			<input type="button" value={param.name} onClick={handleClick}/>
+			<input type="button" value={name} onClick={handleClick}/>
 		</div>
 	);
 }
 
 const Channels = () => {
+	const { user } = useAuth();
 	const navigate = useNavigate();
 
+	const [channelsNames, setChannelsNames] = useState<{id: number, name: string}[]>();
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
 
+	useEffect(() => {
+		const channelsNamesGetter = async () => {
+			setChannelsNames((await axios.get("http://localhost:5001/api/channels/names")).data);
+		}
+		channelsNamesGetter();
+	}, []);
+
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
-		axios.post("http://localhost:5001/api/channels", {intraId: (decodeToken(document.cookie).sub), name: channelName, password: channelPassword, private: channelPrivate})
+		axios.post("http://localhost:5001/api/channels", { intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
 			.then(() => {
 				navigate("/chat/" + channelName);
-				window.location.reload();
 			})
 			.catch(() => {
 				console.log("problemz");
@@ -53,15 +63,15 @@ const Channels = () => {
 			</div>
 			<div className="channels">
 				{
-					channelsNames.map((value: any) =>
-						<Channel key={value.id} id={value.id} name={value.name}/>
+					channelsNames?.map((value: any) =>
+						<Channel key={value.id} id={value.id} name={value.name} intraId={user.intraId}/>
 					)
 				}
 			</div>
 			<Popup className="create" trigger={buttonPopup} setTrigger={setButtonPopup} x="30px" y="75px">
 				<h4 className="create-title">Channel creation</h4>
 				<form className="create-form" onSubmit={handleSubmit}>
-					<input type="text" placeholder="Name" autoComplete="off" value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
+					<input type="text" placeholder="Name" autoComplete="off" autoFocus value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
 					<input type="text" placeholder="Password" autoComplete="off" value={channelPassword} onChange={(e) => {setChannelPassword(e.target.value)}}/>
 					<div className="create-form-end">
 						Private: <input type="checkbox" onChange={() => {setChannelPrivate(!channelPrivate)}}/>

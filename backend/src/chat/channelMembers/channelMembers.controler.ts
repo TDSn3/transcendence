@@ -6,11 +6,11 @@ import { Response } from "express";
 @Controller("api/channelMembers")
 @ApiTags("channelMembers")
 export class ChannelMembersController {
-	constructor(private readonly channelMembersService: ChannelMembersService) {}
+	constructor(private channelMembersService: ChannelMembersService) {}
 
 	@Post()
 	async create(@Body() param: { intraId: number, channelId: number }, @Res() res: Response) {
-		return (this.channelMembersService.create(param.intraId, param.channelId, res))
+		return (this.channelMembersService.create(param.intraId, param.channelId))
 			.then((param) => {
 				res.status(200).json({ message: "ChannelMember successfully created", param });
 			})

@@ -3,9 +3,11 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersStatusGateway } from './users.gateway';
+import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
-  controllers: [UsersController],
-  providers: [UsersService, PrismaService, UsersStatusGateway],
+	imports: [PrismaModule],
+	controllers: [UsersController],
+	providers: [UsersService, PrismaService, UsersStatusGateway],
 })
 export class UsersModule {}
