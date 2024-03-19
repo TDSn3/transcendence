@@ -9,13 +9,16 @@ import { SignIn42Dto } from './dto/sign-in-42.dto';
 import { Response } from 'express';
 import { Request } from 'express';
 import { NotFoundException } from '@nestjs/common';
-
+import { UsersService } from 'src/users/users.service';
+import { AuthTwoFAService } from './2fa/2faService';
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private userService: UsersService,
+    private readonly auth2FAService: AuthTwoFAService,
   ) {}
 
   // NOTE: typer la réponse
@@ -38,8 +41,6 @@ export class AuthService {
 
     const userGoodData = {
       ...user,
-      twoFactorAuthSecret: '',
-      isTwoFactorAuthEnabled: false,
       accessToken: signInResponse.accessToken,
     };
 
@@ -245,7 +246,7 @@ export class AuthService {
       });
 
       if (userObject && userObject.user) {
-        const user = await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             id: userObject.user.id,
           },
@@ -296,5 +297,24 @@ export class AuthService {
     };
 
     return userData;
+  }
+
+  async verifyTwoFactorAuthenticationCode(
+    user: User,
+    code: string,
+  ): Promise<boolean> {
+    try {
+      const isCodeValid =
+        await this.auth2FAService.isTwoFactorAuthenticationCodeValid(
+          code,
+          user,
+        );
+      if (!isCodeValid) throw new Error('Invalid code');
+      // ajouter token JWT
+      return true;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Server error');
+    }
   }
 }

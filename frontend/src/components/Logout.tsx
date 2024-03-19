@@ -40,7 +40,7 @@ function Logout({ socket }: LogoutProps) {
     performLogout();
   }, [navigate, setLoggedIn, socket, user]);
 
-  return (<> </>);
+  return <> </>;
 }
 
 export default Logout;

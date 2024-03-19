@@ -24,11 +24,11 @@ function SignIn42(): React.ReactElement {
         const user = await authServices.authentication42(code);
 
         setUser(user);
-        setLoggedIn(true);
-
-        localStorage.setItem('userLogin', user.login);
-
-        navigate(`/profile/${user.login}`);
+        if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
+        else {
+          setLoggedIn(true);
+          navigate(`/profile/${user.login}`);
+        }
       } catch (error: unknown) {
         setLoggedIn(false);
 
@@ -49,9 +49,7 @@ function SignIn42(): React.ReactElement {
     console.error('Error :', errorSignIn); // TODO: revoir le code de ce state
   }
 
-  return (
-    <div> </div>
-  );
+  return <div> </div>;
 }
 
 export default SignIn42;

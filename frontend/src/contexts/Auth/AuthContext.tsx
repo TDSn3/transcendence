@@ -5,10 +5,7 @@ import {
   useMemo,
 } from 'react';
 
-import {
-  User,
-  emptyUser,
-} from '../../utils/types';
+import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 
 interface AuthContextType {
@@ -34,10 +31,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (userLogin && userLogin !== '') {
       console.log(userLogin, ' is already connected.');
 
-      userServices.getUserByLogin(userLogin)
+      userServices
+        .getUserByLogin(userLogin)
         .then((userValue) => {
           setUser(userValue);
-          setLoggedIn(true);
+          if (!userValue.isTwoFactorAuthEnabled) setLoggedIn(true);
         })
         .catch((error: unknown) => {
           setLoggedIn(false);
@@ -55,15 +53,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(hookIsLogged, []);
 
-  const value = useMemo(() => ({
-    user, setUser, isLoggedIn, setLoggedIn,
-  }), [user, isLoggedIn]);
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      setUser,
+      isLoggedIn,
+      setLoggedIn,
+    }),
+    [user, isLoggedIn],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthContext;
