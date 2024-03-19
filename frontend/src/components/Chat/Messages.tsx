@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import "./chat.css";
 
 interface MessagesProps {

@@ -245,7 +245,7 @@ export class AuthService {
       });
 
       if (userObject && userObject.user) {
-        const user = await this.prisma.user.update({
+        await this.prisma.user.update({
           where: {
             id: userObject.user.id,
           },
@@ -253,7 +253,6 @@ export class AuthService {
             status: UserStatus.OFFLINE,
           },
         });
-        // console.log('StatusUser:', user);
       } else {
         throw new Error('Bad body');
       }

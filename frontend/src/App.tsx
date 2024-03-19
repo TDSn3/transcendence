@@ -37,7 +37,7 @@ function App() {
               <Route path="/profile/:login" element={<Profile />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/chat" element={<Channels />} />
-			  <Route path="/chat/:channelName" element={<ChatRoom />} />
+              <Route path="/chat/:channelName" element={<ChatRoom />} />
               <Route path="/game" element={<Game />} />
               <Route path="/logout" element={<Logout socket={socket} />} />
               <Route path="*" element={<NotFoundPage />} />

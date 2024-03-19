@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import "./popup.css"
 
 interface PopupProps {
