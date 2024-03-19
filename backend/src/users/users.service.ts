@@ -112,6 +112,18 @@ export class UsersService {
     }
   }
 
+  async getBlockedUsers(id: string): Promise<any> {
+	const res = await this.prisma.user.findUnique({
+		where: {
+			id: id
+		},
+		select: {
+			blocked: true
+		}
+	});
+	return (res.blocked);
+  }
+
   async addFriend(id: string, idUserToAddAsFriend: string): Promise<User> {
     try {
       const user = await this.prisma.user.update({

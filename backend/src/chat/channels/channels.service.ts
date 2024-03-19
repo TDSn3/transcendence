@@ -8,6 +8,9 @@ export class ChannelsService {
 
 	async create(intraId: number, param: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
 		try {
+			if (!/^[a-zA-Z]+$/.test(param.name)) {
+				throw 1;
+			}
 			const newChannel = await this.prisma.channel.create({
 				data: {
 					name: param.name,
@@ -63,6 +66,7 @@ export class ChannelsService {
 			include: {
 				member: {
 					select: {
+						intraId: true,
 						login: true,
 						avatar: true,
 					}
@@ -74,4 +78,11 @@ export class ChannelsService {
 		})
 		return (res);
 	}
+
+	// async passwordUpdate(channelName: string, newPassword: string): Promise<Channel> {
+	// 	const res = await this.prisma.channel.update({
+	// 		where: {
+	// 		}
+	// 	});
+	// }
 }

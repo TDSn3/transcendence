@@ -12,6 +12,7 @@ export class MessagesService {
 				include: {
 					member: {
 						select: {
+							intraId: true,
 							login: true,
 							avatar: true
 						}
