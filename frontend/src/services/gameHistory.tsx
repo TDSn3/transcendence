@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { AddGameHistory, GameHistory } from '../utils/types';
+import { AddGameHistory, InterfaceGameHistory } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/game-history`;
 
-const addGameHistory = async (gameResult: AddGameHistory): Promise<GameHistory> => {
+const addGameHistory = async (gameResult: AddGameHistory): Promise<InterfaceGameHistory> => {
   try {
-    const { data } = await axios.post<GameHistory>(`${url}/add`, {
+    const { data } = await axios.post<InterfaceGameHistory>(`${url}/add`, {
       winningUserId: gameResult.winningUserId,
       winningUserScore: gameResult.winningUserScore,
       losingUserId: gameResult.losingUserId,

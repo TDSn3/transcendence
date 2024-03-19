@@ -38,7 +38,7 @@ function Profile() {
 
           <h3 className="game-history-title-style">Game History</h3>
 
-          <GameHistory />
+          <GameHistory userProfile={userProfile} />
 
         </div>
 

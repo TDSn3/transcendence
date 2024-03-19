@@ -7,7 +7,7 @@ export interface AddGameHistory {
   losingUserScore: number,
 }
 
-export interface GameHistory {
+export interface InterfaceGameHistory {
   id: string,
   playedAt: Date,
   WinningUser: User,
@@ -49,8 +49,8 @@ export interface User {
   friends: User[],
   friendOf: User[],
 
-  historyGamesWon: GameHistory[],
-  historyGamesLost: GameHistory[],
+  historyGamesWon: InterfaceGameHistory[],
+  historyGamesLost: InterfaceGameHistory[],
 }
 
 export const emptyUser: User = {

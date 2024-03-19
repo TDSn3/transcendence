@@ -1,29 +1,51 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from '../../../utils/types';
-import useAuth from '../../../contexts/Auth/useAuth';
+import { User, InterfaceGameHistory } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import userServices from '../../../services/user';
-import gameHistoryService from '../../../services/gameHistory';
 
-function GameHistory() {
-  const { user } = useAuth();
-  const [userWithAllData, setUserWithAllData] = useState<User>(user);
+interface GameHistoryProps {
+  userProfile: User,
+}
 
-  const hook = () => {
-    userServices
-      .getUserById(user.id)
-      .then((userValue) => {
-        setUserWithAllData(userValue);
-      })
-      .catch((error) => { console.error(error); });
+function GameHistory({ userProfile }: GameHistoryProps) {
+  const [userWithAllData, setUserWithAllData] = useState<User>(userProfile);
+  const [gameHistory, setGameHistory] = useState<InterfaceGameHistory[]>([]);
+
+  const hookSetUserWithAllData = () => {
+    if (userProfile?.id) {
+      userServices
+        .getUserById(userProfile.id)
+        .then((userValue) => { setUserWithAllData(userValue); })
+        .catch((error) => { console.error(error); });
+    }
   };
-  useEffect(hook, [user]);
+  useEffect(hookSetUserWithAllData, [userProfile]);
+
+  const hookSetGameHistory = () => {
+    if (userProfile?.id) {
+      const historyGamesWon = userWithAllData.historyGamesWon.map((value) => value);
+      const historyGamesLost = userWithAllData.historyGamesLost.map((value) => value);
+      const historyGames = [...historyGamesWon, ...historyGamesLost]
+        .sort((a, b) => {
+          const dateA = new Date(a.playedAt);
+          const dateB = new Date(b.playedAt);
+
+          return (dateB.getTime() - dateA.getTime());
+        });
+
+      setGameHistory(historyGames.map((value) => value));
+    }
+  };
+  useEffect(
+    hookSetGameHistory,
+    [userProfile, userWithAllData.historyGamesLost, userWithAllData.historyGamesWon],
+  );
 
   return (
     <div className="game-result-container">
       {
-        userWithAllData.historyGamesWon.map((value) => (
+        gameHistory?.map((value) => (
           <div key={uuidv4()} className="game-result">
             <div className="game-result-item-start">
               <ProfilePicture size="64px" imageUrl={value.WinningUser.avatar} marginBottom />
