@@ -9,6 +9,7 @@ import { ChannelsModule } from './chat/channels/channels.module';
 import { ChannelMembersModule } from './chat/channelMembers/channelMembers.module';
 import { ChatSocketModule } from './chat/chatSocket/chatSocket.module';
 import { SocketModule } from './game/socket.module';
+import { GameHistoryModule } from './game-history/game-history.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SocketModule } from './game/socket.module';
     ChannelMembersModule,
     ChatSocketModule,
     SocketModule,
+    GameHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
