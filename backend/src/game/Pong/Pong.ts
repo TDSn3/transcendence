@@ -22,7 +22,7 @@ export class Pong {
 
 	public score:number[] = [0,0];
 	
-	public maxScore:number = 1000;
+	public maxScore:number = 5;
 
 	public countdown: number = 3;
 	public timerStart:number;
@@ -43,7 +43,6 @@ export class Pong {
 			this.updateTimer();
 		}
 	};
-
 
 	public updateTimer() {
 		const actualTime:number = Date.now();

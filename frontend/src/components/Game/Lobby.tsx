@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import { Socket } from "dgram";
 import useAuth from "../../contexts/Auth/useAuth.tsx";
 
-const Lobby = () => {
+const Lobby = (props: any) => {
   const [localPong, setLocalPong] = useState(false);
   const [IAPong, setIAPong] = useState(false);
   const [BotvsBot1, setBotvsBot] = useState(false);
@@ -14,6 +14,7 @@ const Lobby = () => {
   const [gameInfos, setGameInfos] = useState<any>(null);
   const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
   const [displayButtons, setDisplayButtons] = useState<boolean>(true);
+  const [alreadyPlay, setAlreadyPlay] = useState<boolean>(false);
 
   const socketRef = useRef<any>(null);
   const {user} = useAuth();
@@ -59,6 +60,11 @@ const Lobby = () => {
 	sendHookTabInfo(socketRef.current);
   },[hookTab])
 
+//   useEffect (() => {
+// 	if (props.isPrivate === true)
+// 		joinGame('privateGame');
+//   }, []);
+
   useEffect(() => {
 
     console.log("Composant Game monté");
@@ -90,8 +96,20 @@ const Lobby = () => {
 		console.log("go pvp");
 	})
 
+	socketRef.current.on('alreadyPlay', () => {
+		setAlreadyPlay(true);
+	})
+
 	document.addEventListener('keydown', handleKeyPress);
 	document.addEventListener('keyup', handleKeyUp);
+
+	if (props.isPrivate === true) {
+		setLocalPong(true);
+		setIAPong(false);
+		setBotvsBot(false);
+		setDisplayButtons(false);
+		joinGame('privateGame');
+	}
 
     return () => {
       console.log("Composant Game démonté");
@@ -141,7 +159,10 @@ const Lobby = () => {
 		gameMode: gameMode,
 		avatar: user.avatar,
 		playerName: user.login,
+		isHost: props.isHost,
+		key: props?.privateKey,
 	}
+	console.log(paddleInfos.key);
 	if (socketRef)
 		socketRef.current.emit('joinGame', paddleInfos);
   }
@@ -156,7 +177,10 @@ const Lobby = () => {
       <button onClick={handleNewGameMode}>En test</button>
 	  </>
 		)}
-	  {gameInfos === null && localPong && (
+		{alreadyPlay && (
+			<p>You can't join a game for the moment</p>
+		)}
+	  {gameInfos === null && localPong && !alreadyPlay && (
 		<p>Waiting for a game ...</p>
 		)}
 

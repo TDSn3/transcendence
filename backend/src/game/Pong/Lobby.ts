@@ -8,6 +8,8 @@ export class Lobby {
 	public updateInterval: NodeJS.Timeout | null;
 	public gameMode: string;
 	public server: Server;
+	public isPrivate: boolean;
+	public key?: string;
 
 	constructor(gameMode:string, server:Server) {
 		this.pongGame = new Pong();
@@ -15,6 +17,7 @@ export class Lobby {
 		this.updateInterval = null;
 		this.gameMode = gameMode;
 		this.server = server;
+		this.isPrivate = false;
 	}
 
 	// public startGamePVE(client: Socket, gameMode:string): void {
