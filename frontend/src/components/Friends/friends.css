@@ -46,7 +46,7 @@
 .overlay {
 	display: flex;
     position: absolute;
-	top: 40%;
+	top: 60%;
 	left: 50%;
 
 	transform: translate(-50% , -50%);
@@ -73,19 +73,21 @@
 }
 
 .friend-card:hover .overlay {
-	top: 32.33%;
+	top: 52%;
     opacity: 1;
+}
+
+.friend-card-picture-container {
+	position: relative;
 }
 
 .background-overlay {
     position: absolute;
-	top: 31.8%;
-	left: 50%;
+	top: 0%;
+	left: 0%;
 
 	width: 128px;
 	height: 128px;
-
-	transform: translate(-50% , -50%);
 
 	background: linear-gradient(180deg, rgba(54, 53, 51, 0.00) 0%, #363533 100%);
 	border-radius: 999px;
@@ -98,6 +100,5 @@
 }
 
 .friend-card:hover .background-overlay {
-	top: 31.8%;
     opacity: 1;
 }
