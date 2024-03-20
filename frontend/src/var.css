@@ -4,6 +4,7 @@
 		Xs	- extra-small		: 0.375rem	= 6px	*
 		S	- small				: 0.5rem	= 8px
 		Sm	- small-medium		: 0.75rem	= 12px	*
+		Ms	- medium-small		: 0.875rem	= 14px	**
 		M	- medium			: 1rem		= 16px
 		mL	- medium-large		: 1.5rem	= 24px	*
 		L	- large				: 2rem		= 32px
@@ -39,7 +40,9 @@
 	--border-radius-medium: 1rem;
 	--border-radius-full: 999px;
 
+	--font-size-medium-small: 0.875rem;
 	--font-size-medium: 1rem;
+	--font-size-medium-large: 1.5rem;
 	--font-size-large: 2rem;
 	--font-size-extra-large: 4rem;
 

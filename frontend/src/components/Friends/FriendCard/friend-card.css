@@ -29,7 +29,7 @@
 .text-container {
 	display: flex;
 	flex-direction: column;
-	gap: 4px;
+	gap: var(--spacing-extra-extra-small);
 
 	align-content: center;
 	align-items: center;
@@ -40,7 +40,7 @@
 	font-family: var(--font-family-principal);
 	font-weight: 500;
 	font-style: normal;
-	font-size: 24px;
+	font-size: var(--font-size-medium-large);
 }
 
 .subtitle {
@@ -48,41 +48,41 @@
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 }
 
 .online {
-	padding: 4px;
-	padding-left: 14px;
-	padding-right: 14px;
+	padding: var(--spacing-extra-small);
+	padding-left: var(--spacing-small-medium);
+	padding-right: var(--spacing-small-medium);
 	white-space: nowrap;
 
 	background-color: var(--color-light);
 
 	border: solid 1.33px var(--color-dark-medium);
-	border-radius: 999px;
+	border-radius: var(--border-radius-full);
 
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 14px;
+	font-size: var(--font-size-medium-small);
 }
 
 .offline {
-	padding: 4px;
-	padding-left: 14px;
-	padding-right: 14px;
+	padding: var(--spacing-extra-small);
+	padding-left: var(--spacing-small-medium);
+	padding-right: var(--spacing-small-medium);
 	white-space: nowrap;
 
 	background-color: var(--color-light);
 
 	border: solid 1.33px var(--color-medium);
-	border-radius: 999px;
+	border-radius: var(--border-radius-full);
 
 	color: var(--color-dark-medium);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 14px;
+	font-size: var(--font-size-medium-small);
 }

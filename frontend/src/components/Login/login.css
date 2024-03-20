@@ -3,6 +3,8 @@
 	flex-direction: column;
 	margin: auto;
 
+	gap: var(--spacing-small-medium);
+
 	padding: var(--spacing-medium);
 	background-color: var(--color-light);
 	border-radius: var(--border-radius-medium);

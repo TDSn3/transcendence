@@ -1,18 +1,32 @@
 import './cta.css';
 
 interface ButtonProps {
-  text: string,
+  text?: string,
+  srcImg?: string,
+  altImg?: string,
   handleClick: (event: React.FormEvent) => void,
 }
 
-function Cta({ text, handleClick }: ButtonProps) {
+function Cta({
+  text,
+  srcImg,
+  altImg,
+  handleClick,
+}: ButtonProps) {
   return (
     <div>
       <button className="cta-style" onClick={handleClick} type="button">
-        <img height="18" src="../../42-BLACK.svg" alt={text} />
+        { srcImg && (<img height="18" src={srcImg} alt={altImg} />) }
+        { text && (text) }
       </button>
     </div>
   );
 }
+
+Cta.defaultProps = {
+  text: null,
+  srcImg: null,
+  altImg: '',
+};
 
 export default Cta;
