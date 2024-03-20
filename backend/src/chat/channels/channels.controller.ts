@@ -47,7 +47,6 @@ export class ChannelsController {
 
   @Patch(":channelName")
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { newPassword: string, newPrivate: boolean }): Promise<Channel> {
-	console.log("help", param);
 	return (this.channelService.channelUpdate(channelName, param.newPassword, param.newPrivate));
   }
 }

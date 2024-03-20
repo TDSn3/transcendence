@@ -1,3 +1,4 @@
+import axios from "axios";
 import "./chat.css";
 
 interface MessagesProps {
@@ -6,17 +7,22 @@ interface MessagesProps {
 }
 
 interface MessageProps {
-	username: string,
-	avatar: string,
-	message: string,
+	channelName: string,
+	author: any,
+	message: any,
 }
 
-export const Message = ({username, avatar, message}: MessageProps) => {
+export const Message = ({ channelName, author, message }: MessageProps) => {
+	console.log(author);
 	return (
 		<div className="message">
-			<a href={`http://localhost:3000/profile/${username}`}><img className="profilePicture" src={avatar} /></a>
+			<a href={`http://localhost:3000/profile/${author.login}`}><img className="profilePicture" src={author.avatar} /></a>
 			<div>
-				<a href={`http://localhost:3000/profile/${username}`} className="username">{username}</a><br />
+				<a href={`http://localhost:3000/profile/${author.login}`} className="username">{author.login}</a>
+				<input type="button" value="mute" onClick={() => axios.patch(`http://localhost:5001/api/channelMembers/${channelName}/${author.intraId}/mute`)} />
+				<input type="button" value="ban" onClick={() => axios.patch(`http://localhost:5001/api/channelMembers/${channelName}/${author.intraId}/ban`)} />
+				<input type="button" value="op" onClick={() => axios.patch(`http://localhost:5001/api/channelMembers/${channelName}/${author.intraId}/op`)} />
+				<br />
 				{message}
 			</div>
 		</div>
@@ -37,9 +43,9 @@ export const Messages = ({ messages, blockedUsers }: MessagesProps) => {
 			{
 				messages.map((value: any, index: number) => {
 					if (!isIn(blockedUsers, value.member)) {
-						return (<Message key={index} username={value.member.login} avatar={value.member.avatar} message={value.content} />);
+						return (<Message key={index} channelName={value.channel.name} author={value.member} message={value.content} />);
 					}
-					return (null);
+					return (<Message channelName={value.channel.name} author={value.member} message={(<strong>[blocked user]</strong>)} />);
 				})
 			}
 		</div>

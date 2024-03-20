@@ -84,7 +84,7 @@ const ChatRoom = () => {
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
 		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { newPassword: newChannelPassword, newPrivate: newChannelPrivate });
-		setButtonPopup(falzse);
+		setButtonPopup(false);
 	}
 
 	return (

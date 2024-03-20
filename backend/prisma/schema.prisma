@@ -89,6 +89,8 @@ model ChannelMember {
   isMute	Boolean			@default(false)
   isAdmin	Boolean			@default(false)
   isOwner	Boolean			@default(false)
+
+  @@unique([userId, channelId]) // peut etre une source de probleme
 }
 
 model Message {

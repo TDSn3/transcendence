@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
+import { ChannelsService } from "../channels/channels.service";
 
 @Injectable()
 export class ChannelMembersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(private channelsService: ChannelsService, private prisma: PrismaService) {}
 
 	async create(intraId: number, channelId: number): Promise<ChannelMember> {
 		if (await this.isIn(channelId, intraId)) {
@@ -53,5 +54,21 @@ export class ChannelMembersService {
 				return (user);
 			}
 		}
+	}
+
+	async channelMute(channelName: string, intraId: number): Promise<any> {
+		// const member = this.getChannelMember(await this.channelsService.getChannelId(channelName), intraId);
+		const member: any = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: intraId,
+					channelId: await this.channelsService.getChannelId(channelName)
+				}
+			}
+		});
+		console.log(member);
+
+		// const res = await this.prisma.channelMember.update({});
+		return (member);
 	}
 }

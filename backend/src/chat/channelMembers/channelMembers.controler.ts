@@ -16,6 +16,12 @@ export class ChannelMembersController {
 			})
 			.catch(() => {
 				res.status(501).json({ message: "ChannelMember creation failed" });
-			});
+			}
+		);
+	}
+
+	@Patch(":channelName/:intraId/mute")
+	async channelMute(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<any> {
+	  return (this.channelMembersService.channelMute(channelName, intraId));
 	}
 }

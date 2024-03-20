@@ -65,14 +65,19 @@ export class ChannelsService {
 					select: {
 						intraId: true,
 						login: true,
-						avatar: true,
+						avatar: true
+					}
+				},
+				channel: {
+					select: {
+						name: true
 					}
 				}
 			},
 			where: {
 				channelId: channelId
 			}
-		})
+		});
 		return (res);
 	}
 
