@@ -118,7 +118,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				if (client.id === this.lobbies[lobbyID].clients[i]) {
 					console.log('clients', this.lobbies[lobbyID].clients);
 					console.log('paddleInfo', this.lobbies[lobbyID].pongGame.rightPaddle.websocket);
-					if (this.lobbies[lobbyID].clients.length === 2) {
+					if (this.lobbies[lobbyID].clients.length === 2 && !this.lobbies[lobbyID].pongGame.isFinished) {
 						let loserId:string;
 						let winnerid:string;
 						if (this.lobbies[lobbyID].clients[i] === this.lobbies[lobbyID].pongGame.leftPaddle.websocket) {
