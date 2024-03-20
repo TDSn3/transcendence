@@ -62,11 +62,11 @@ function ProfileInformation({
   const handleAddBlockClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-	userServices
-	  .addBlock(user.id, userProfile.id)
-	  .then(() => setIsBlocked(true))
-	  .catch((error) => console.error(error));
-  }
+    userServices
+      .addBlock(user.id, userProfile.id)
+      .then(() => setIsBlocked(true))
+      .catch((error) => console.error(error));
+  };
 
   const handleDelBlockClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

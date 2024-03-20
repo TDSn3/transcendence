@@ -24,6 +24,7 @@ function Logout({ socket }: LogoutProps) {
         }
 
         localStorage.removeItem('userLogin');
+        localStorage.removeItem('token');
 
         navigate('/');
       } catch (error: unknown) {

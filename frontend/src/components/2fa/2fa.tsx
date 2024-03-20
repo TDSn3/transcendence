@@ -128,6 +128,7 @@ function TwoFaAuth() {
         },
       });
       setLoggedIn(true);
+      localStorage.setItem('userLogin', user.login);
       navigate(`/profile/${user.login}`);
     } catch (err) {
       toast.error(<b>OTP invalid</b>);
