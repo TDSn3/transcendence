@@ -57,7 +57,7 @@
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 	text-shadow: 0px 1px 14px var(--color-dark);
 	letter-spacing: 0.33px;
 

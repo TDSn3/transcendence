@@ -12,27 +12,31 @@
 	min-width: 256px;
 }
 
-.wins-losses {
-	display: flex;
-	gap: var(--spacing-medium);
+.picture-container {
+	position: relative;
 }
 
 .box {	
 	flex-grow: 1;
 	flex-basis: 0;
-	
+
 	background-color: var(--color-light-medium);
 
-	/* border: 1.5px solid var(--color-medium); */
-	
 	text-align: center;
 
-	padding-top: 6px;
-	padding-right: 14px;
-	padding-bottom: 6px;
-	padding-left: 14px;
+	padding-top: var(--spacing-small-medium);
+	padding-right: var(--spacing-small-medium);
+	padding-bottom: var(--spacing-small-medium);
+	padding-left: var(--spacing-small-medium);
 
 	border-radius: var(--border-radius-extra-small);
+}
+
+/* Game history */
+
+.wins-losses {
+	display: flex;
+	gap: var(--spacing-medium);
 }
 
 .number {
@@ -41,20 +45,21 @@
 
 .big-number-won {
 	color: var(--color-dark);
-	font-size: 32px;
+	font-size: var(--font-size-large);
 	font-weight:500;
 	font-style: normal;
 }
 
 .big-number-lose {
 	color: var(--color-dark-medium);
-	font-size: 32px;
+	font-size: var(--font-size-large);
 	font-weight:500;
 	font-style: normal;
 }
 
 .game-history-title-style {
 	flex-shrink: 0;
+	margin-left: var(--spacing-small);
 }
 
 .game-result-container {
@@ -89,7 +94,7 @@
 	justify-content: center;
 	align-items: center;
 	justify-content: flex-end;
-	padding-right: 16px;
+	padding-right: var(--spacing-medium);
 }
 
 .game-result-item-middle {
@@ -104,14 +109,16 @@
 .left {
 	position: absolute;
 	left: 50%;
-	transform: translateX(calc(-100% - 32px));
+	transform: translateX(calc(-100% - var(--spacing-large)));
 }
   
 .right {
 	position: absolute;
 	right: 50%;
-	transform: translateX(calc(100% + 32px));
+	transform: translateX(calc(100% + var(--spacing-large)));
 }
+
+/* Scroll Bar */
 
 ::-webkit-scrollbar {
 	width: 24px;
@@ -127,14 +134,12 @@
 
 ::-webkit-scrollbar-thumb:hover {
 	background:var(--color-dark-medium);
-	border-radius: 100px;
+	border-radius: var(--border-radius-full);
 	border: 7px solid transparent;
 	background-clip: padding-box;
 }
 
-.picture-container {
-	position: relative;
-}
+/* Picture Overlay */
 
 .picture-overlay-background {
 	position: absolute;
@@ -151,7 +156,7 @@
 	border-style: solid;
 	border-width: 0px;
 	border-color: transparent;
-	border-radius: 999px;
+	border-radius: var(--border-radius-full);
 
 	cursor: pointer;
 
@@ -176,7 +181,7 @@
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 	text-shadow: 0px 1px 14px var(--color-dark);
 	letter-spacing: 0.33px;
 
@@ -192,6 +197,8 @@
 	opacity: 1;
 }
 
+/* Login */
+
 .login-container {
 	position: relative;
 	transition:
@@ -199,23 +206,23 @@
 }
 
 .login-container:hover {
-	transform: scale(1.05) translateY(-4px);
+	transform: scale(1.05) translateY(-0.375rem);
 }
 
 .login-overlay {
 	position: absolute;
-	top: 80%;
+	top: 90%;
 	right: 50%;
 	transform: translate(50%, -50%);
 
-	width: calc(100% + 32px);
-	height: calc(100% + 16px);
+	width: calc(100% + var(--spacing-large));
+	height: calc(100% + var(--spacing-medium-large));
 
 	background: transparent;
 	border-style: solid;
 	border-width: 1.5px;
 	border-color: var(--color-medium);
-	border-radius: 999px;
+	border-radius: var(--border-radius-full);
 
 	cursor: pointer;
 

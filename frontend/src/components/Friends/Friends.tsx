@@ -41,7 +41,7 @@ function Friends() {
     <div className="void-page" id="friends-page-id">
       <div className="friends-header">
         <div className="friends-title">
-          <h3>
+          <h3 style={{ marginLeft: 'var(--spacing-small)' }}>
             Friends :
             {' '}
             {userWithFriends?.friends?.length ?? 0}

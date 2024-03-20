@@ -1,9 +1,10 @@
+/* eslint-disable */
+
 import { useState, useEffect } from "react";
 import PongLocal from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
 import Lobby from "./Lobby.tsx";
-
 
 function Game() {
 
@@ -25,7 +26,7 @@ function Game() {
   
   return (
     <div className="page">
-      <h3>Game</h3>
+      <h3 style={{ marginLeft: 'var(--spacing-small)' }}>Game</h3>
       <button onClick={handleLobby}>{buttonText}</button>
       {lobby && <Lobby />}
      

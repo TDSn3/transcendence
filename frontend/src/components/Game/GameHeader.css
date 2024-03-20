@@ -3,21 +3,21 @@
 	display: flex;
 	justify-content: space-evenly;
 	align-items: flex-end;
-  }
-  
-  .player {
+}
+
+.player {
 	text-align: center;
-  }
-  
-  .player img {
+}
+
+.player img {
 	width: 100px;
 	height: 100px;
 	border-radius: 50%;
 	border: 1px solid rgba(0, 0, 0, 0.74);
-  }
+}
 
-  .timer p{
-    text-align:center;
-    font-size: 30px;
+.timer p{
+	text-align:center;
+	font-size: 30px;
 	color: rgba(0, 0, 0, 0.89);
 }

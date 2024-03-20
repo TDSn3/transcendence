@@ -19,19 +19,6 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 	pointer-events: none;
 }
 
-html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	box-sizing: border-box;
-}
-
-.root {
-	height: 100vh;
-	padding: var(--spacing-medium);
-	box-sizing: border-box;
-}
-
 body {
 	margin: 0;
 	padding: 0px;
@@ -55,7 +42,7 @@ body {
 	box-sizing: border-box;
 
 	background-color: var(--color-light);
-	border-radius: 14px;
+	border-radius: var(--border-radius-small-medium);
 }
 
 .void-page {
@@ -71,17 +58,15 @@ h1 {
 	font-family: var(--font-family-principal);
 	font-weight: 500;
 	font-style: normal;
-	font-size: 64px;
+	font-size: var(--font-size-extra-large);
 }
 
 h3 {
-	margin-left: 16px;
-	
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
 	font-weight:500;
 	font-style: normal;
-	font-size: 32px;
+	font-size: var(--font-size-large);
 }
 
 p, span, div {
@@ -89,5 +74,5 @@ p, span, div {
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 }
