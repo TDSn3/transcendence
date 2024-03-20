@@ -175,14 +175,14 @@ export class Pong {
 			this.score[0]++;
 			this.resetBall(5);
 		}
-		if (this.score[0] === this.maxScore || this.score[1] === this.maxScore) {
-			if (this.score[0] === this.maxScore) {
+		if (this.score[0] >= this.maxScore || this.score[1] >= this.maxScore) {
+			if (this.score[0] >= this.maxScore) {
 				this.winnerScore = this.score[0];
 				this.loserScore = this.score[1];
 				this.winnerUserId = this.leftPaddle.userId;
 				this.loserUserId = this.rightPaddle.userId;
 			}
-			else if (this.score[1] === this.maxScore) {
+			else if (this.score[1] >= this.maxScore) {
 				this.winnerScore = this.score[1];
 				this.loserScore = this.score[0];
 				this.winnerUserId = this.rightPaddle.userId;
