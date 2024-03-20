@@ -11,6 +11,7 @@ export class ChannelMembersService {
 			return (this.getChannelMember(channelId, intraId));
 		}
 		try {
+			console.log("new channelMember:", intraId, channelId);
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
 					userId: intraId,

@@ -3,6 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ChannelsService } from "./channels.service";
 import { Response } from "express";
+import { Channel } from "@prisma/client";
 
 @Controller("api/channels")
 @ApiTags("channels")
@@ -44,8 +45,9 @@ export class ChannelsController {
 	return (this.channelService.getAllMessages(channelName));
   }
 
-//   @Patch(":channelName/password")
-//   async passwordUpdate(@Param("channelName") channelName: string, @Body() newPassword: string): Promise<any> {
-// 	return (this.channelService.passwordUpdate(newPassword));
-//   }
+  @Patch(":channelName")
+  async channelUpdate(@Param("channelName") channelName: string, @Body() param: { newPassword: string, newPrivate: boolean }): Promise<Channel> {
+	console.log("help", param);
+	return (this.channelService.channelUpdate(channelName, param.newPassword, param.newPrivate));
+  }
 }
