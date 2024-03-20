@@ -1,5 +1,6 @@
 :root {
-	--font-family-principal: 'Helvetica Now Display', Helvetica, sans-serif;
+	/* --font-family-principal: 'Helvetica Now Display', Helvetica, sans-serif; */
+	--font-family-principal: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", 'Helvetica Now Display', Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 
 	--margin-small: 8px;
 	--margin-medium: 16px;
