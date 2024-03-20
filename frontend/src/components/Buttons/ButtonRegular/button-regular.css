@@ -4,15 +4,15 @@
 
 	gap: 12px;
 
-	padding: var(--margin-small);
+	padding: var(--spacing-small);
 	padding-right: 16px;
 	padding-left: 16px;
 	
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 	border-style: solid;
 	border-width: 1px;
-	border-color: var(--color-medium-dark);
-	border-radius: var(--border-radius-medium);
+	border-color: var(--color-medium);
+	border-radius: var(--border-radius-small);
 
 	color: var(--color-dark);
 
@@ -26,17 +26,17 @@
 .button-regular:hover {
 	cursor: pointer;
 
-	border-color: var(--color-dark-soft);
+	border-color: var(--color-dark-medium);
 	transform: translate(0%, -5%);
-	box-shadow: 0px 4px 16px 2px var(--color-medium);
+	box-shadow: 0px 4px 16px 2px var(--color-light-medium);
 }
 
 .button-regular:active {
 	cursor: pointer;
 
-	background-color: var(--color-medium-dark);
+	background-color: var(--color-medium);
 	transform: translate(0%, 2%);
-	box-shadow: 0px 0px 0px 0px var(--color-medium);
+	box-shadow: 0px 0px 0px 0px var(--color-light-medium);
 }
 
 .button-regular-text {

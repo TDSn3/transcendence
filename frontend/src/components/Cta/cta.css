@@ -5,7 +5,7 @@
 	
 	width: 192px;
 	border: none;
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
   
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
@@ -19,13 +19,13 @@
 	padding-bottom: 14px;
 	padding-left: 14px;
   
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-extra-small);
 
 	cursor: pointer;
 }
 
 .cta-style:hover {
 	width: 192px;
-	background-color: var(--color-medium-dark);
+	background-color: var(--color-medium);
 	transition: background-color 0.2s ease-in-out;
 }

@@ -4,15 +4,15 @@
 
 	gap: 12px;
 
-	padding: var(--margin-small);
+	padding: var(--spacing-small);
 	padding-right: 16px;
 	padding-left: 16px;
 	
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 	border-style: solid;
 	border-width: 1px;
-	border-color: var(--color-medium-dark);
-	border-radius: var(--border-radius-medium);
+	border-color: var(--color-medium);
+	border-radius: var(--border-radius-small);
 
 	color: var(--color-dark);
 

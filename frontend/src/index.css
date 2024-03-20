@@ -8,7 +8,7 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 
 .root {
 	height: 100vh;
-	padding: var(--margin-medium);
+	padding: var(--spacing-medium);
 	box-sizing: border-box;
 }
 
@@ -28,7 +28,7 @@ html, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl,
 
 .root {
 	height: 100vh;
-	padding: var(--margin-medium);
+	padding: var(--spacing-medium);
 	box-sizing: border-box;
 }
 
@@ -36,22 +36,22 @@ body {
 	margin: 0;
 	padding: 0px;
 
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 }
 
 .container {
 	display: flex;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 	height: 100%;
 }
 
 .page {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 	flex-grow: 1;
 	flex-basis: 0;
-	padding: var(--margin-medium);
+	padding: var(--spacing-medium);
 	box-sizing: border-box;
 
 	background-color: var(--color-light);
@@ -61,7 +61,7 @@ body {
 .void-page {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 	flex-grow: 1;
 	flex-basis: 0;
 }

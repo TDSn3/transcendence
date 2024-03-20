@@ -3,25 +3,25 @@
 
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 
 	align-content: center;
 	align-items: center;
 
 	background-color: var(--color-light);
-	padding: var(--border-radius-large);
+	padding: var(--spacing-medium);
 
 	box-sizing: border-box;
 	border: solid 1.33px transparent;
-	border-radius: var(--border-radius-large);
+	border-radius: var(--border-radius-medium);
 	transition:
 	    box-shadow 0.4s,
 		border 0.4s;
 }
 
 .friend-card:hover {
-	border: solid 1.33px var(--color-dark-soft);
-	box-shadow: 0px 4px 32px 4px var(--color-medium-dark);
+	border: solid 1.33px var(--color-dark-medium);
+	box-shadow: 0px 4px 32px 4px var(--color-medium);
 
 	cursor: pointer;
 }
@@ -44,7 +44,7 @@
 }
 
 .subtitle {
-	color: var(--color-dark-soft);
+	color: var(--color-dark-medium);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
@@ -59,7 +59,7 @@
 
 	background-color: var(--color-light);
 
-	border: solid 1.33px var(--color-dark-soft);
+	border: solid 1.33px var(--color-dark-medium);
 	border-radius: 999px;
 
 	color: var(--color-dark);
@@ -77,10 +77,10 @@
 
 	background-color: var(--color-light);
 
-	border: solid 1.33px var(--color-medium-dark);
+	border: solid 1.33px var(--color-medium);
 	border-radius: 999px;
 
-	color: var(--color-dark-soft);
+	color: var(--color-dark-medium);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;

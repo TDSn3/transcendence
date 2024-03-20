@@ -7,23 +7,23 @@
 .profile-content {
 	display: flex;
 	flex-direction: column;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 
 	min-width: 256px;
 }
 
 .wins-losses {
 	display: flex;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 }
 
 .box {	
 	flex-grow: 1;
 	flex-basis: 0;
 	
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 
-	/* border: 1.5px solid var(--color-medium-dark); */
+	/* border: 1.5px solid var(--color-medium); */
 	
 	text-align: center;
 
@@ -32,7 +32,7 @@
 	padding-bottom: 6px;
 	padding-left: 14px;
 
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-extra-small);
 }
 
 .number {
@@ -47,7 +47,7 @@
 }
 
 .big-number-lose {
-	color: var(--color-dark-soft);
+	color: var(--color-dark-medium);
 	font-size: 32px;
 	font-weight:500;
 	font-style: normal;
@@ -61,7 +61,7 @@
 	display: flex;	
 	flex-direction: column;
 	overflow-y: auto;
-	gap: var(--margin-medium);
+	gap: var(--spacing-medium);
 }
 
 .game-result {
@@ -70,10 +70,10 @@
 	align-items: center;
 	position: relative;
 
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 	font-family: var(--font-family-principal);
 
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-extra-small);
 }
 
 .game-result-item-start {
@@ -119,14 +119,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--color-medium-dark);
+	background: var(--color-medium);
 	border-radius: 100px;
 	border: 8px solid transparent;
 	background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background:var(--color-dark-soft);
+	background:var(--color-dark-medium);
 	border-radius: 100px;
 	border: 7px solid transparent;
 	background-clip: padding-box;
@@ -214,7 +214,7 @@
 	background: transparent;
 	border-style: solid;
 	border-width: 1.5px;
-	border-color: var(--color-medium-dark);
+	border-color: var(--color-medium);
 	border-radius: 999px;
 
 	cursor: pointer;

@@ -15,7 +15,7 @@
 	padding-bottom: 6px;
 	padding-left: 14px;
   
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-extra-small);
 
 	cursor: pointer;
 }
@@ -37,7 +37,7 @@
 	padding-bottom: 6px;
 	padding-left: 14px;
   
-	border-radius: var(--border-radius-small);
+	border-radius: var(--border-radius-extra-small);
 
 	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
 
@@ -46,6 +46,6 @@
 
 .item-style:hover {
 	width: 100%;
-	background-color: var(--color-medium);
+	background-color: var(--color-light-medium);
 	transition: background-color 0.2s ease-in-out;
 }

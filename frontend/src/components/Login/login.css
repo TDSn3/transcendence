@@ -3,9 +3,9 @@
 	flex-direction: column;
 	margin: auto;
 
-	padding: var(--margin-medium);
+	padding: var(--spacing-medium);
 	background-color: var(--color-light);
-	border-radius: var(--border-radius-large);
+	border-radius: var(--border-radius-medium);
 	text-align: center;
 	box-sizing: border-box;
 }

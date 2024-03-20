@@ -33,11 +33,11 @@ function Search({
       theme={{
         components: {
           Select: {
-            colorPrimary: 'var(--color-dark-soft)',
-            colorPrimaryHover: 'var(--color-dark-extra-soft)',
-            controlOutline: 'var(--color-medium)',
-            optionActiveBg: 'var(--color-medium)',
-            optionSelectedBg: 'var(--color-medium)',
+            colorPrimary: 'var(--color-dark-medium)',
+            colorPrimaryHover: 'var(--color-medium-dark)',
+            controlOutline: 'var(--color-light-medium)',
+            optionActiveBg: 'var(--color-light-medium)',
+            optionSelectedBg: 'var(--color-light-medium)',
           },
         },
       }}
