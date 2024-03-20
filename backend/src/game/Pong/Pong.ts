@@ -22,12 +22,17 @@ export class Pong {
 
 	public score:number[] = [0,0];
 	
-	public maxScore:number = 1000;
+	public maxScore:number = 5;
 
 	public countdown: number = 3;
 	public timerStart:number;
 	public maxTime:number = 300;
 	public timeLeft:number = this.maxTime;
+
+	public winnerUserId:string;
+	public loserUserId:string;
+	public winnerScore:number;
+	public loserScore:number;
 
 
 	public loop() {
@@ -43,7 +48,6 @@ export class Pong {
 			this.updateTimer();
 		}
 	};
-
 
 	public updateTimer() {
 		const actualTime:number = Date.now();
@@ -171,7 +175,21 @@ export class Pong {
 			this.score[0]++;
 			this.resetBall(5);
 		}
-		if (this.score[0] === this.maxScore || this.score[1] === this.maxScore)
+		if (this.score[0] === this.maxScore || this.score[1] === this.maxScore) {
+			if (this.score[0] === this.maxScore) {
+				this.winnerScore = this.score[0];
+				this.loserScore = this.score[1];
+				this.winnerUserId = this.leftPaddle.userId;
+				this.loserUserId = this.rightPaddle.userId;
+			}
+			else if (this.score[1] === this.maxScore) {
+				this.winnerScore = this.score[1];
+				this.loserScore = this.score[0];
+				this.winnerUserId = this.rightPaddle.userId;
+				this.loserUserId = this.leftPaddle.userId;
+			}
+
 			this.isFinished = true;
+		}
 	}
 }

@@ -10,6 +10,7 @@ export class Paddle {
 	public websocket?:string;
 	public avatar?:string;
 	public playerName?:string;
+	public userId?:string;
 
 	constructor(side: "left" | "right") {
 		this.width = 10;
