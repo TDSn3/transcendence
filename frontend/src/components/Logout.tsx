@@ -24,6 +24,7 @@ function Logout({ socket }: LogoutProps) {
         }
 
         localStorage.removeItem('userLogin');
+        localStorage.removeItem('token');
 
         navigate('/');
       } catch (error: unknown) {
@@ -40,7 +41,7 @@ function Logout({ socket }: LogoutProps) {
     performLogout();
   }, [navigate, setLoggedIn, socket, user]);
 
-  return (<> </>);
+  return <> </>;
 }
 
 export default Logout;

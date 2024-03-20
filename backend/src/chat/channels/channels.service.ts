@@ -63,6 +63,7 @@ export class ChannelsService {
 			include: {
 				member: {
 					select: {
+						intraId: true,
 						login: true,
 						avatar: true,
 					}
@@ -72,6 +73,19 @@ export class ChannelsService {
 				channelId: channelId
 			}
 		})
+		return (res);
+	}
+
+	async channelUpdate(channelName: string, newPassword: string, newPrivate: boolean): Promise<Channel> {
+		const res = await this.prisma.channel.update({
+			where: {
+				name: channelName
+			},
+			data: {
+				password: newPassword,
+				private: newPrivate
+			}
+		});
 		return (res);
 	}
 }

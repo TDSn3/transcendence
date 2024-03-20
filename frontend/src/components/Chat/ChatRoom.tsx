@@ -5,7 +5,6 @@ import { Messages } from "./Messages.tsx";
 import "./chat.css";
 import useAuth from '../../contexts/Auth/useAuth.tsx';
 import { useNavigate, useParams } from 'react-router-dom';
-import { checkChannel } from '../../services/channnels.tsx';
 import Popup from './Popup.tsx';
 import { io } from 'socket.io-client';
 import axios from 'axios';
@@ -36,8 +35,10 @@ const InputBar = ({ socketRef, user, channelName }: InputBarProps) => {
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement>  = (e: FormEvent) => {
 		e.preventDefault();
-		socketRef.current.emit("chatSend", { user: user, channelName: channelName, message: message });
-		setMessage("");
+		if (/\S/.test(message)) {
+			socketRef.current.emit("chatSend", { user: user, channelName: channelName, message: message });
+			setMessage("");
+		}
 	}
 
 	return (
@@ -54,6 +55,7 @@ const ChatRoom = () => {
 	const navigate = useNavigate();
 
 	const socketRef = useRef<any>(null);
+	const blockedUsersRef = useRef<any[]>([]);
 	const [messages, setMessages] = useState<any[]>([]);
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [newChannelPassword, setNewChannelPassword] = useState<string>("");
@@ -61,12 +63,12 @@ const ChatRoom = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			if (!(await checkChannel(channelName !== undefined ? channelName : ""))) {
+			if (!(await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/check`)).data) {
 				navigate("/chat");
+				console.log();
 			}
-			const messagesResponse = await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`);
-			setMessages(messagesResponse.data.map((value: MessageInfo) => value));
-			console.log("end fetch", messagesResponse);
+			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
+			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 		};
 		fetchData();
 
@@ -83,6 +85,8 @@ const ChatRoom = () => {
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
+		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { newPassword: newChannelPassword, newPrivate: newChannelPrivate });
+		setButtonPopup(falzse);
 	}
 
 	return (
@@ -92,14 +96,14 @@ const ChatRoom = () => {
 				<h3>{channelName}</h3>
 				<input type="button" value="⚙️" onClick={() => setButtonPopup(!buttonPopup)}/>
 			</div>
-			<Messages messages={messages}/>
+			<Messages messages={messages} blockedUsers={blockedUsersRef.current}/>
 			<InputBar socketRef={socketRef} user={user} channelName={channelName !== undefined ? channelName : ""}/>
 			<Popup className="option" trigger={buttonPopup} setTrigger={setButtonPopup} x="30px" y="75px">
 				<h4 className="option-title">Channel option</h4>
 				<form className="option-form" onSubmit={handleSubmit}>
 					<input type="text" placeholder="New password" value={newChannelPassword} onChange={(e) => {setNewChannelPassword(e.target.value)}}/>
 					<div className="option-form-end">
-						Private: <input type="checkbox" onChange={() => setNewChannelPrivate(!newChannelPrivate)}/>
+						Private: <input type="checkbox" checked={newChannelPrivate} onChange={() => setNewChannelPrivate(!newChannelPrivate)}/>
 						<input type="button" value="Update" onClick={handleSubmit}/>
 					</div>
 				</form>

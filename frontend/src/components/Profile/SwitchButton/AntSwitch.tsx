@@ -3,13 +3,13 @@ import { Switch, ConfigProvider } from 'antd';
 interface SwitchProps {
   isToggled: boolean,
   onToggle: () => void,
+  handleQrCode: () => Promise<void>,
 }
 
-function AntSwitch({ isToggled, onToggle }: SwitchProps) {
+function AntSwitch({ isToggled, onToggle, handleQrCode }: SwitchProps) {
   return (
     <div>
-      2FA
-      &nbsp;&nbsp;
+      2FA &nbsp;&nbsp;
       <ConfigProvider
         theme={{
           components: {
@@ -22,7 +22,15 @@ function AntSwitch({ isToggled, onToggle }: SwitchProps) {
           },
         }}
       >
-        <Switch className="ant-switch" checked={isToggled} onChange={onToggle} />
+        <Switch
+          className="ant-switch"
+          checked={isToggled}
+          onChange={() => {
+            onToggle();
+            handleQrCode();
+            console.log('isToggled', isToggled);
+          }}
+        />
       </ConfigProvider>
     </div>
   );

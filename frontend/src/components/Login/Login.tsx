@@ -24,7 +24,7 @@ function Login() {
 
       setUser(user);
       setLoggedIn(true);
-
+      console.log('setItem', user.login);
       localStorage.setItem('userLogin', user.login);
 
       navigate(`/profile/${user.login}`);

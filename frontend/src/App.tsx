@@ -12,6 +12,7 @@ import Friends from './components/Friends/Friends';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import useSocket from './contexts/Socket/useSocket';
 import useAuth from './contexts/Auth/useAuth';
+import TwoFaAuth from './components/2fa/2fa';
 import ChatRoom from './components/Chat/ChatRoom';
 
 function App() {
@@ -22,29 +23,28 @@ function App() {
 
   return (
     <div className="App container">
-      {
-        !isLoggedIn ? (
+      {!isLoggedIn ? (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signIn42" element={<SignIn42 />} />
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login/twofa" element={<TwoFaAuth />} />
+        </Routes>
+      ) : (
+        <>
+          <Navbar />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signIn42" element={<SignIn42 />} />
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/profile/:login" element={<Profile />} />
+            <Route path="/friends" element={<Friends />} />
+            <Route path="/chat" element={<Channels />} />
+            <Route path="/chat/:channelName" element={<ChatRoom />} />
+            <Route path="/game" element={<Game />} />
+            <Route path="/logout" element={<Logout socket={socket} />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        ) : (
-          <>
-            <Navbar />
-            <Routes>
-              <Route path="/home" element={<Home />} />
-              <Route path="/profile/:login" element={<Profile />} />
-              <Route path="/friends" element={<Friends />} />
-              <Route path="/chat" element={<Channels />} />
-              <Route path="/chat/:channelName" element={<ChatRoom />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="/logout" element={<Logout socket={socket} />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </>
-        )
-      }
+        </>
+      )}
     </div>
   );
 }

@@ -31,7 +31,7 @@ export interface User {
   createdAt: string,
   updatedAt: string,
   TwoFactorAuthSecret: string,
-  isTwoFactorEnabled: boolean,
+  isTwoFactorAuthEnabled: boolean,
 
   intraId: number,
   email42: string,
@@ -48,6 +48,8 @@ export interface User {
 
   friends: User[],
   friendOf: User[],
+  blocked: User[],
+  blockedOf: User[],
 
   historyGamesWon: InterfaceGameHistory[],
   historyGamesLost: InterfaceGameHistory[],
@@ -58,7 +60,7 @@ export const emptyUser: User = {
   createdAt: '',
   updatedAt: '',
   TwoFactorAuthSecret: '',
-  isTwoFactorEnabled: false,
+  isTwoFactorAuthEnabled: false,
 
   intraId: 0,
   email42: '',
@@ -75,6 +77,8 @@ export const emptyUser: User = {
 
   friends: [],
   friendOf: [],
+  blocked: [],
+  blockedOf: [],
 
   historyGamesWon: [],
   historyGamesLost: [],

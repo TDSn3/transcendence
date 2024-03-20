@@ -25,10 +25,12 @@
     "normalize.css": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
     "react-jwt": "^1.2.0",
     "react-router-dom": "^6.22.0",
     "react-spinners": "^0.13.8",
     "socket.io-client": "^4.7.4",
+    "styled-components": "^6.1.8",
     "styletron-engine-monolithic": "^1.0.0",
     "styletron-react": "^6.1.1",
     "uuid": "^9.0.1"

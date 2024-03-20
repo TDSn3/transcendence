@@ -34,6 +34,8 @@ model User {
   statusWebSocketId      UserStatusWebSocketId[]
   members                ChannelMember[]
   message                Message[]
+  blocked                User[]			@relation("UserBlock")
+  blockedOf              User[]			@relation("UserBlock")
   friends                User[]         @relation("UserFriends")
   friendOf               User[]         @relation("UserFriends")
 
@@ -84,11 +86,9 @@ model ChannelMember {
   channel   Channel   @relation(fields: [channelId], references: [id])
 
   muteEnd   DateTime?
-  isMute    Boolean   @default(false)
-  isAdmin   Boolean   @default(false)
-  isOwner   Boolean   @default(false)
-
-  @@unique([channelId, userId])
+  isMute    Boolean		@default(false)
+  isAdmin   Boolean		@default(false)
+  isOwner   Boolean		@default(false)
 }
 
 model Message {

@@ -16,7 +16,9 @@ interface Paddle {
   }
 import './GameHeader.css'
 import { time } from 'console';
+import { Golf } from 'iconoir-react';
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 const NewGameMode = () => {
 const canvasRef = useRef<HTMLCanvasElement>(null);
 const [angleStart, setAngleStart] = useState(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
@@ -49,9 +51,10 @@ const [countdown, setCountDown] = useState(3);
 const [gameStarted, setGameStarted] = useState(false);
 const [countdownActive, setCountdownActive] = useState(false);
 const [colors, setColors] = useState<string>("#03fc66");
-const maxtime:number = 500
+const maxtime:number = 180;
 const [timeLeft, setTimeLeft] = useState<number>(maxtime);
 const [startTimer, setStarTimer] =useState<number>(Date.now());
+// const navigate = useNavigate();
 // const [actualTime, setActualTime] = useState<number>(Date.now());
 
 const canvas = canvasRef.current;
@@ -248,16 +251,18 @@ useEffect(() => {
 				speedX: 5 * -Math.cos(angle),
 				speedY: 5 * Math.sin(angle)
 			});
-			console.log(angle);
+			// console.log(angle);
 			// setBallSpeed(0);
 		};
 
 		const updateDifficulty = () => {
 			if (goalSize > 10)
 				setGoalSize(goalSize - 10);
-			setRandomSpawn(Math.round(Math.random() * (500 - goalSize)));
-			setWallPaddle({ x: 790, y: 0, width: 10, height: randomSpawn});
-			setWallPaddle2({ x: 790, y: randomSpawn + goalSize, width: 10, height: 800 - randomSpawn + goalSize});
+
+			// setRandomSpawn(Math.round(Math.random() * (500 - goalSize)));
+			// console.log(randomSpawn);
+			// setWallPaddle({ x: 790, y: 0, width: 10, height: randomSpawn});
+			// setWallPaddle2({ x: 790, y: randomSpawn + goalSize, width: 10, height: 800 - randomSpawn + goalSize});
 			if (leftScore === 1)
 				setColors("#31fc03")
 			else if (leftScore === 3)
@@ -270,6 +275,7 @@ useEffect(() => {
 		}
 		if (ball.x + 5 > canvas.width) {
 			setLeftScore((prev) => prev + 1);
+
 			updateDifficulty();
 			resetBall(-Math.PI/4 + (Math.random() * (Math.PI/4) - (-Math.PI/4)));
 		}
@@ -313,6 +319,7 @@ useEffect(() => {
 		updateTimer();
 	
 		// console.log(goalSize);
+		console.log(randomSpawn);
 	};
 
 	const updateTimer = () => {
@@ -320,8 +327,9 @@ useEffect(() => {
 
 		setTimeLeft(maxtime - (actualTime - startTimer) / 1000);
 		// console.log(startTimer);
-		if (timeLeft <= 0)
+		if (timeLeft <= 0) {
 			setGameOver(true);
+		}
 	};
 
 	
@@ -331,6 +339,7 @@ useEffect(() => {
 		setGameOver(true);
 	window.addEventListener('keydown', handleKeyPress);
 	window.addEventListener('keyup', handleKeyUp);
+	// console.log(goalSize);
 
 	return () => {
 		clearInterval(intervalId);
@@ -340,6 +349,14 @@ useEffect(() => {
 	};
 }, [gameRunning, ball, RightScore, leftScore]);
 
+
+useEffect(() => {
+	setRandomSpawn(Math.round(Math.random() * (500 - goalSize)));
+	// console.log(randomSpawn);
+	setWallPaddle({ x: 790, y: 0, width: 10, height: randomSpawn});
+	setWallPaddle2({ x: 790, y: randomSpawn + goalSize, width: 10, height: 800 - randomSpawn + goalSize});
+	// setGoalSize(goalSize - 10);
+}, [goalSize])
 
 const startGame = () => {
 	// generateGradient();
@@ -386,7 +403,7 @@ return (
 			<p>{formatTime(timeLeft)}</p>
 		</div>
       <canvas ref={canvasRef} width={800} height={500} className="canvas" />
-	  {gameOver ? leftScore === 5 ? (<p> Blue Win </p>): <p>Red Win</p> : <p></p>}
+	  {/* {gameOver ? leftScore === 5 ? (<p> Blue Win </p>): <p>Red Win</p> : <p></p>} */}
     </div>
   );
 };
