@@ -27,6 +27,7 @@ function SignIn42(): React.ReactElement {
         if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
         else {
           setLoggedIn(true);
+          localStorage.setItem('userLogin', user.login);
           navigate(`/profile/${user.login}`);
         }
       } catch (error: unknown) {
