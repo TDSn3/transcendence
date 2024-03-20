@@ -9,12 +9,12 @@
 }
 
 .search .ant-select-selector .ant-select-selection-search-input {
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 }
 
 .search .ant-select-selector {
-	padding-left: 14px !important;
-	padding-right: 14px !important;
+	padding-left: var(--spacing-small-medium) !important;
+	padding-right: var(--spacing-small-medium) !important;
 	border-radius: var(--border-radius-small);
 	border: 1.5px solid var(--color-medium) !important;
 	outline: 0px solid var(--color-medium) !important;
@@ -26,8 +26,8 @@
 }
 
 .search .ant-select-selection-search {
-	padding-left: 3px !important;
-	padding-right: 3px !important;
+	padding-left: 1px !important;
+	padding-right: 1px !important;
 }
 
 .search .ant-select-selector {
