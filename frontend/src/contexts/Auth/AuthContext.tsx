@@ -27,7 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const hookIsLogged = () => {
     const userLogin = localStorage.getItem('userLogin');
-
+    console.log('userLogin: ', userLogin);
     if (userLogin && userLogin !== '') {
       console.log(userLogin, ' is already connected.');
 
@@ -35,13 +35,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .getUserByLogin(userLogin)
         .then((userValue) => {
           setUser(userValue);
-          if (!userValue.isTwoFactorAuthEnabled) setLoggedIn(true);
+          setLoggedIn(true);
         })
         .catch((error: unknown) => {
+          console.error('Error getting user:', error);
           setLoggedIn(false);
-
           localStorage.removeItem('userLogin');
-
           if (error instanceof Error) {
             console.error(error.message);
           } else {
