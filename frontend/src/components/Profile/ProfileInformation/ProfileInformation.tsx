@@ -57,7 +57,6 @@ function ProfileInformation({
   const handleAddBlockClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 	event.preventDefault();
 
-	console.log("oui");
 	userServices
 	  .addBlock(user.id, userProfile.id)
 	  .then(() => setIsBlocked(true))

@@ -34,8 +34,10 @@ const InputBar = ({ socketRef, user, channelName }: InputBarProps) => {
 
 	const handleSubmit: React.FormEventHandler<HTMLFormElement>  = (e: FormEvent) => {
 		e.preventDefault();
-		socketRef.current.emit("chatSend", { user: user, channelName: channelName, message: message });
-		setMessage("");
+		if (/\S/.test(message)) {
+			socketRef.current.emit("chatSend", { user: user, channelName: channelName, message: message });
+			setMessage("");
+		}
 	}
 
 	return (
@@ -81,6 +83,8 @@ const ChatRoom = () => {
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
+		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { newPassword: newChannelPassword, newPrivate: newChannelPrivate });
+		setButtonPopup(falzse);
 	}
 
 	return (
@@ -97,7 +101,7 @@ const ChatRoom = () => {
 				<form className="option-form" onSubmit={handleSubmit}>
 					<input type="text" placeholder="New password" value={newChannelPassword} onChange={(e) => {setNewChannelPassword(e.target.value)}}/>
 					<div className="option-form-end">
-						Private: <input type="checkbox" onChange={() => setNewChannelPrivate(!newChannelPrivate)}/>
+						Private: <input type="checkbox" checked={newChannelPrivate} onChange={() => setNewChannelPrivate(!newChannelPrivate)}/>
 						<input type="button" value="Update" onClick={handleSubmit}/>
 					</div>
 				</form>
