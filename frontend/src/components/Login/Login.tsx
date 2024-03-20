@@ -43,10 +43,9 @@ function Login() {
 
   return (
     <div className="login">
-      <h3 style={{ marginBottom: '16px', marginLeft: 0 }}>Log in</h3>
-      <Cta text="Sign in with 42" handleClick={handleClick42} />
-      <h3 style={{ marginTop: '16px', marginLeft: 0 }}>Fake Users</h3>
-      <Cta text="Sign in with Fake Users" handleClick={handleClick} />
+      <h3>Log in</h3>
+      <Cta text="Authenticator" srcImg="../../42-BLACK.svg" altImg="Sign in with 42" handleClick={handleClick42} />
+      <Cta text="Fake Users" handleClick={handleClick} />
     </div>
   );
 }

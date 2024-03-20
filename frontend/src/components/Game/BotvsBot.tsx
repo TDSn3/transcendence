@@ -1,4 +1,5 @@
-//App.js
+/* eslint-disable */
+
 interface Paddle {
 	x: number;
 	y: number;

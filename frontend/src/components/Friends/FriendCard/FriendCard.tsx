@@ -92,10 +92,12 @@ function FriendCard({
       aria-hidden="true"
       role="button"
     >
-      <div className="background-overlay"> </div>
-      <div className="overlay">view profile</div>
       <XmarkIconoirButton handleClick={handleClickXmark} />
-      <ProfilePicture size="128px" imageUrl={userFriend.avatar} />
+      <div className="friend-card-picture-container">
+        <ProfilePicture size="128px" imageUrl={userFriend.avatar} margin="0px" />
+        <div className="background-overlay"> </div>
+        <div className="overlay">view profile</div>
+      </div>
       <div className="text-container">
         <div className="title">{userFriend.login}</div>
         <div className="subtitle">

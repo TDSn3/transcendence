@@ -1,11 +1,11 @@
+/* eslint-disable */
+
 import { useState, useEffect, useRef } from "react";
 import PongLocal from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";
 import io from "socket.io-client";
 import Lobby from "./Lobby.tsx";
 import { useLocation } from "react-router-dom";
-
-
 
 // import { useNavigate } from "react-router-dom";
 
@@ -62,7 +62,7 @@ function Game() {
   
   return (
     <div className="page">
-      <h3>Game</h3>
+      <h3 style={{ marginLeft: 'var(--spacing-small)' }}>Game</h3>
       <button onClick={handleLobby}>{buttonText}</button>
       {lobby && <Lobby isPrivate={isPrivate} isHost={isHost} privateKey={privateKey}/>}
      

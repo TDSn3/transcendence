@@ -1,7 +1,7 @@
 function Home() {
   return (
     <div className="page">
-      <h3>Home</h3>
+      <h3 style={{ marginLeft: 'var(--spacing-small)' }}>Home</h3>
     </div>
   );
 }

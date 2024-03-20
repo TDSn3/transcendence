@@ -13,7 +13,7 @@
 	height: 100%;
 	width: 100%;
 
-	background-color: var(--color-dark-soft);
+	background-color: var(--color-dark-medium);
 
 	z-index: 1;
 
@@ -46,11 +46,11 @@
 
 	gap: 16px;
 
-	padding: var(--margin-medium);
+	padding: var(--spacing-medium);
 
 	background-color: var(--color-light);
-	border-radius: var(--border-radius-large);
-	box-shadow: 0px 8px 64px 4px var(--color-dark-soft);
+	border-radius: var(--border-radius-medium);
+	box-shadow: 0px 8px 64px 4px var(--color-dark-medium);
 
 	z-index: 2;
 
@@ -76,24 +76,24 @@
 	font-style: normal;
 	font-size: 16px;
 	
-	border: 1.5px solid var(--color-medium-dark);
-	outline-color: var(--color-dark-soft);
-	border-radius: var(--border-radius-medium);
+	border: 1.5px solid var(--color-medium);
+	outline-color: var(--color-dark-medium);
+	border-radius: var(--border-radius-small);
 
 	transition: border-color 0.3s ease, outline 0.3s ease;
 }
 
 .input-modal:hover {
-	border: 1.5px solid var(--color-dark-extra-soft);
+	border: 1.5px solid var(--color-medium-dark);
 }
 
 .input-modal:focus {
-	border: 1.5px solid var(--color-dark-soft);
-	outline: 3px solid var(--color-medium);
+	border: 1.5px solid var(--color-dark-medium);
+	outline: 3px solid var(--color-light-medium);
 }
 
 .input-modal::placeholder {
-	color: var(--color-dark-extra-soft);
+	color: var(--color-medium-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;

@@ -1,19 +1,56 @@
-:root {
-	--font-family-principal: 'Helvetica Now Display', Helvetica, sans-serif;
-
-	--margin-small: 8px;
-	--margin-medium: 16px;
-	--margin-large: 32px;
+/*
+	Size (Calculation based on a root font-size of 16 pixel) :
+		Xxs	- extra-extra-small	: 0.25rem	= 4px
+		Xs	- extra-small		: 0.375rem	= 6px	*
+		S	- small				: 0.5rem	= 8px
+		Sm	- small-medium		: 0.75rem	= 12px	*
+		Ms	- medium-small		: 0.875rem	= 14px	**
+		M	- medium			: 1rem		= 16px
+		mL	- medium-large		: 1.5rem	= 24px	*
+		L	- large				: 2rem		= 32px
+		Lxl	- large-extra-large	: 3rem		= 48px	*
+		Xl	- extra-large		: 4rem		= 64px
 	
-	--border-radius-small: 6px;
-	--border-radius-medium: 8px;
-	--border-radius-large: 16px;
+	Color :
+		L	- light
+		Lm	- light-medium
+		Ml	- medium-light
+		M	- medium
+		Md	- medium-dark
+		Dm	- dark-medium
+		D	- dark
+*/
+
+:root {
+	--font-family-principal: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Helvetica Now Display", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+	--spacing-extra-extra-small: 0.25rem;
+	--spacing-extra-small: 0.375rem;
+	--spacing-small: 0.5rem;
+	--spacing-small-medium: 0.75rem;
+	--spacing-medium: 1rem;
+	--spacing-medium-large: 1.5rem;
+	--spacing-large: 2rem;
+	--spacing-large-extra-large: 3rem;
+	--spacing-extra-large: 4rem;
+	
+	--border-radius-extra-small: 0.375rem;
+	--border-radius-small-medium: 0.75rem;
+	--border-radius-small: 0.5rem;
+	--border-radius-medium: 1rem;
+	--border-radius-full: 999px;
+
+	--font-size-medium-small: 0.875rem;
+	--font-size-medium: 1rem;
+	--font-size-medium-large: 1.5rem;
+	--font-size-large: 2rem;
+	--font-size-extra-large: 4rem;
 
 	--color-light: #ffffff;
-	--color-medium: #f3f2f1;
-	--color-medium-dark: #E7E7E5;
-	--color-dark-extra-soft: #CFCECA;
-	--color-dark-soft: #B6B5AF;
+	--color-light-medium: #f3f2f1;
+	--color-medium: #E7E7E5;
+	--color-medium-dark: #CFCECA;
+	--color-dark-medium: #B6B5AF;
 	--color-dark: #000000;
 
 	--color-warning-light: #fff7f7;

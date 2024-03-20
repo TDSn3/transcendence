@@ -254,7 +254,6 @@ export class AuthService {
             status: UserStatus.OFFLINE,
           },
         });
-        // console.log('StatusUser:', user);
       } else {
         throw new Error('Bad body');
       }

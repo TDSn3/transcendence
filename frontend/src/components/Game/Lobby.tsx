@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { useState, useEffect, useRef } from "react";
 import PongGame from "./PongGame.tsx";
 import BotvsBot from "./BotvsBot.tsx";

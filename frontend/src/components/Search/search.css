@@ -1,37 +1,3 @@
-/* .search {
-	margin-left: var(--margin-medium);
-	margin-right: var(--margin-medium);
-
-	padding: var(--margin-medium);
-	padding-top: var(--margin-small);
-	padding-bottom: var(--margin-small);
-
-	color: var(--color-dark);
-	font-family: var(--font-family-principal);
-	font-weight: normal;
-	font-style: normal;
-	font-size: 32px;
-	
-	border: 1.5px solid var(--color-medium-dark);
-	outline-color: var(--color-dark-soft);
-	border-radius: var(--border-radius-medium);
-
-	transition: border-color 0.3s ease, outline 0.3s ease;
-}
-
-.search:focus {
-	border: 1.5px solid var(--color-dark-soft);
-	outline: 3px solid var(--color-medium);
-}
-
-.search::placeholder {
-	color: var(--color-medium-dark);
-	font-family: var(--font-family-principal);
-	font-weight: normal;
-	font-style: normal;
-	font-size: 32px;
-} */
-
 .search {
 	width: 100%;
 	max-width: 384px;
@@ -39,29 +5,29 @@
 }
 
 .search .ant-select-selector .ant-select-selection-placeholder {
-	color: var(--color-dark-soft);
+	color: var(--color-dark-medium);
 }
 
 .search .ant-select-selector .ant-select-selection-search-input {
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 }
 
 .search .ant-select-selector {
-	padding-left: 14px !important;
-	padding-right: 14px !important;
-	border-radius: var(--border-radius-medium);
-	border: 1.5px solid var(--color-medium-dark) !important;
-	outline: 0px solid var(--color-medium-dark) !important;
+	padding-left: var(--spacing-small-medium) !important;
+	padding-right: var(--spacing-small-medium) !important;
+	border-radius: var(--border-radius-small);
+	border: 1.5px solid var(--color-medium) !important;
+	outline: 0px solid var(--color-medium) !important;
 }
 
 .ant-select-focused .ant-select-selector {
-	border: 1.5px solid var(--color-dark-soft) !important;
-	outline: 3px solid var(--color-medium-dark) !important;
+	border: 1.5px solid var(--color-dark-medium) !important;
+	outline: 3px solid var(--color-medium) !important;
 }
 
 .search .ant-select-selection-search {
-	padding-left: 3px !important;
-	padding-right: 3px !important;
+	padding-left: 1px !important;
+	padding-right: 1px !important;
 }
 
 .search .ant-select-selector {

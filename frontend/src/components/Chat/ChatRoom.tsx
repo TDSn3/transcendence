@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { Messages } from "./Messages.tsx";
 import "./chat.css";
