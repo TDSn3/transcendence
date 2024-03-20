@@ -159,6 +159,7 @@ const Lobby = (props: any) => {
 		gameMode: gameMode,
 		avatar: user.avatar,
 		playerName: user.login,
+		userId :user.id,
 		isHost: props.isHost,
 		key: props?.privateKey,
 	}

@@ -48,10 +48,10 @@ export class Lobby {
 	}
 	
 
-	public startGamePVP(lobbyID:string): void {
+
+	public startGamePVP(lobbyID: string, callback: () => void): void {
 		this.pongGame.gameMode = 'vsPlayer';
 	
-		// this.sendGameInfo(client, gameMode);
 		const countdownInterval = setInterval(() => {
 			if (this.pongGame.countdown > 0) {
 				this.sendGameInfoRoom(lobbyID);
@@ -62,10 +62,34 @@ export class Lobby {
 				this.updateInterval = setInterval(() => {
 					this.pongGame.nextFrame();
 					this.sendGameInfoRoom(lobbyID);
-				}, 1000 / 60); 
+					// console.log('TEST', this.pongGame.isFinished);
+					if (this.pongGame.isFinished) {
+						clearInterval(this.updateInterval);
+						callback();
+					}
+				}, 1000 / 60);
 			}
 		}, 1000);
 	}
+
+	// public startGamePVP(lobbyID:string): void {
+	// 	this.pongGame.gameMode = 'vsPlayer';
+	
+	// 	// this.sendGameInfo(client, gameMode);
+	// 	const countdownInterval = setInterval(() => {
+	// 		if (this.pongGame.countdown > 0) {
+	// 			this.sendGameInfoRoom(lobbyID);
+	// 			this.pongGame.countdown--;
+	// 		} else {
+	// 			clearInterval(countdownInterval);
+	// 			this.pongGame.timerStart = Date.now();
+	// 			this.updateInterval = setInterval(() => {
+	// 				this.pongGame.nextFrame();
+	// 				this.sendGameInfoRoom(lobbyID);
+	// 			}, 1000 / 60); 
+	// 		}
+	// 	}, 1000);
+	// }
 
 	// public startGamePVP(lobbyID:string): void {
 

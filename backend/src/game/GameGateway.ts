@@ -2,6 +2,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketSe
 import { Server, Socket } from 'socket.io';
 import { Lobby } from './Pong/Lobby';
 import { GamesService } from './Pong/Game.service';
+import { GameHistoryService } from 'src/game-history/game-history.service';
 
 @WebSocketGateway({
 	namespace: "/game"
@@ -9,14 +10,13 @@ import { GamesService } from './Pong/Game.service';
 
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-	constructor(private gamesService: GamesService) {};
+	constructor(private gamesService: GamesService, private gameHistoryService: GameHistoryService) {};
 	@WebSocketServer()
 	server: Server;
 	private lobbies: Record<string, Lobby> = {};
 	// private lobbies: Map<string, Lobby> = new Map<string, Lobby>;
 	handleConnection(client: Socket, ...args: any[]) {
 		console.log("Nouvelle connexion établie! client ID:", client.id);
-
 		client.on('joinGame', async (PaddleInfo:any) => {
 			if (!await this.gamesService.isInGame(PaddleInfo.playerName)) {
 				if (PaddleInfo.gameMode === 'vsBot') {
@@ -39,10 +39,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						lobby.clients[1] = client.id;
 						const lobbyID:string = this.findKey(lobby);
 						client.join(lobbyID);
-						lobby.startGamePVP(lobbyID);
 						lobby.pongGame.rightPaddle.websocket = client.id;
 						lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
 						lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
+						lobby.pongGame.rightPaddle.userId = PaddleInfo.userId;
+						lobby.startGamePVP(lobbyID, () => {
+							this.gameHistoryService.addGameHistory(lobby.pongGame.winnerUserId, lobby.pongGame.winnerScore, lobby.pongGame.loserUserId, lobby.pongGame.loserScore);
+							// console.log('winner', lobby.pongGame.winnerScore);
+							// console.log('winnerid', lobby.pongGame.winnerUserId);
+							// console.log('loser', lobby.pongGame.loserScore);
+							// console.log('loserid', lobby.pongGame.loserUserId);
+
+						});
 						// lobby.startGame(lobby.clients[0], gameMode);
 						// console.log(lobby.clients);
 					}
@@ -54,6 +62,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 						this.lobbies[lobbyID].pongGame.leftPaddle.websocket = client.id;
 						this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
 						this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
+						this.lobbies[lobbyID].pongGame.leftPaddle.userId = PaddleInfo.userId;
 
 					}			
 				}
@@ -77,7 +86,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 							lobby.clients[1] = client.id;
 							const lobbyID:string = this.findKey(lobby);
 							client.join(lobbyID);
-							lobby.startGamePVP(lobbyID);
+							lobby.startGamePVP(lobbyID, () => {});
 							lobby.pongGame.rightPaddle.websocket = client.id;
 							lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
 							lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
@@ -107,6 +116,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		for (const lobbyID in this.lobbies) {
 			for (let i = 0; i < this.lobbies[lobbyID].clients.length; i++) {
 				if (client.id === this.lobbies[lobbyID].clients[i]) {
+					console.log('clients', this.lobbies[lobbyID].clients);
+					console.log('paddleInfo', this.lobbies[lobbyID].pongGame.rightPaddle.websocket);
+					if (this.lobbies[lobbyID].clients.length === 2) {
+						let loserId:string;
+						let winnerid:string;
+						if (this.lobbies[lobbyID].clients[i] === this.lobbies[lobbyID].pongGame.leftPaddle.websocket) {
+							loserId = this.lobbies[lobbyID].pongGame.leftPaddle.userId;
+							winnerid = this.lobbies[lobbyID].pongGame.rightPaddle.userId;
+						}
+						else {
+							loserId = this.lobbies[lobbyID].pongGame.rightPaddle.userId;
+							winnerid = this.lobbies[lobbyID].pongGame.leftPaddle.userId;
+						}
+						this.gameHistoryService.addGameHistory(winnerid, 10, loserId, 0);
+					}
 					this.lobbies[lobbyID].clients.splice(i, 1);
 					clearInterval(this.lobbies[lobbyID].updateInterval);
 
@@ -114,7 +138,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					// console.log('taille du lobby' ,this.lobbies[lobbyID].clients.length)
 					// console.log(this.lobbies[lobbyID].clients);
 				
-					if (this.lobbies[lobbyID].clients.length === 0) {
+					if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
 						clearInterval(this.lobbies[lobbyID].updateInterval);
 						delete this.lobbies[lobbyID];
 						console.log(`Lobby ${lobbyID} a ete supprime`);
