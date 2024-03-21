@@ -65,6 +65,7 @@ export class Lobby {
 					// console.log('TEST', this.pongGame.isFinished);
 					if (this.pongGame.isFinished) {
 						clearInterval(this.updateInterval);
+						console.log('coucou');
 						callback();
 					}
 				}, 1000 / 60);
