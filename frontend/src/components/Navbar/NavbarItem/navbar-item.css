@@ -2,50 +2,48 @@
 	width: 100%;
 	border: none;
 	background-color: var(--color-light);
-  
+
+	cursor: pointer;
+
 	color: var(--color-dark);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 	text-align: left;
-    
-	padding-top: 6px;
-	padding-right: 14px;
-	padding-bottom: 6px;
-	padding-left: 14px;
-  
+
+	padding: var(--spacing-small);
+	padding-right: var(--spacing-small-medium);
+	padding-left: var(--spacing-small-medium);
+
 	border-radius: var(--border-radius-extra-small);
 
-	cursor: pointer;
+	transition:
+		background-color 0.1s ease-in-out,
+		color 0.1s ease-in-out;
 }
 
 .clicked-item-style {
 	width: 100%;
 	border: none;
 	background-color: var(--color-dark);
-  
+
+	cursor: pointer;
+
 	color: var(--color-light);
 	font-family: var(--font-family-principal);
 	font-weight: normal;
 	font-style: normal;
-	font-size: 16px;
+	font-size: var(--font-size-medium);
 	text-align: left;
-    
-	padding-top: 6px;
-	padding-right: 14px;
-	padding-bottom: 6px;
-	padding-left: 14px;
-  
+
+	padding: var(--spacing-small);
+	padding-right: var(--spacing-small-medium);
+	padding-left: var(--spacing-small-medium);
+
 	border-radius: var(--border-radius-extra-small);
-
-	transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-
-	cursor: pointer;
 }
 
 .item-style:hover {
-	width: 100%;
 	background-color: var(--color-light-medium);
-	transition: background-color 0.2s ease-in-out;
 }
