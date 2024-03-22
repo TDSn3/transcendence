@@ -3,22 +3,23 @@ import {
   useState,
   useEffect,
   useMemo,
+  useCallback,
 } from 'react';
 
 import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 
 interface AuthContextType {
-  isLoggedIn: boolean,
-  user: User,
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
-  setUser: React.Dispatch<React.SetStateAction<User>>,
+  isLoggedIn: boolean;
+  user: User;
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-  children: React.ReactNode,
+  children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -50,16 +51,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  useEffect(hookIsLogged, []);
+  // Utilisez useCallback pour mémoriser updateAuthStatus
+  const updateAuthStatus = useCallback(() => {
+    hookIsLogged();
+  }, []); // Ajoutez toutes les dépendances nécessaires dans ce tableau
 
+  // Appellez hookIsLogged au montage du composant
+  useEffect(() => {
+    hookIsLogged();
+  }, [updateAuthStatus]); // Ici updateAuthStatus est stable et ne changera pas à chaque rendu
+
+  // Maintenant, updateAuthStatus peut être incluse sans provoquer d'avertissement
   const value = useMemo(
     () => ({
       user,
       setUser,
       isLoggedIn,
       setLoggedIn,
+      updateAuthStatus, // updateAuthStatus est maintenant stable entre les rendus
     }),
-    [user, isLoggedIn],
+    [user, isLoggedIn, updateAuthStatus], // Ajoutez updateAuthStatus ici pour refléter sa stabilité
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

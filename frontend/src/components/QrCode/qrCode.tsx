@@ -14,10 +14,8 @@ const Container = styled.div`
   align-items: center;
   z-index: 100;
 `;
-function QrCode({ qrCode, onClose }: { qrCode: string, onClose: () => void }) {
+function QrCode({ qrCode, onClose }: { qrCode: string; onClose: () => void }) {
   console.log('qrCode', qrCode);
-  console.log('typeof qrCode', typeof qrCode);
-  console.log(`data:image/png;base64,${qrCode}`);
   return (
     <Container>
       <img src={qrCode} alt="qrCode" />

@@ -13,7 +13,7 @@ import './profile.css';
 
 function Profile() {
   const { login } = useParams();
-  const { user: userData } = useAuth();
+  const { user: userData, updateAuthStatus } = useAuth();
   const [popup, setPopup] = useState(false);
   const [isToggled, setIsToggled] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
@@ -30,14 +30,11 @@ function Profile() {
   useEffect(hookUserList, [login]);
 
   const handleQrCode = async (): Promise<void> => {
-    console.log('userData ', userData);
-    console.log('isToggled', isToggled);
     try {
-      console.log('userData 34s', userData);
       const resp = await axios.post('http://localhost:5001/api/auth/2fa', {
         userData,
       });
-      console.log('isToggledww', isToggled);
+      updateAuthStatus();
       toast.success(
         <b>
           2fa
@@ -47,21 +44,17 @@ function Profile() {
       console.log('resp ', resp);
       if (resp.status === 200) {
         const { data } = resp;
-        console.log('data resp', resp);
         setImg(data);
-        console.log('typo ', typeof data);
         setPopup(true);
       }
-      console.log('isToggled33', isToggled);
     } catch (error) {
       console.log('error ', error);
     }
   };
 
   useEffect(() => {
-    console.log('img', img);
     if (userData) setIsToggled(userData.isTwoFactorAuthEnabled);
-  }, [img, userData]);
+  }, [userData]);
 
   if (userProfile) {
     return (
