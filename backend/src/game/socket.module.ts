@@ -12,4 +12,4 @@ import { GameHistoryService } from "src/game-history/game-history.service";
 	imports: [PrismaModule, UsersModule, GameHistoryModule],
 	providers: [/*SocketEvents*/ GamesService, GameGateway, GameHistoryService]
 })
-export class SocketModule{}
+export class GameSocketModule{}
