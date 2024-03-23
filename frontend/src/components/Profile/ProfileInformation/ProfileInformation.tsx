@@ -120,7 +120,6 @@ function ProfileInformation({
   const handleOnSubmitLoginForm = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    console.log(`Login: ${user.login}.`);
     userServices
       .updateLogin(user.id, modalInputValue)
       .then((updatedUser) => {

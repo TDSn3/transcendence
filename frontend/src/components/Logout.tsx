@@ -11,7 +11,7 @@ interface LogoutProps {
 
 function Logout({ socket }: LogoutProps) {
   const navigate = useNavigate();
-  const { setLoggedIn, user } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
@@ -37,7 +37,7 @@ function Logout({ socket }: LogoutProps) {
     };
 
     performLogout();
-  }, [navigate, setLoggedIn, socket, user]);
+  }, [navigate, socket, user]);
 
   return <> </>;
 }
