@@ -14,6 +14,7 @@ const Container = styled.div`
   align-items: center;
   z-index: 100;
 `;
+
 function QrCode({ qrCode, onClose }: { qrCode: string; onClose: () => void }) {
   console.log('qrCode', qrCode);
   return (
