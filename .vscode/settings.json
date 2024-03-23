@@ -3,6 +3,7 @@
 		"antd",
 		"Iconoir",
 		"uuidv",
+		"websockets",
 		"Xmark"
 	]
 }
