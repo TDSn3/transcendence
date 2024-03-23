@@ -7,6 +7,8 @@ import { UsersService } from 'src/users/users.service';
 import { AuthTwoFAService } from './2fa/2faService';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Verify2FABody } from './interface/qrCode';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuardToken } from 'src/auth/guard/jwt.guard';
 
 @Controller('api/auth')
 @ApiTags('auth')
@@ -21,7 +23,6 @@ export class AuthController {
   async signin42(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
     try {
       const user = await this.authService.signin42(signIn42Dto, res);
-      console.log('user signin42', user);
       res.status(200).json({
         message: 'User successfully signed in',
         user,
@@ -33,9 +34,9 @@ export class AuthController {
 
   @ApiBody({ type: SignIn42Dto })
   @Post('FakeUsers')
-  async FakeUsers(@Body() signIn42Dto: SignIn42Dto, @Res() res: Response) {
+  async FakeUsers(@Res() res: Response) {
     try {
-      const user = await this.authService.fakeUsers(signIn42Dto, res);
+      const user = await this.authService.fakeUsers(res);
       res.status(200).json({
         message: 'User successfully signed in',
         user,
@@ -58,7 +59,7 @@ export class AuthController {
       res.status(501).send({ message: 'Logout error' });
     }
   }
-
+  // @UseGuards(AuthGuardToken)
   @Get('me')
   async checksession(@Req() req: Request, @Res() res: Response) {
     try {
@@ -69,6 +70,19 @@ export class AuthController {
       });
     } catch (error) {
       res.status(501).json({ message: 'User is not logged in' });
+    }
+  }
+  // @UseGuards(AuthGuardToken)
+  @Get('UserByToken')
+  async getUserByToken(@Req() req: Request, @Res() res: Response) {
+    try {
+      const user = await this.authService.getUserFromToken(req);
+      res.status(200).json({
+        user,
+      });
+    } catch {
+      console.error('Error while getting user from token');
+      res.status(401).json({ message: 'User not found' });
     }
   }
 
@@ -82,8 +96,11 @@ export class AuthController {
       if (!user) throw new BadRequestException('User is required');
 
       const isSuccess =
-        await this.authService.verifyTwoFactorAuthenticationCode(user, code);
-
+        await this.authService.verifyTwoFactorAuthenticationCode(
+          user,
+          code,
+          res,
+        );
       if (isSuccess) return res.status(HttpStatus.OK).send('Code verified');
     } catch (error) {
       if (error.message === 'Invalid code') {
@@ -95,7 +112,7 @@ export class AuthController {
         .send('Error while verifying code');
     }
   }
-
+  @UseGuards(AuthGuardToken)
   @Post('2fa')
   async handleTwoFactorAuth(
     @Body() body,

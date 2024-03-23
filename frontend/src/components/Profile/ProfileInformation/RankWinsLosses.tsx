@@ -1,7 +1,7 @@
 import { User } from '../../../utils/types';
 
 interface RankWinsLossesProps {
-  userProfile: User,
+  userProfile: User;
 }
 
 function RankWinsLosses({ userProfile }: RankWinsLossesProps) {

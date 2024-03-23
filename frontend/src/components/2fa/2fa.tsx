@@ -102,7 +102,7 @@ export const InputGroup = styled.div`
 // Votre composant de formulaire React
 function TwoFaAuth() {
   const [OTP, setOTP] = useState<string | null>(null);
-  const { user, setLoggedIn } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   async function HandleSumit(
@@ -127,9 +127,7 @@ function TwoFaAuth() {
           'aria-live': 'polite',
         },
       });
-      setLoggedIn(true);
-      localStorage.setItem('userLogin', user.login);
-      navigate(`/profile/${user.login}`);
+      navigate('/profile');
     } catch (err) {
       toast.error(<b>OTP invalid</b>);
       console.log(err);

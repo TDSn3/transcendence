@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserStatus } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
@@ -8,6 +12,7 @@ import { SignInResponse42Dto } from './dto/sign-in-response-42.dto.ts';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
 import { Response } from 'express';
 import { Request } from 'express';
+import * as cookie from 'cookie';
 import { NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { AuthTwoFAService } from './2fa/2faService';
@@ -25,64 +30,56 @@ export class AuthService {
   async signin42(signIn42Dto: SignIn42Dto, res: Response) {
     const ft_token = await this.exchangeCodeForFtToken(signIn42Dto.code);
     const userData = await this.fetchDataWithFtToken(ft_token);
-
-    const user = await this.saveUserData(userData);
-
-    // if (user.isTwoFactorEnabled) {}
-    const signInResponse: SignInResponse42Dto = await this.generateToken(
-      user.intraId,
-      user.email42,
-      user.login,
-      user.firstName,
-      user.lastName,
-      user.avatar,
-      res,
-    );
-
+    const userFormated = {
+      intraId: userData.id,
+      email42: userData.email,
+      login: userData.login,
+      firstName: userData.first_name,
+      lastName: userData.last_name,
+      avatar: userData.image.versions.medium,
+    };
+    const user = await this.saveUserData(userFormated);
+    console.log('user 222:', user);
+    const tokens = await this.generateToken(user);
+    if (!user.isTwoFactorAuthEnabled)
+      this.setCookies(res, tokens.token, tokens.refreshToken);
+    console.log('signInResponse:', tokens);
     const userGoodData = {
       ...user,
-      accessToken: signInResponse.accessToken,
+      accessToken: tokens.token,
     };
 
     return userGoodData;
   }
 
   // NOTE: typer la réponse
-  async fakeUsers(signIn42Dto: SignIn42Dto, res: Response) {
+  async fakeUsers(res: Response) {
     const fake = {
-      id: 1,
-      email: 'dummy@mail.com',
+      id: 'FakeUser',
+      intraId: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      email42: 'dummy@mail.com',
       login: 'dummy',
-      first_name: 'John',
-      last_name: 'Doe',
-      image: {
-        link: '',
-        versions: {
-          large: '',
-          medium: '',
-          small: '',
-          micro: '',
-        },
-      },
+      firstName: 'John',
+      lastName: 'Doe',
+      avatar: 'https://cdn.intra.42.fr/users/small_dummy.jpg',
+      isTwoFactorAuthEnabled: false,
+      twoFactorAuthSecret: null,
+      wins: 0,
+      status: UserStatus.ONLINE,
+      losses: 0,
     };
 
     const user = await this.saveUserData(fake);
 
-    const signInResponse: SignInResponse42Dto = await this.generateToken(
-      user.intraId,
-      user.email42,
-      user.login,
-      user.firstName,
-      user.lastName,
-      user.avatar,
-      res,
-    );
-
+    const tokens = await this.generateToken(user);
+    this.setCookies(res, tokens.token, tokens.refreshToken);
     const userGoodData = {
       ...user,
       twoFactorAuthSecret: '',
       isTwoFactorAuthEnabled: false,
-      accessToken: signInResponse.accessToken,
+      accessToken: tokens.token,
     };
 
     return userGoodData;
@@ -132,14 +129,23 @@ export class AuthService {
     try {
       const userAlreadyExist = await this.prisma.user.findUnique({
         where: {
-          email42: userData.email,
+          email42: userData.email42,
         },
       });
-
       if (userAlreadyExist) {
         const updateUser = await this.prisma.user.update({
           where: {
             id: userAlreadyExist.id,
+          },
+          include: {
+            friends: true,
+            friendOf: true,
+            historyGamesWon: {
+              include: { WinningUser: true, LosingUser: true },
+            },
+            historyGamesLost: {
+              include: { WinningUser: true, LosingUser: true },
+            },
           },
           data: {
             status: UserStatus.ONLINE,
@@ -148,14 +154,25 @@ export class AuthService {
 
         return updateUser;
       } else {
+        // console.log('userData:', userData);
         const newUser = await this.prisma.user.create({
           data: {
-            intraId: userData.id,
-            email42: userData.email,
+            intraId: userData.intraId,
+            email42: userData.email42,
             login: userData.login,
-            firstName: userData.first_name,
-            lastName: userData.last_name,
-            avatar: userData.image.versions.medium,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            avatar: userData.avatar,
+          },
+          include: {
+            friends: true,
+            friendOf: true,
+            historyGamesWon: {
+              include: { WinningUser: true, LosingUser: true },
+            },
+            historyGamesLost: {
+              include: { WinningUser: true, LosingUser: true },
+            },
           },
         });
 
@@ -167,85 +184,73 @@ export class AuthService {
     }
   }
 
+  setCookies(res: Response, token: string, refreshToken: string) {
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+    });
+  }
+
   async generateToken(
-    intraId: number,
-    email: string,
-    login: string,
-    firstName: string,
-    lastName: string,
-    avatar: string,
-    res: Response,
-  ): Promise<SignInResponse42Dto> {
+    user: User,
+  ): Promise<{ token: string; refreshToken: string }> {
     try {
-      const jwtToken = await this.signToken(intraId, email, login, true);
-
-      res.cookie('isLogin', jwtToken.JWTtoken, {
-        httpOnly: false,
-        secure: false,
-        sameSite: 'strict',
-      });
-
-      const signInResponse: SignInResponse42Dto = {
-        created: Date.now(),
-        accessToken: jwtToken.JWTtoken,
-        userData: {
-          TwoFactorAuthSecret: '',
-          isTwoFactorEnabled: false,
-          intraId: intraId,
-          email42: email,
-          login: login,
-          firstName: firstName,
-          lastName: lastName,
-          avatar: avatar,
+      const token = await this.jwtService.signAsync(
+        {
+          intraId: user.intraId,
+          email42: user.email42,
+          login: user.login,
+          id: user.id,
         },
-      };
+        {
+          expiresIn: '1d',
+          secret: this.configService.get('JWT_SECRET'),
+        },
+      );
+      const refreshToken = await this.jwtService.signAsync(
+        {
+          intraId: user.intraId,
+          email42: user.email42,
+          login: user.login,
+          id: user.id,
+        },
+        {
+          expiresIn: '7d',
+          secret: this.configService.get('JWT_REFRESH_SECRET'),
+        },
+      );
 
-      return signInResponse;
+      return {
+        refreshToken,
+        token,
+      };
     } catch (error) {
       console.error('Error generating token:', error);
       throw error;
     }
   }
 
-  async signToken(
-    intraId: number,
-    email42: string,
-    login: string,
-    jwtToken: boolean,
-  ): Promise<{ JWTtoken: string }> {
-    const payload = {
-      sub: intraId,
-      email42,
-      login,
-    };
-
-    const secret = this.configService.get('JWT_SECRET');
-
-    if (jwtToken) {
-      const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '1d',
-        secret: secret,
-      });
-      return { JWTtoken: token };
-    } else {
-      const token = await this.jwtService.signAsync(payload, {
-        expiresIn: '1d',
-        secret: secret,
-      });
-      return { JWTtoken: token };
-    }
-  }
-
   // TODO: type userObject
   async logout(res: Response, userObject: any) {
     try {
-      res.clearCookie('isLogin', {
-        httpOnly: false,
+      res.clearCookie('token', {
+        httpOnly: true,
         secure: false,
         sameSite: 'strict',
       });
-
-      if (userObject && userObject.user) {
+      res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+      });
+      console.log('userObject:', userObject);
+      if (userObject && userObject.user.id) {
         await this.prisma.user.update({
           where: {
             id: userObject.user.id,
@@ -298,9 +303,30 @@ export class AuthService {
     return userData;
   }
 
+  async getUserFromToken(req): Promise<User> {
+    const cookies = cookie.parse(req.headers.cookie || '');
+    const token = cookies?.token;
+    const refreshToken = cookies?.refreshToken;
+    if (!token) throw new ForbiddenException('No token found');
+
+    const decoded = this.jwtService.verify(refreshToken, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // Utilisez le secret depuis les variables d'environnement
+    });
+    console.log('decoded:', decoded);
+
+    const user = await this.userService.findById(decoded.id);
+    console.log(' getUserFromToken user:', user);
+    if (!user) {
+      throw new UnauthorizedException('User not found !!');
+    }
+
+    return user;
+  }
+
   async verifyTwoFactorAuthenticationCode(
     user: User,
     code: string,
+    res: Response,
   ): Promise<boolean> {
     try {
       const isCodeValid =
@@ -309,7 +335,8 @@ export class AuthService {
           user,
         );
       if (!isCodeValid) throw new Error('Invalid code');
-      // ajouter token JWT
+      const tokens = await this.generateToken(user);
+      this.setCookies(res, tokens.token, tokens.refreshToken);
       return true;
     } catch (error) {
       console.error(error);

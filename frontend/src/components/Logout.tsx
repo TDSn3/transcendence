@@ -6,7 +6,7 @@ import useAuth from '../contexts/Auth/useAuth';
 import authServices from '../services/auth';
 
 interface LogoutProps {
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined,
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined;
 }
 
 function Logout({ socket }: LogoutProps) {
@@ -17,8 +17,6 @@ function Logout({ socket }: LogoutProps) {
     const performLogout = async () => {
       try {
         await authServices.logoutUser(user);
-
-        setLoggedIn(false);
         if (socket !== undefined) {
           socket.disconnect();
         }
@@ -26,7 +24,7 @@ function Logout({ socket }: LogoutProps) {
         localStorage.removeItem('userLogin');
         localStorage.removeItem('token');
 
-        navigate('/');
+        navigate('/login');
       } catch (error: unknown) {
         if (error instanceof Error) {
           console.error(error.message);

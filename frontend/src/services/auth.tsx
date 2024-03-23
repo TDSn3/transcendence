@@ -5,11 +5,15 @@ import errorMessage from '../utils/errorMessage';
 
 const logoutUser = async (user: User) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/logout`, { user }, { withCredentials: true });
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/logout`,
+      { user },
+      { withCredentials: true },
+    );
 
     if (response.status === 200) {
       console.log(user.login, 'logout.');
-      return (null);
+      return null;
     }
     console.error('Error during disconnection:', response.data);
     throw new Error('Failed to logout');
@@ -25,12 +29,16 @@ const addFakeUser = async () => {
   };
 
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/FakeUsers`, fakeUser, { withCredentials: true });
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/FakeUsers`,
+      fakeUser,
+      { withCredentials: true },
+    );
 
     if (response.status === 200) {
       console.log('User data:', response.data.user);
 
-      return (response.data.user);
+      return response.data.user;
     }
     console.error('Failed to create user:', response.data);
     throw new Error('Failed to create user');
@@ -47,9 +55,9 @@ const authentication42 = async (code: string) => {
     });
 
     if (response.status === 200) {
-      console.log('User data:', response.data.user);
+      console.log(' authentication42 User data:', response.data.user);
 
-      return (response.data.user);
+      return response.data.user;
     }
     console.error('User not found:', response.data);
     throw new Error('User not found');

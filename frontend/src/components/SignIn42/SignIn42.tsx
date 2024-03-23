@@ -22,13 +22,11 @@ function SignIn42(): React.ReactElement {
     const fetchData = async () => {
       try {
         const user = await authServices.authentication42(code);
-
         setUser(user);
         if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
         else {
-          setLoggedIn(true);
-          localStorage.setItem('userLogin', user.login);
-          navigate(`/profile/${user.login}`);
+          console.log('User data:', user);
+          navigate('/profile');
         }
       } catch (error: unknown) {
         setLoggedIn(false);

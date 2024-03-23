@@ -9,7 +9,7 @@ const getAll = async () => {
   try {
     const { data } = await axios.get<User[]>(`${url}`);
 
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET all User.'));
   }
@@ -19,43 +19,49 @@ const getUserById = async (id: string): Promise<User> => {
   try {
     const { data } = await axios.get<User>(`${url}/id/${id}`);
 
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET User by ID.'));
   }
 };
 
-const getUserByLogin = async (login: string): Promise<User> => {
+const getUserByLogin = async (): Promise<User> => {
   try {
-    const { data } = await axios.get<User>(`${url}/login/${login}`);
-
-    return (data);
+    // const { data } = await axios.get<User>(`${url}/login/bgervais`);
+    const { data } = await axios.get<User>(`${API_BASE_URL}/auth/UserByToken`);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET User by LOGIN.'));
   }
 };
 
-const addFriend = async (userId: string, userIdToAdd: string): Promise<User> => {
+const addFriend = async (
+  userId: string,
+  userIdToAdd: string,
+): Promise<User> => {
   try {
     const { data } = await axios.post<User>(`${url}/id/ad-friend/${userId}`, {
       idUserToAddAsFriend: userIdToAdd,
     });
 
     console.log('New friend added.');
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add friend.'));
   }
 };
 
-const deleteFriend = async (userId: string, userIdToDel: string): Promise<User> => {
+const deleteFriend = async (
+  userId: string,
+  userIdToDel: string,
+): Promise<User> => {
   try {
     const { data } = await axios.post<User>(`${url}/id/del-friend/${userId}`, {
       idUserToDelAsFriend: userIdToDel,
     });
 
     console.log('Friend deleted.');
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add friend.'));
   }
@@ -63,44 +69,52 @@ const deleteFriend = async (userId: string, userIdToDel: string): Promise<User> 
 
 const addBlock = async (userId: string, userIdToAdd: string): Promise<User> => {
   try {
-	const { data } = await axios.post<User>(`${url}/id/ad-block/${userId}`, {
-		idUserToAddBlock: userIdToAdd,
-	});
-	return (data);
+    const { data } = await axios.post<User>(`${url}/id/ad-block/${userId}`, {
+      idUserToAddBlock: userIdToAdd,
+    });
+    return data;
   } catch (error: unknown) {
-	throw new Error(errorMessage(error, 'Error POST add block.'))
+    throw new Error(errorMessage(error, 'Error POST add block.'));
   }
-}
+};
 
-const deleteBlock = async (userId: string, userIdToDel: string): Promise<User> => {
-	try {
-	  const { data } = await axios.post<User>(`${url}/id/del-block/${userId}`, {
-		idUserToDelBlock: userIdToDel,
-	  })
-	  return (data);
-	} catch (error: unknown) {
-	  throw new Error(errorMessage(error, 'Error POST del block.'))
-	}
-}
+const deleteBlock = async (
+  userId: string,
+  userIdToDel: string,
+): Promise<User> => {
+  try {
+    const { data } = await axios.post<User>(`${url}/id/del-block/${userId}`, {
+      idUserToDelBlock: userIdToDel,
+    });
+    return data;
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error POST del block.'));
+  }
+};
 
 const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
   try {
-    const { data } = await axios.get<{ status: UserStatus }>(`${url}/status/id/${userId}`);
+    const { data } = await axios.get<{ status: UserStatus }>(
+      `${url}/status/id/${userId}`,
+    );
 
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET get status.'));
   }
 };
 
-const updateAvatar = async (userId: string, avatarUrl: string): Promise<User> => {
+const updateAvatar = async (
+  userId: string,
+  avatarUrl: string,
+): Promise<User> => {
   try {
     const { data } = await axios.post<User>(`${url}/id/avatar/${userId}`, {
       url: avatarUrl,
     });
 
     console.log('Avatar updated.');
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST update avatar.'));
   }
@@ -113,7 +127,7 @@ const updateLogin = async (userId: string, newLogin: string): Promise<User> => {
     });
 
     console.log('Login updated.');
-    return (data);
+    return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST update login.'));
   }

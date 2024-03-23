@@ -1,33 +1,17 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import GameHistory from './GameHistory/GameHistory';
-import { User, emptyUser } from '../../utils/types';
-import userServices from '../../services/user';
-import typeGuard from '../../utils/typeGuard';
 import ProfileInformation from './ProfileInformation/ProfileInformation';
 import QrCode from '../QrCode/qrCode';
 import useAuth from '../../contexts/Auth/useAuth';
 import './profile.css';
 
 function Profile() {
-  const { login } = useParams();
   const { user: userData, updateAuthStatus } = useAuth();
   const [popup, setPopup] = useState(false);
   const [isToggled, setIsToggled] = useState<boolean>(false);
-  const [userProfile, setUserProfile] = useState<User | null>(emptyUser);
   const [img, setImg] = useState<string | null>(null);
-  const hookUserList = () => {
-    userServices
-      .getUserByLogin(typeGuard.parseString(login))
-      .then((user) => setUserProfile(user))
-      .catch((error) => {
-        console.error(error);
-        setUserProfile(null);
-      });
-  };
-  useEffect(hookUserList, [login]);
 
   const handleQrCode = async (): Promise<void> => {
     try {
@@ -56,12 +40,12 @@ function Profile() {
     if (userData) setIsToggled(userData.isTwoFactorAuthEnabled);
   }, [userData]);
 
-  if (userProfile) {
+  if (userData) {
     return (
       <>
         <ProfileInformation
-          userProfile={userProfile}
-          setUserProfile={setUserProfile}
+          userProfile={userData}
+          // setUserProfile={userData}
           isToggled={isToggled}
           setIsToggled={setIsToggled}
           handleQrCode={handleQrCode}
@@ -70,7 +54,7 @@ function Profile() {
         <div className="page">
           <h3 className="game-history-title-style">Game History</h3>
 
-          <GameHistory userProfile={userProfile} />
+          <GameHistory userProfile={userData} />
           {popup && img != null && (
             <QrCode onClose={() => setPopup(false)} qrCode={img} />
           )}

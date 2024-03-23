@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
@@ -13,16 +13,16 @@ import RankWinsLosses from './RankWinsLosses';
 import '../profile.css';
 
 interface ProfileInformationProps {
-  userProfile: User,
-  setUserProfile: React.Dispatch<React.SetStateAction<User | null>>,
-  isToggled: boolean,
-  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>,
-  handleQrCode: () => Promise<void>,
+  userProfile: User;
+  // setUserProfile: React.Dispatch<React.SetStateAction<User | null>>;
+  isToggled: boolean;
+  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  handleQrCode: () => Promise<void>;
 }
 
 function ProfileInformation({
   userProfile,
-  setUserProfile,
+  // setUserProfile,
   isToggled,
   setIsToggled,
   handleQrCode,
@@ -33,13 +33,14 @@ function ProfileInformation({
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
   const [isBlocked, setIsBlocked] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] =
+    useState<boolean>(false);
   const [modalInputValue, setModalInputValue] = useState<string>('');
 
-  const hook = () => {
-    if (isUserIsUserProfile) setUserProfile(user);
-  };
-  useEffect(hook, [isUserIsUserProfile, setUserProfile, user]);
+  // const hook = () => {
+  //   if (isUserIsUserProfile) setUserProfile(user);
+  // };
+  // useEffect(hook, [isUserIsUserProfile, setUserProfile, user]);
 
   const handleAddFriendClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -208,9 +209,7 @@ function ProfileInformation({
       </div>
 
       <p style={{ color: 'var(--color-dark-medium)' }}>
-        {userProfile.firstName}
-        {' '}
-        {userProfile.lastName}
+        {userProfile.firstName} {userProfile.lastName}
       </p>
 
       <RankWinsLosses userProfile={userProfile} />
