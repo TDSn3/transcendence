@@ -16,6 +16,7 @@ import * as cookie from 'cookie';
 import { NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { AuthTwoFAService } from './2fa/2faService';
+
 @Injectable()
 export class AuthService {
   constructor(
