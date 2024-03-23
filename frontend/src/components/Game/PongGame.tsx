@@ -1,19 +1,16 @@
-/* eslint-disable */
-
-import React, { useRef, useEffect } from "react";
+import  { useRef, useEffect } from "react";
 import GameHeader from "./GameHeader";
 import './PongGame.css';
 
 
 const PongGame = ({ gameInfo }: { gameInfo: any }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const drawGame = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       const context = canvas.getContext("2d");
       if (context) {
-        const drawPaddles = () => {
+        const drawPaddles = ():void => {
           context.fillStyle = 'black';
           context.fillRect(0, 0, 800, 500);
           context.fillStyle = 'red';
@@ -21,7 +18,7 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
           context.fillRect(gameInfo.rightPaddle.pos.x, gameInfo.rightPaddle.pos.y, gameInfo.rightPaddle.width, gameInfo.rightPaddle.height)
         };
 
-        const drawBall = () => {
+        const drawBall = ():void => {
           context.beginPath();
           context.arc(gameInfo.ball.pos.x, gameInfo.ball.pos.y, 6, 0, 2 * Math.PI);
           context.fillStyle = 'red';
@@ -29,21 +26,21 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
           context.closePath();
         };
 
-        const drawMiddleLine = () => {
+        const drawMiddleLine = ():void => {
           const midlleLinewidth = 1;
           const middleLineX = (gameInfo.width / 2) - (midlleLinewidth / 2);
           context.fillStyle = 'white';
           context.fillRect(middleLineX, 0, midlleLinewidth, gameInfo.height);
         };
 
-		const drawScore = () => {
+		const drawScore = ():void => {
 			context.fillStyle = 'white';
 			context.font = '20px Arial';
 			context.fillText(`${gameInfo.score[0]}`, gameInfo.width / 2 - 30, 30);
 			context.fillText(`${gameInfo.score[1]}`, gameInfo.width / 2 + 30, 30);
 		}
 
-		const drawCountdown = () => {
+		const drawCountdown = ():void => {
 			context.font = "50px Arial";
 			context.fillStyle = "white";
 			context.textAlign = "center";
@@ -56,19 +53,16 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
 		if (gameInfo.countdown > 0)
 			drawCountdown();
 		drawScore();
-		// console.log(gameInfo.leftPaddle.avatar);
       }
     }
   };
 
   useEffect(() => {
 	  if (gameInfo) {
-	 	// console.log('timer', gameInfo.timeLeft);
     	drawGame();
 	  }
   }, [gameInfo]);
 
-//   console.log();
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
 	{gameInfo && (

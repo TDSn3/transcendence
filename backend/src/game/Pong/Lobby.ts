@@ -20,15 +20,6 @@ export class Lobby {
 		this.isPrivate = false;
 	}
 
-	// public startGamePVE(client: Socket, gameMode:string): void {
-	// 	this.pongGame.gameMode =  gameMode;
-
-	// 	this.updateInterval = setInterval(() => {
-	// 		this.pongGame.nextFrame();
-	// 		this.sendGameInfo(client, gameMode);
-	// 	}, 1000/60);
-	// }
-
 	public startGamePVE(client: Socket, gameMode: string): void {
 		this.pongGame.gameMode =  gameMode;
 		const countdownInterval = setInterval(() => {
@@ -51,6 +42,7 @@ export class Lobby {
 
 	public startGamePVP(lobbyID: string, callback: () => void): void {
 		this.pongGame.gameMode = 'vsPlayer';
+		this.pongGame.isStarted = true;
 	
 		const countdownInterval = setInterval(() => {
 			if (this.pongGame.countdown > 0) {
@@ -62,47 +54,14 @@ export class Lobby {
 				this.updateInterval = setInterval(() => {
 					this.pongGame.nextFrame();
 					this.sendGameInfoRoom(lobbyID);
-					// console.log('TEST', this.pongGame.isFinished);
 					if (this.pongGame.isFinished) {
 						clearInterval(this.updateInterval);
-						console.log('coucou');
 						callback();
 					}
 				}, 1000 / 60);
 			}
 		}, 1000);
 	}
-
-	// public startGamePVP(lobbyID:string): void {
-	// 	this.pongGame.gameMode = 'vsPlayer';
-	
-	// 	// this.sendGameInfo(client, gameMode);
-	// 	const countdownInterval = setInterval(() => {
-	// 		if (this.pongGame.countdown > 0) {
-	// 			this.sendGameInfoRoom(lobbyID);
-	// 			this.pongGame.countdown--;
-	// 		} else {
-	// 			clearInterval(countdownInterval);
-	// 			this.pongGame.timerStart = Date.now();
-	// 			this.updateInterval = setInterval(() => {
-	// 				this.pongGame.nextFrame();
-	// 				this.sendGameInfoRoom(lobbyID);
-	// 			}, 1000 / 60); 
-	// 		}
-	// 	}, 1000);
-	// }
-
-	// public startGamePVP(lobbyID:string): void {
-
-	// 	this.pongGame.gameMode = 'vsPlayer';
-
-	// 	this.updateInterval = setInterval(() => {
-	// 		this.pongGame.nextFrame();
-	// 		this.sendGameInfoRoom(lobbyID);
-	// 	}, 1000/60);
-	// }
-
-	
 
 	private sendGameInfo(client: Socket, gameMode?: string) {
 		const gameInfo = {
