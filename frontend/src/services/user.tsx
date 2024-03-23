@@ -25,13 +25,19 @@ const getUserById = async (id: string): Promise<User> => {
   }
 };
 
-const getUserByLogin = async (): Promise<User> => {
+const getUserByToken = async (): Promise<User> => {
+  // const { data } = await axios.get<User>(`${url}/login/bgervais`);
+  const { data } = await axios.get<User>(`${API_BASE_URL}/auth/UserByToken`);
+  return data;
+};
+
+const getUserByLogin = async (login: string): Promise<User> => {
   try {
-    // const { data } = await axios.get<User>(`${url}/login/bgervais`);
-    const { data } = await axios.get<User>(`${API_BASE_URL}/auth/UserByToken`);
+    const { data } = await axios.get<User>(`${url}/login/${login}`);
+
     return data;
   } catch (error: unknown) {
-    throw new Error(errorMessage(error, 'Error GET User by LOGIN.'));
+    throw new Error(errorMessage(error, 'Error GET User by login.'));
   }
 };
 
@@ -77,7 +83,6 @@ const addBlock = async (userId: string, userIdToAdd: string): Promise<User> => {
     throw new Error(errorMessage(error, 'Error POST add block.'));
     throw new Error(errorMessage(error, 'Error POST add block.'));
   }
-};
 };
 
 const deleteBlock = async (
@@ -138,7 +143,7 @@ const updateLogin = async (userId: string, newLogin: string): Promise<User> => {
 export default {
   getAll,
   getUserById,
-  getUserByLogin,
+  getUserByToken,
   addFriend,
   deleteFriend,
   addBlock,
@@ -146,4 +151,5 @@ export default {
   getStatus,
   updateAvatar,
   updateLogin,
+  getUserByLogin,
 };

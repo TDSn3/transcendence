@@ -127,7 +127,7 @@ function TwoFaAuth() {
           'aria-live': 'polite',
         },
       });
-      navigate('/profile');
+      navigate(`/profile/${user.login}`);
     } catch (err) {
       toast.error(<b>OTP invalid</b>);
       console.log(err);

@@ -39,7 +39,8 @@ function App() {
         <Route path="/" element={<LayoutWithNavbar />}>
           <Route index element={<Navigate to="/home" replace />} />
           <Route path="home" element={<Home />} />
-          <Route path="profile" element={<Profile />} />
+          {/* <Route path="/profile" element={<Profile />} /> */}
+          <Route path="/profile/:login" element={<Profile />} />
           <Route path="friends" element={<Friends />} />
           <Route path="chat" element={<Channels />} />
           <Route path="chat/:channelName" element={<ChatRoom />} />

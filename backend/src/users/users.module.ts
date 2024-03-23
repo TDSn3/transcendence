@@ -18,6 +18,7 @@ import { AuthTwoFAService } from 'src/auth/2fa/2faService';
     UsersService,
     PrismaService,
     UsersStatusGateway,
+    UsersStatusGatewayService,
     AuthService,
     JwtService,
     AuthTwoFAService,

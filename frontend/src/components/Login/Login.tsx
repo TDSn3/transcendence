@@ -24,7 +24,7 @@ function Login() {
       const user = await authServices.addFakeUser();
 
       setUser(user);
-      navigate('/profile');
+      navigate(`/profile/${user.login}`);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);

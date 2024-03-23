@@ -26,7 +26,7 @@ function SignIn42(): React.ReactElement {
         if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
         else {
           console.log('User data:', user);
-          navigate('/profile');
+          navigate(`/profile/${user.login}`);
         }
       } catch (error: unknown) {
         if (error instanceof Error) {

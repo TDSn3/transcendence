@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const hookIsLogged = () => {
     userServices
-      .getUserByLogin()
+      .getUserByToken()
       .then(({ user }) => {
         console.log('userValue:', user);
         setUser(user);
@@ -84,7 +84,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (
       location.pathname !== '/login' &&
       location.pathname !== '/login/twofa' &&
-      location.pathname !== '/signIn42'
+      location.pathname !== '/signIn42' &&
+      location.pathname !== '/logout'
     ) {
       console.log('hookIsLogged', location.pathname);
       hookIsLogged();

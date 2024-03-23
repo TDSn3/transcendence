@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import NavbarItem from './NavbarItem/NavbarItem';
-
+import useAuth from '../../contexts/Auth/useAuth';
 import './navbar.css';
 
 function Navbar() {
   const [navbarItemSelected, setNavbarItemSelected] = useState<string>('');
-
+  const { user } = useAuth();
   return (
     <div className="navbar-style">
       <div className="first-container-navbar">
@@ -16,7 +16,7 @@ function Navbar() {
           setNavbarItemSelected={setNavbarItemSelected}
         />
         <NavbarItem
-          to="/profile"
+          to={`/profile/${user.login}`}
           text="Profile"
           navbarItemSelected={navbarItemSelected}
           setNavbarItemSelected={setNavbarItemSelected}
