@@ -16,6 +16,11 @@ export class MessagesService {
 							login: true,
 							avatar: true
 						}
+					},
+					channel: {
+						select: {
+							name: true
+						}
 					}
 				},
 				data: {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { Messages } from "./Messages.tsx";
+import Messages from "./Messages.tsx";
 import "./chat.css";
 import useAuth from '../../contexts/Auth/useAuth.tsx';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -56,6 +56,7 @@ const ChatRoom = () => {
 
 	const socketRef = useRef<any>(null);
 	const blockedUsersRef = useRef<any[]>([]);
+	const isOwnerRef = useRef<boolean>(false);
 	const [messages, setMessages] = useState<any[]>([]);
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [newChannelPassword, setNewChannelPassword] = useState<string>("");
@@ -65,28 +66,34 @@ const ChatRoom = () => {
 		const fetchData = async () => {
 			if (!(await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/check`)).data) {
 				navigate("/chat");
-				console.log();
 			}
 			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
+			isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
 			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 		};
 		fetchData();
 
 		socketRef.current = io("http://localhost:5001/chat");
 		socketRef.current.emit("chatJoin", {intraId: user.intraId, channelName: channelName});
-		socketRef.current.on("chatReceive", (payload: {newMessage: MessageInfo}) => {
+		socketRef.current.on("chatReceive", (payload: { newMessage: MessageInfo }) => {
 			setMessages(prevMessages => [...prevMessages, payload.newMessage]);
+		});
+		socketRef.current.on("chatKick", (payload: { intraIdBanned: number }) => {
+			if (payload.intraIdBanned === user.intraId) {
+				navigate("/chat");
+			}
 		});
 
 		return () => {
+			socketRef.current.off("chatJoin");
 			socketRef.current.disconnect();
 		}
 	}, []);
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
-		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { newPassword: newChannelPassword, newPrivate: newChannelPrivate });
-		setButtonPopup(falzse);
+		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { intra: user.intraId, newPassword: newChannelPassword, newPrivate: newChannelPrivate });
+		setButtonPopup(false);
 	}
 
 	return (
@@ -94,7 +101,9 @@ const ChatRoom = () => {
 			<div className="banner">
 				<input type="button" value="←" onClick={() => navigate("/chat")}/>
 				<h3>{channelName}</h3>
-				<input type="button" value="⚙️" onClick={() => setButtonPopup(!buttonPopup)}/>
+				{ !isOwnerRef.current ? "" :
+					<input type="button" value="⚙️" onClick={() => setButtonPopup(!buttonPopup)}/>
+				}
 			</div>
 			<Messages messages={messages} blockedUsers={blockedUsersRef.current}/>
 			<InputBar socketRef={socketRef} user={user} channelName={channelName !== undefined ? channelName : ""}/>

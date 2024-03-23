@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Channel, Message } from '@prisma/client';
+import { Channel, ChannelMember, Message } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
@@ -65,21 +65,34 @@ export class ChannelsService {
 					select: {
 						intraId: true,
 						login: true,
-						avatar: true,
+						avatar: true
+					}
+				},
+				channel: {
+					select: {
+						name: true
 					}
 				}
 			},
 			where: {
 				channelId: channelId
 			}
-		})
+		});
 		return (res);
 	}
 
-	async channelUpdate(channelName: string, newPassword: string, newPrivate: boolean): Promise<Channel> {
+	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId): Promise<Channel> {
+		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: intraId,
+					channelId: channelId
+				}
+			}
+		});
 		const res = await this.prisma.channel.update({
 			where: {
-				name: channelName
+				id: channelId
 			},
 			data: {
 				password: newPassword,

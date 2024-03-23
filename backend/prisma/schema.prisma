@@ -65,42 +65,45 @@ model GameHistory {
 }
 
 model Channel {
-  id        Int       @id @unique @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id					Int     			@id @unique @default(autoincrement())
+  createdAt				DateTime			@default(now())
+  updatedAt				DateTime			@updatedAt
 
-  name      String    @unique
-  password  String
-  private   Boolean   @default(false)
+  name					String				@unique
+  password				String
+  private				Boolean				@default(false)
 
-  members   ChannelMember[]
-  messages  Message[]
+  members				ChannelMember[]
+  messages				Message[]
 }
 
 model ChannelMember {
-  id        Int       @id @unique @default(autoincrement())
+  id					Int				@id @unique @default(autoincrement())
 
-  userId    Int
-  channelId Int
-  user      User      @relation(fields: [userId], references: [intraId])
-  channel   Channel   @relation(fields: [channelId], references: [id])
+  userId				Int
+  channelId				Int
+  user					User			@relation(fields: [userId], references: [intraId])
+  channel				Channel			@relation(fields: [channelId], references: [id])
 
-  muteEnd   DateTime?
-  isMute    Boolean		@default(false)
-  isAdmin   Boolean		@default(false)
-  isOwner   Boolean		@default(false)
+  muteEnd				DateTime?
+  isMute				Boolean			@default(false)
+  isBan					Boolean			@default(false)
+  isAdmin				Boolean			@default(false)
+  isOwner				Boolean			@default(false)
+
+  @@unique([userId, channelId])
 }
 
 model Message {
-  id        Int       @id @unique @default(autoincrement())
-  createdAt DateTime  @default(now())
+  id					Int				@id @unique @default(autoincrement())
+  createdAt				DateTime		@default(now())
 
-  userId    Int
-  channelId Int
-  member    User      @relation(fields: [userId], references: [intraId])
-  channel   Channel   @relation(fields: [channelId], references: [id])
+  userId				Int
+  channelId				Int
+  member				User			@relation(fields: [userId], references: [intraId])
+  channel				Channel			@relation(fields: [channelId], references: [id])
 
-  content   String
+  content				String
 }
 
 enum UserStatus {

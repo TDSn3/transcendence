@@ -57,6 +57,9 @@ const Channels = () => {
 				}
 			);
 		}
+		setChannelName("");
+		setChannelPassword("");
+		setChannelPrivate(false);
 	}
 
 	return (
