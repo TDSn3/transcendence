@@ -8,10 +8,7 @@ import { Channel } from "@prisma/client";
 @Controller("api/channels")
 @ApiTags("channels")
 export class ChannelsController {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly channelService: ChannelsService,
-  ) {}
+  constructor(private channelService: ChannelsService) {}
 
   @Post()
   async create(@Body() param: { intraId: number, name: string, password: string, private: boolean }, @Res() res: Response) {
@@ -46,7 +43,7 @@ export class ChannelsController {
   }
 
   @Patch(":channelName")
-  async channelUpdate(@Param("channelName") channelName: string, @Body() param: { newPassword: string, newPrivate: boolean }): Promise<Channel> {
-	return (this.channelService.channelUpdate(channelName, param.newPassword, param.newPrivate));
+  async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
+	return (this.channelService.channelUpdate(await this.getChannelId(channelName), param.newPassword, param.newPrivate, param.intraId));
   }
 }
