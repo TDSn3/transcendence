@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Injectable } from "@nestjs/common";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";

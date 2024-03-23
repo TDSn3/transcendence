@@ -6,13 +6,14 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { User, UserStatus } from '@prisma/client';
+import { /*User,*/ UserStatus } from '@prisma/client';
 import {
   UserForStatusWebSocket,
   ServerToClientEvents,
   ClientToServerEvents,
 } from './interface/usersStatus.interface';
 import { UsersService } from './users.service';
+import { UsersStatusGatewayService } from './users.gateway.service';
 import color from '../utils/color';
 
 @WebSocketGateway({
@@ -22,7 +23,10 @@ import color from '../utils/color';
   namespace: '/users/web-socket',
 })
 export class UsersStatusGateway {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private usersStatusGatewayService: UsersStatusGatewayService,
+  ) {}
 
   @WebSocketServer() server: Server = new Server<
     ServerToClientEvents,
@@ -54,44 +58,48 @@ export class UsersStatusGateway {
     @MessageBody() data: UserForStatusWebSocket,
     @ConnectedSocket() client: Socket,
   ): void {
-    this.usersService
-      .findById(data.id)
-      .then((user) => {
-        printReceivedMessage(user, data.status);
+    this.usersStatusGatewayService.message(this.server, data, client);
 
-        this.usersService
-          .addUserStatusWebSocketId(user.id, client.id)
-          .then(() => {
-            this.server.emit('message', data);
-          })
-          .catch((error) => {
-            console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
-          });
-      })
-      .catch((error) => {
-        console.log(`Error findById: {\n`, error, '\n}');
-      });
+    // this.usersService
+    //   .findById(data.id)
+    //   .then((user) => {
+    //     printReceivedMessage(user, data.status);
+
+    //     this.usersService
+    //       .addUserStatusWebSocketId(user.id, client.id)
+    //       .then(() => {
+    //         this.server.emit('message', data);
+    //       })
+    //       .catch((error) => {
+    //         console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(`Error findById: {\n`, error, '\n}');
+    //   });
   }
 
   @SubscribeMessage('updateStatus')
-  handleStartGame(@MessageBody() data: UserForStatusWebSocket): void {
-    this.usersService
-      .findById(data.id)
-      .then((user) => {
-        printReceivedMessage(user, data.status);
+  handleUpdateStatus(@MessageBody() data: UserForStatusWebSocket): void {
+    this.usersStatusGatewayService.updateStatus(this.server, data);
 
-        this.usersService
-          .changeStatus(user.id, data.status)
-          .then(() => {
-            this.server.emit('updateStatus', data);
-          })
-          .catch((error) => {
-            console.log(`Error changeStatus: {\n`, error, '\n}');
-          });
-      })
-      .catch((error) => {
-        console.log(`Error findById: {\n`, error, '\n}');
-      });
+    // this.usersService
+    //   .findById(data.id)
+    //   .then((user) => {
+    //     printReceivedMessage(user, data.status);
+
+    //     this.usersService
+    //       .changeStatus(user.id, data.status)
+    //       .then(() => {
+    //         this.server.emit('updateStatus', data);
+    //       })
+    //       .catch((error) => {
+    //         console.log(`Error changeStatus: {\n`, error, '\n}');
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(`Error findById: {\n`, error, '\n}');
+    //   });
   }
 }
 
@@ -117,16 +125,16 @@ const printClientDisconnected = (client: Socket) => {
   );
 };
 
-const printReceivedMessage = (user: User, content: string | UserStatus) => {
-  console.log(
-    color.BLUE,
-    'Received message:',
-    color.RESET,
-    color.BOLD,
-    content,
-    color.RESET,
-    color.DIM,
-    `from ${user.login}`,
-    color.RESET,
-  );
-};
+// const printReceivedMessage = (user: User, content: string | UserStatus) => {
+//   console.log(
+//     color.BLUE,
+//     'Received message:',
+//     color.RESET,
+//     color.BOLD,
+//     content,
+//     color.RESET,
+//     color.DIM,
+//     `from ${user.login}`,
+//     color.RESET,
+//   );
+// };

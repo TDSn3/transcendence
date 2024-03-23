@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { PrismaService } from '../prisma/prisma.service';
+import { UsersStatusGatewayService } from './users.gateway.service';
 import { UsersStatusGateway } from './users.gateway';
 import { PrismaModule } from 'nestjs-prisma';
 import { forwardRef } from '@nestjs/common';
@@ -21,5 +22,6 @@ import { AuthTwoFAService } from 'src/auth/2fa/2faService';
     JwtService,
     AuthTwoFAService,
   ],
+  exports: [UsersStatusGatewayService],
 })
 export class UsersModule {}

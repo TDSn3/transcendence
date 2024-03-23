@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io';
 import { ChannelsService } from "../channels/channels.service";

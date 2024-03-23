@@ -53,8 +53,21 @@ export class Pong {
 		const actualTime:number = Date.now();
 
 		this.timeLeft = this.maxTime -  (actualTime - this.timerStart) / 1000;
-		if (this.timeLeft <= 0)
-			this.isFinished = true; 
+		if (this.timeLeft <= 0) {
+			if (this.score[0] > this.score[1]) {
+				this.winnerScore = this.score[0];
+				this.loserScore = this.score[1];
+				this.winnerUserId = this.leftPaddle.userId;
+				this.loserUserId = this.rightPaddle.userId;
+			}
+			else {
+				this.winnerScore = this.score[1];
+				this.loserScore = this.score[0];
+				this.winnerUserId = this.rightPaddle.userId;
+				this.loserUserId = this.leftPaddle.userId;
+			}
+			this.isFinished = true;
+		} 
 	};
 
 	public updatePaddles() {
@@ -63,8 +76,8 @@ export class Pong {
 			const botSpeed = 6;
 			const targetY = this.ball.pos.y - this.rightPaddle.height / 2;
 
-			if (Math.abs(this.rightPaddle.pos.y - targetY) < botSpeed) {
-				this.rightPaddle.pos.y = targetY;
+			if (Math.abs(this.rightPaddle.pos.y - targetY -2) < botSpeed) {
+					this.rightPaddle.pos.y = targetY - 2;
 			}
 			else {
 				if (this.rightPaddle.pos.y < targetY) {
@@ -72,8 +85,7 @@ export class Pong {
 				} else if (this.rightPaddle.pos.y > targetY) {
 					this.rightPaddle.pos.y -= botSpeed;
 				}
-			}
-			
+			}			
 			if (this.hookTabInfo) {
 				let move = 0;
 				
@@ -99,20 +111,15 @@ export class Pong {
 					rightMove += 6;
 				this.leftPaddle.pos.y += leftMove;
 				this.rightPaddle.pos.y += rightMove;
-				// console.log(this.leftPaddle.websocket);
 			}
 		}
 	};
 
 	private updateBall() {
 		if (this.ball.pos.y + 5 > this.height)
-			// this.ball.speedY *= -1;
 			this.ball.speedY = -Math.abs(this.ball.speedY);
 		else if (this.ball.pos.y - 5 < 0)
 			this.ball.speedY = Math.abs(this.ball.speedY);
-
-		// this.ball.speedY *= -1;
-
 
 		if (this.ball.pos.x - 5 < this.leftPaddle.width && this.ball.pos.y  + 5 > this.leftPaddle.pos.y && this.ball.pos.y - 5 < this.leftPaddle.pos.y + this.leftPaddle.height) {
 			let relativePosition = (this.ball.pos.y - this.leftPaddle.pos.y) / this.leftPaddle.height;
@@ -123,7 +130,6 @@ export class Pong {
 				angle = 1.2;
 			else if (angle < -1.2)
 				angle = -1.2;
-			// console.log(angle);
 			let speed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
 			const directionX = Math.cos(angle);
 			const directionY = Math.sin(angle);
@@ -143,7 +149,6 @@ export class Pong {
 				angle = 1.2;
 			else if (angle < -1.2)
 				angle = -1.2;
-			// console.log(angle);
 			let speed = Math.sqrt(this.ball.speedX ** 2 + this.ball.speedY ** 2);
 			const directionX = -Math.cos(angle);
 			const directionY = Math.sin(angle);
@@ -188,7 +193,6 @@ export class Pong {
 				this.winnerUserId = this.rightPaddle.userId;
 				this.loserUserId = this.leftPaddle.userId;
 			}
-
 			this.isFinished = true;
 		}
 	}

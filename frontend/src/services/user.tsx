@@ -75,7 +75,9 @@ const addBlock = async (userId: string, userIdToAdd: string): Promise<User> => {
     return data;
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error POST add block.'));
+    throw new Error(errorMessage(error, 'Error POST add block.'));
   }
+};
 };
 
 const deleteBlock = async (

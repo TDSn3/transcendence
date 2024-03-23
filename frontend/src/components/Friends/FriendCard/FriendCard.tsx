@@ -6,6 +6,7 @@ import useAuth from '../../../contexts/Auth/useAuth';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import userServices from '../../../services/user';
 import XmarkIconoirButton from '../../Buttons/XmarkIconoirButton/XmarkIconoirButton';
+import Status from './Status';
 
 import './friend-card.css';
 
@@ -32,13 +33,7 @@ function FriendCard({
   const hook = () => {
     userServices
       .getStatus(userFriend.id)
-      .then((data) => {
-        if (data.status === UserStatus.ONLINE) {
-          setUserStatus(UserStatus.ONLINE);
-        } else {
-          setUserStatus(UserStatus.OFFLINE);
-        }
-      })
+      .then((data) => setUserStatus(data.status))
       .catch((error) => { console.error(error); });
   };
   useEffect(hook, [userFriend]);
@@ -53,8 +48,17 @@ function FriendCard({
       };
       socket.on('message', handleMessage);
 
+      const handleUpdateStatus = (data: UserForStatusWebSocket) => {
+        if (data.id === userFriend.id) {
+          console.log(`My friend ${userFriend.login} changed status to ${data.status}`);
+          setUserStatus(data.status);
+        }
+      };
+      socket.on('updateStatus', handleUpdateStatus);
+
       return (() => {
         socket.off('message', handleMessage);
+        socket.off('updateStatus', handleUpdateStatus);
       });
     }
 
@@ -106,9 +110,7 @@ function FriendCard({
           {userFriend.lastName}
         </div>
       </div>
-      <div className={userStatus === UserStatus.ONLINE ? 'online' : 'offline'}>
-        {userStatus === UserStatus.ONLINE ? 'ONLINE' : 'OFFLINE'}
-      </div>
+      <Status userStatus={userStatus} />
     </div>
   );
 }

@@ -50,10 +50,16 @@ export function SocketProvider({ children }: SocketProviderProps) {
       };
       socket.on('message', handleMessage);
 
+      const handleUpdateStatus = (data: UserForStatusWebSocket) => {
+        console.log('New status from web socket: ', data);
+      };
+      socket.on('updateStatus', handleUpdateStatus);
+
       return (() => {
         socket.off('connect', handleConnect);
         socket.off('disconnect', handleDisconnect);
         socket.off('message', handleMessage);
+        socket.off('updateStatus', handleUpdateStatus);
         socket.disconnect();
       });
     }
