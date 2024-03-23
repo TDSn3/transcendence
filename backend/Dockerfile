@@ -1,26 +1,10 @@
-FROM node:21 AS builder
+FROM 	node:21.6.0
 
-WORKDIR /app
+RUN		npm install -g @nestjs/cli
 
-COPY package*.json ./
-COPY prisma ./prisma/
-COPY tsconfig.json ./ 
+WORKDIR	/usr/src/app
+COPY	. /usr/src/app
 
-RUN npm install
-COPY . .
+RUN		npm install && npx prisma generate
 
-RUN npm run build
-
-RUN npx prisma generate
-
-FROM node:21
-
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/tsconfig.json ./
-COPY --from=builder /app/prisma ./prisma
-
-RUN apt-get update && apt-get install -y wait-for-it
-
-CMD [ "npm", "run", "start:migrate:dev" ]
+CMD 	[ "npm", "run", "start:migrate:dev" ]
