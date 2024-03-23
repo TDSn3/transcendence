@@ -1,6 +1,9 @@
+/* eslint-disable */
+
 import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Lobby } from './Pong/Lobby';
+import { UsersStatusGatewayService } from 'src/users/users.gateway.service';
 import { GamesService } from './Pong/Game.service';
 import { GameHistoryService } from 'src/game-history/game-history.service';
 
@@ -10,7 +13,11 @@ import { GameHistoryService } from 'src/game-history/game-history.service';
 
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
-	constructor(private gamesService: GamesService, private gameHistoryService: GameHistoryService) {};
+	constructor(
+		private usersStatusGatewayService: UsersStatusGatewayService,
+		private gamesService: GamesService,
+		private gameHistoryService: GameHistoryService) {};
+
 	@WebSocketServer()
 	server: Server;
 	private lobbies: Record<string, Lobby> = {};

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Module } from "@nestjs/common";
 import { ChatSocketGateway } from "./chatSocket.gateway";
 import { PrismaService } from "../../prisma/prisma.service";

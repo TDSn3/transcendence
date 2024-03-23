@@ -16,8 +16,8 @@ interface ChannelProps {
 const Channel = ({ id, name, intraId }: ChannelProps) => {
 	const navigate = useNavigate();
 
-	const handleClick: any = () => {
-		axios.post("http://localhost:5001/api/channelMembers", { intraId: intraId, channelId: id });
+	const handleClick: any = async () => {
+		await axios.post("http://localhost:5001/api/channelMembers", { intraId: intraId, channelId: id });
 		navigate("/chat/" + name);
 	}
 

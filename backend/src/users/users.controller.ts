@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserStatus } from '@prisma/client';
 import {
-	AddBlockDto,
+  AddBlockDto,
   AddFriendDto,
   DeleteBlockDto,
   DeleteFriendDto,
@@ -41,7 +41,7 @@ export class UsersController {
 
   @Get(':id/blocked')
   getBlockedUsers(@Param('id') id: string): Promise<any> {
-	return this.usersService.getBlockedUsers(id);
+    return this.usersService.getBlockedUsers(id);
   }
 
   @Post('id/ad-friend/:id')
@@ -65,18 +65,18 @@ export class UsersController {
 
   @Post('id/ad-block/:id')
   addBlock(
-	@Param('id') id: string,
-	@Body() addBlockDto: AddBlockDto,
+    @Param('id') id: string,
+    @Body() addBlockDto: AddBlockDto,
   ): Promise<User> {
-	return this.usersService.addBlock(id, addBlockDto.idUserToAddBlock);
+    return this.usersService.addBlock(id, addBlockDto.idUserToAddBlock);
   }
 
   @Post('id/del-block/:id')
   delBlock(
-	@Param('id') id: string,
-	@Body() deleteBlockDto: DeleteBlockDto,
+    @Param('id') id: string,
+    @Body() deleteBlockDto: DeleteBlockDto,
   ): Promise<User> {
-	return this.usersService.deleteBlock(id, deleteBlockDto.idUserToDelBlock);
+    return this.usersService.deleteBlock(id, deleteBlockDto.idUserToDelBlock);
   }
 
   @Post('id/avatar/:id')
