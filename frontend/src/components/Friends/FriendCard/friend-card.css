@@ -86,21 +86,3 @@
 	font-style: normal;
 	font-size: var(--font-size-medium-small);
 }
-
-.playing {
-	padding: var(--spacing-extra-small);
-	padding-left: var(--spacing-small-medium);
-	padding-right: var(--spacing-small-medium);
-	white-space: nowrap;
-
-	background-color: var(--color-light);
-
-	border: solid 1.33px var(--color-dark-medium);
-	border-radius: var(--border-radius-full);
-
-	color: var(--color-dark);
-	font-family: var(--font-family-principal);
-	font-weight: normal;
-	font-style: normal;
-	font-size: var(--font-size-medium-small);	
-}

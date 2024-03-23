@@ -6,7 +6,6 @@ import { Lobby } from './Pong/Lobby';
 import { UsersStatusGatewayService } from 'src/users/users.gateway.service';
 import { GamesService } from './Pong/Game.service';
 import { GameHistoryService } from 'src/game-history/game-history.service';
-import { UserStatus } from '@prisma/client';
 
 @WebSocketGateway({
 	namespace: "/game"
@@ -133,7 +132,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
 		this.lobbies[lobbyID].pongGame.rightPaddle.avatar = "https://i.pinimg.com/originals/a5/39/07/a53907b134abfe7fdc26da8eeef1e268.jpg";
 		this.lobbies[lobbyID].pongGame.rightPaddle.playerName = "BOT";
-		this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
 	};
 
 	InitvsPlayerLobby(PaddleInfo:any, client:Socket) {

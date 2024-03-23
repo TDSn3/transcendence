@@ -12,13 +12,11 @@ import color from '../utils/color';
 export class UsersStatusGatewayService {
   constructor(private usersService: UsersService) {}
 
-  private server: Server<ServerToClientEvents>;
-
-  init(server: Server<ServerToClientEvents>) {
-    this.server = server;
-  }
-
-  async message(data: UserForStatusWebSocket, client: Socket): Promise<void> {
+  async message(
+    server: Server<ServerToClientEvents>,
+    data: UserForStatusWebSocket,
+    client: Socket,
+  ): Promise<void> {
     this.usersService
       .findById(data.id)
       .then((user) => {
@@ -27,7 +25,7 @@ export class UsersStatusGatewayService {
         this.usersService
           .addUserStatusWebSocketId(user.id, client.id)
           .then(() => {
-            this.server.emit('message', data);
+            server.emit('message', data);
           })
           .catch((error) => {
             console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
@@ -38,7 +36,10 @@ export class UsersStatusGatewayService {
       });
   }
 
-  async updateStatus(data: UserForStatusWebSocket): Promise<void> {
+  async updateStatus(
+    server: Server<ServerToClientEvents>,
+    data: UserForStatusWebSocket,
+  ): Promise<void> {
     this.usersService
       .findById(data.id)
       .then((user) => {
@@ -47,7 +48,7 @@ export class UsersStatusGatewayService {
         this.usersService
           .changeStatus(user.id, data.status)
           .then(() => {
-            this.server.emit('updateStatus', data);
+            server.emit('updateStatus', data);
           })
           .catch((error) => {
             console.log(`Error changeStatus: {\n`, error, '\n}');
