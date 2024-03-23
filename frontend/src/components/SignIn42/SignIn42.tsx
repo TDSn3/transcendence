@@ -7,7 +7,7 @@ import authServices from '../../services/auth';
 function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setLoggedIn, setUser } = useAuth();
+  const { setUser } = useAuth();
   const [errorSignIn, setErrorSignIn] = useState('');
 
   useEffect(() => {
@@ -29,10 +29,6 @@ function SignIn42(): React.ReactElement {
           navigate('/profile');
         }
       } catch (error: unknown) {
-        setLoggedIn(false);
-
-        localStorage.removeItem('userLogin');
-
         if (error instanceof Error) {
           console.error(error.message);
         } else {
@@ -42,7 +38,7 @@ function SignIn42(): React.ReactElement {
     };
 
     fetchData();
-  }, [location.search, navigate, setLoggedIn, setUser]);
+  }, [location.search, navigate, setUser]);
 
   if (errorSignIn !== '') {
     console.error('Error :', errorSignIn); // TODO: revoir le code de ce state

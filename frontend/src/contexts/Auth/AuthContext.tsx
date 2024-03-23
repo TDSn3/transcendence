@@ -5,7 +5,7 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
@@ -28,24 +28,22 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Rediriger vers la page de login
       if (window.location.pathname !== '/login') {
-        // Rediriger vers la page de login uniquement si l'utilisateur n'est pas déjà dessus
-        window.location.href = '/login';
+        const event = new CustomEvent('unauthorized');
+        window.dispatchEvent(event);
       }
     }
     return Promise.reject(error);
   },
 );
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const location = useLocation();
   const [user, setUser] = useState<User>({ ...emptyUser });
+  const navigate = useNavigate();
 
   const hookIsLogged = () => {
-    const userLogin = localStorage.getItem('userLogin');
-    console.log('userLogin:', userLogin);
-
     userServices
       .getUserByLogin()
       .then(({ user }) => {
@@ -54,9 +52,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setLoggedIn(true);
       })
       .catch((error: unknown) => {
-        console.error('Error getting user:', error);
         setLoggedIn(false);
-        localStorage.removeItem('userLogin');
+        console.error('Error getting user:', error);
         if (error instanceof Error) {
           console.error(error.message);
         } else {
@@ -65,10 +62,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
   };
 
-  // Utilisez useCallback pour mémoriser updateAuthStatus
   const updateAuthStatus = useCallback(() => {
     hookIsLogged();
-  }, []); // Ajoutez toutes les dépendances nécessaires dans ce tableau
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      navigate('/login');
+    };
+
+    window.addEventListener('unauthorized', handleUnauthorized);
+
+    return () => {
+      window.removeEventListener('unauthorized', handleUnauthorized);
+    };
+  }, [navigate, location.pathname]);
 
   // Appellez hookIsLogged au montage du composant
   useEffect(() => {
