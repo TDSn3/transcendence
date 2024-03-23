@@ -207,8 +207,9 @@ function ProfileInformation({
         )}
       </div>
 
-      <p>
+      <p style={{ color: 'var(--color-dark-medium)' }}>
         {userProfile.firstName}
+        {' '}
         {userProfile.lastName}
       </p>
 

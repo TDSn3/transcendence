@@ -3,15 +3,15 @@
 ```
 └── transcendence
     ├── backend
-    |    └── /prisma
-    |    └── /src
+    |    └── prisma/
+    |    └── src/
     |    └── .env
     |    └── Dockerfile
     |    └── Dockerfile.studio
     |    └── ...
     ├── frontend
-    |    └── /public
-    |    └── /src
+    |    └── public/
+    |    └── src/
     |    └── .env
     |    └── Dockerfile
     |    └── index.html

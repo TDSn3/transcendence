@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import NavbarItem from '../NavbarItem/NavbarItem';
+import NavbarItem from './NavbarItem/NavbarItem';
 import useAuth from '../../contexts/Auth/useAuth';
 
 import './navbar.css';
@@ -10,7 +10,7 @@ function Navbar() {
 
   return (
     <div className="navbar-style">
-      <div>
+      <div className="first-container-navbar">
         <NavbarItem to="/home" text="Home" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
         <NavbarItem to={`/profile/${user.login}`} text="Profile" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />
         <NavbarItem to="/friends" text="Friends" navbarItemSelected={navbarItemSelected} setNavbarItemSelected={setNavbarItemSelected} />

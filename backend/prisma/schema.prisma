@@ -34,8 +34,8 @@ model User {
   statusWebSocketId      UserStatusWebSocketId[]
   members                ChannelMember[]
   message                Message[]
-  blocked                User[]			@relation("UserBlock")
-  blockedOf              User[]			@relation("UserBlock")
+  blocked                User[]			    @relation("UserBlock")
+  blockedOf              User[]			    @relation("UserBlock")
   friends                User[]         @relation("UserFriends")
   friendOf               User[]         @relation("UserFriends")
 
