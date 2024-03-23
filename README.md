@@ -83,6 +83,9 @@ On `./frontend/`
 - - ` Part 9 ` typeScript : https://fullstackopen.com/en/part0
 - - ` Part 13 ` relational databases : https://fullstackopen.com/en/part0
 - web socket : https://dev.to/delightfulengineering/nest-js-websockets-basics-35b8
+- prisma :
+- - https://www.prisma.io/docs/orm/prisma-schema/overview
+- - https://www.prisma.io/docs/concepts/database-connectors/postgresql
 
 ### VS Code extension
 
