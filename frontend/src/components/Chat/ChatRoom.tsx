@@ -71,7 +71,6 @@ const ChatRoom = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const memberRef = useRef<any>(null);
   const socketRef = useRef<any>(null);
   const blockedUsersRef = useRef<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
@@ -83,13 +82,6 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('ooooooo');
-      memberRef.current = (
-        await axios.post('http://localhost:5001/api/channelMembers', {
-          intraId: user.intraId,
-          channelName: channelName,
-        })
-      ).data;
       if (
         (
           await axios.get<boolean>(

@@ -37,6 +37,11 @@ export class ChannelsController {
     );
   }
 
+  @Post("direct")
+  async createDirect(@Body() param: { intraId: number, receiverId: number }): Promise<Channel> {
+	return (this.channelService.createDirect(param.intraId, param.receiverId));
+  }
+
   @Get("names")
   async getAllNames(@Query("intraId") intraId: number): Promise<{id: number, name: string}[]> {
     console.log("intraId:", intraId);
