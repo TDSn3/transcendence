@@ -66,6 +66,10 @@ export class ChannelsService {
 	
 
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
+		if (intraId === 0) {
+			return (true);
+		}
+
 		const channel = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName
@@ -73,7 +77,7 @@ export class ChannelsService {
 		});
 
 		if (!channel) {
-			return (false);
+			return (true);
 		}
 
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
@@ -85,8 +89,8 @@ export class ChannelsService {
 			}
 		});
 
-		if (member.isBan || (channel.private)) {
-			return (false);
+		if (member.isBan) {
+			return (true);
 		}
 		return (false);
 	}
@@ -129,7 +133,7 @@ export class ChannelsService {
 		return (res);
 	}
 
-	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId): Promise<Channel> {
+	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId: number): Promise<Channel> {
 		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {

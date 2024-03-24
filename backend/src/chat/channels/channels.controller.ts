@@ -43,7 +43,7 @@ export class ChannelsController {
     return this.channelService.getAllNames(intraId);
   }
 
-  @Get(":channelName/:intraId/check") //je bosse ici
+  @Get(":channelName/:intraId/check")
   async channelChecker(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<boolean> {
 	return (this.channelService.channelChecker(channelName, intraId));
   }
@@ -58,7 +58,7 @@ export class ChannelsController {
 	return (this.channelService.getAllMessages(channelName));
   }
 
-  @Patch(":channelName")
+  @Patch(":channelName/update")
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
 	return (this.channelService.channelUpdate(await this.getChannelId(channelName), param.newPassword, param.newPrivate, param.intraId));
   }
