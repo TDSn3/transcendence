@@ -6,6 +6,7 @@ import useAuth from '../../contexts/Auth/useAuth';
 import axios from "axios";
 import Popup from "./Popup";
 import Channel from "./Channel";
+import Modal from '../Modal/Modal';
 
 import "./channels.css";
 
@@ -28,7 +29,6 @@ const Channels = () => {
       const data = (
         await axios.get('http://localhost:5001/api/channels/names', {
           params: {
-            // Assurez-vous d'utiliser l'option `params` pour passer des paramètres de requête
             intraId: user.intraId,
           },
         })
@@ -37,7 +37,7 @@ const Channels = () => {
       setChannelsNames(data);
     };
     fetchData();
-  }, [user.intraId]); // Ajoutez `user.intraId` comme dépendance si `user` est susceptible de changer
+  }, [user.intraId]);
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();

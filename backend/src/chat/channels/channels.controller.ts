@@ -23,6 +23,7 @@ export class ChannelsController {
       })
 	);
   }
+
   @Post("addMember")
   async addMember(@Body() param: { user: string, channelName: string }, @Res() res: Response) {
     console.log(param);

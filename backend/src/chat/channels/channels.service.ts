@@ -27,15 +27,6 @@ export class ChannelsService {
 		}
 	}
 
-<<<<<<< HEAD
-	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: MemberType[] }[]> {
-
-		console.log("intraId:", intraId);
-		const publicChannels = await this.prisma.channel.findMany({
-			where: {
-				private: false,
-			},
-=======
 	async createDirect(intraId: number, receiverId: number): Promise<Channel> {
 		try {
 			const newChannel = await this.prisma.channel.create({
@@ -57,9 +48,13 @@ export class ChannelsService {
 		}
 	}
 
-	async getAllNames(): Promise<{id: number, name: string}[]> {
-		const channelsNames = await this.prisma.channel.findMany({
->>>>>>> djanusz
+	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: any[] }[]> {
+
+		console.log("intraId:", intraId);
+		const publicChannels = await this.prisma.channel.findMany({
+			where: {
+				private: false,
+			},
 			select: {
 				id: true,
 				name: true,
@@ -71,6 +66,7 @@ export class ChannelsService {
 		const privateChannelsWithMember = await this.prisma.channel.findMany({
 			where: {
 				private: true,
+			
 				members: {
 					some: {
 						userId: intraId,
@@ -89,8 +85,6 @@ export class ChannelsService {
 		return combinedChannels;
 	}
 	
-	
-
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
 		if (intraId === 0) {
 			return (true);
