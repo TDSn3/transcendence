@@ -7,14 +7,16 @@ interface ChannelProps {
 function Channel({ name }: ChannelProps) {
   const navigate = useNavigate();
 
-  const handleClick: any = () => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
     navigate(`/chat/${name}`);
   };
 
   return (
-    <div className="channel">
-      <input type="button" value={name} onClick={handleClick} />
-    </div>
+    <button type="button" value={name} onClick={handleClick}>
+      {name}
+    </button>
   );
 }
 
