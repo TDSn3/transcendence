@@ -6,7 +6,7 @@ import { PrismaService } from 'nestjs-prisma';
 export class ChannelsService {
 	constructor(private prisma: PrismaService) {}
 
-	async create(intraId: number, param: { name: string, password: string, private: boolean }, res: any): Promise<Channel> {
+	async create(intraId: number, param: { name: string, password: string, private: boolean }): Promise<Channel> {
 		try {
 			const newChannel = await this.prisma.channel.create({
 				data: {
@@ -36,13 +36,30 @@ export class ChannelsService {
 		return (channelsNames);
 	}
 
-	async channelNameChecker(channelName: string): Promise<boolean> {
-		const res = await this.prisma.channel.findUnique({
+	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
+		const channel = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName
 			}
 		});
-		return (res !== null ? true : false);
+
+		if (!channel) {
+			return (false);
+		}
+
+		const member: ChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: intraId,
+					channelId: channel.id
+				}
+			}
+		});
+
+		if (member.isBan || (channel.private)) {
+			return (false);
+		}
+		return (false);
 	}
 
 	async getChannelId(channelName: string): Promise<number> {

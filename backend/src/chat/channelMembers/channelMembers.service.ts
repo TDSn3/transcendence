@@ -5,13 +5,15 @@ import { ChannelsService } from "../channels/channels.service";
 
 @Injectable()
 export class ChannelMembersService {
-	constructor(private channelsService: ChannelsService, private prisma: PrismaService) {}
+	constructor(private prisma: PrismaService) {}
 
 	async create(intraId: number, channelId: number): Promise<ChannelMember> {
 		if (await this.isIn(channelId, intraId)) {
-			return (this.getChannelMember(channelId, intraId));
+			console.log("allready get-it");
+			return (await this.getChannelMember(channelId, intraId));
 		}
 		try {
+			console.log("creating");
 			console.log("new channelMember:", intraId, channelId);
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
@@ -36,18 +38,19 @@ export class ChannelMembersService {
 	}
 
 	async isIn(channelId: number, idToFind: number): Promise<boolean> {
-		const members: ChannelMember[] = await this.getAllChannelMembers(channelId);
-
-		for (const user of members) {
-			if (user.userId === idToFind) {
-				return (true);
+		const res : ChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: idToFind,
+					channelId: channelId
+				}
 			}
-		}
-		return (false);
+		});
+		return (res === null ? false : true)
 	}
 
 	async getChannelMember(channelId: number, idToFind: number): Promise<ChannelMember> {
-		const member: any = await this.prisma.channelMember.findUnique({
+		const res : ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
 					userId: idToFind,
@@ -56,10 +59,36 @@ export class ChannelMembersService {
 			}
 		});
 
-		return (member);
+		return (res);
 	}
 
-	async channelMute(channelId: number, intraIdToMute: number, intraId: number): Promise<boolean> {
+	async channelMessage(channelId: number, intraId: number): Promise<boolean> {
+		const member: ChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: intraId,
+					channelId: channelId
+				}
+			}
+		});
+		if (member.isMute) {
+			const res: ChannelMember = await this.prisma.channelMember.update({
+				where: {
+					userId_channelId: {
+						userId: intraId,
+						channelId: channelId
+					}
+				},
+				data: {
+					isMute: (Date.now() < member.muteEnd.getTime())
+				}
+			});
+			return (res.isMute);
+		}
+		return (member.isMute);
+	}
+
+	async channelMute(channelId: number, intraIdToMute: number, intraId: number) {
 		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
@@ -77,23 +106,41 @@ export class ChannelMembersService {
 			}
 		});
 
-		if (!executor.isAdmin || member.isAdmin){
-			return (member.isMute);
+		if (executor.isAdmin || !member.isAdmin){
+			const res = await this.prisma.channelMember.update({
+				where: {
+					userId_channelId: {
+						userId: intraIdToMute,
+						channelId: channelId
+					}
+				},
+				data: {
+					isMute: true,
+					muteEnd: new Date(Date.now() + (10 * 1000))
+				}
+			});
 		}
+	}
 
-		const res: ChannelMember = await this.prisma.channelMember.update({
+	async channelKick(channelId: number, intraIdToKick: number, intraId: number): Promise<boolean> {
+		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
-					userId: intraIdToMute,
+					userId: intraId,
 					channelId: channelId
 				}
-			},
-			data: {
-				isMute: !member.isMute
+			}
+		});
+		const member: ChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: intraIdToKick,
+					channelId: channelId
+				}
 			}
 		});
 
-		return (res.isMute);
+		return (executor.isAdmin && !member.isAdmin);
 	}
 
 	async channelBan(channelId: number, intraIdToBan: number, intraId: number): Promise<boolean> {

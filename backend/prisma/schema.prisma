@@ -85,7 +85,7 @@ model ChannelMember {
   user					User			@relation(fields: [userId], references: [intraId])
   channel				Channel			@relation(fields: [channelId], references: [id])
 
-  muteEnd				DateTime?
+  muteEnd				DateTime		@default(now())
   isMute				Boolean			@default(false)
   isBan					Boolean			@default(false)
   isAdmin				Boolean			@default(false)

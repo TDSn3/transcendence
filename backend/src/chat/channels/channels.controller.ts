@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ChannelsService } from "./channels.service";
 import { Response } from "express";
-import { Channel } from "@prisma/client";
+import { Channel, Message } from "@prisma/client";
 
 @Controller("api/channels")
 @ApiTags("channels")
@@ -12,13 +12,13 @@ export class ChannelsController {
 
   @Post()
   async create(@Body() param: { intraId: number, name: string, password: string, private: boolean }, @Res() res: Response) {
-    return (this.channelService.create(param.intraId, param, res))
+    return (this.channelService.create(param.intraId, param)
       .then((param) => {
         res.status(200).json({ message: "Channel successfully created", param });
       })
       .catch(() => {
         res.status(501).json({ message: "Channel creation failed" });
-      }
+      })
 	);
   }
 
@@ -27,9 +27,9 @@ export class ChannelsController {
 	return (this.channelService.getAllNames());
   }
 
-  @Get(":channelName/check")
-  async channelNameChecker(@Param("channelName") channelName: string): Promise<boolean> {
-	return (this.channelService.channelNameChecker(channelName));
+  @Get(":channelName/:intraId/check") //je bosse ici
+  async channelChecker(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<boolean> {
+	return (this.channelService.channelChecker(channelName, intraId));
   }
 
   @Get(":channelName/getId")
@@ -38,7 +38,7 @@ export class ChannelsController {
   }
 
   @Get(":channelName/messages")
-  async getAllMessages(@Param("channelName") channelName: string): Promise<any> {
+  async getAllMessages(@Param("channelName") channelName: string): Promise<Message[]> {
 	return (this.channelService.getAllMessages(channelName));
   }
 

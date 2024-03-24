@@ -29,12 +29,20 @@ export class ChatSocketGateway {
 	async handleChatJoin(client: Socket, payload: { intraId: number, channelName: string }) {
 		const channelId = await this.channelsService.getChannelId(payload.channelName);
 		client.join(payload.channelName);
-		this.channelMembersService.create(payload.intraId, channelId);
 	}
 
 	@SubscribeMessage("chatSend")
 	async handleChatSend(client: Socket, payload: { user: User, channelName: string, message: string }) {
 		const channelId = await this.channelsService.getChannelId(payload.channelName);
-		this.server.to(payload.channelName).emit("chatReceive", { newMessage: await this.messagesService.create(payload.user.intraId, channelId, payload.message) });
+		if (!(await this.channelMembersService.channelMessage(channelId, payload.user.intraId))) {
+			this.server.to(payload.channelName).emit("chatReceive", { newMessage: await this.messagesService.create(payload.user.intraId, channelId, payload.message) });
+		}
+	}
+
+	@SubscribeMessage("chatKick")
+	async handleChatKick(client: Socket, payload: { channelName: string, intraIdToKick: number, intraId: number }) {
+		if (this.channelMembersService.channelKick(await this.channelsService.getChannelId(payload.channelName), payload.intraIdToKick, payload.intraId)) {
+			this.server.to(payload.channelName).emit("chatKick", { intraIdToKick: payload.intraIdToKick })
+		}
 	}
 }
