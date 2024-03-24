@@ -46,19 +46,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const hookIsLogged = () => {
     userServices
       .getUserByToken()
-      .then(({ user }) => {
-        console.log('userValue:', user);
-        setUser(user);
+      .then((userValue) => {
+        console.log('%cEnd auth context hook.', 'color: red;');
+
+        setUser(userValue);
         setLoggedIn(true);
       })
-      .catch((error: unknown) => {
+      .catch((error) => {
         setLoggedIn(false);
-        console.error('Error getting user:', error);
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('Error creating user:', error);
-        }
+        console.error(error);
       });
   };
 
@@ -78,7 +74,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
   }, [navigate, location.pathname]);
 
-  // Appellez hookIsLogged au montage du composant
   useEffect(() => {
     console.log('location.pathname:', location.pathname);
     if (
@@ -90,21 +85,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('hookIsLogged', location.pathname);
       hookIsLogged();
     }
-  }, [updateAuthStatus, location.pathname]); // Ici updateAuthStatus est stable et ne changera pas à chaque rendu
+  }, [updateAuthStatus, location.pathname]);
 
-  // Maintenant, updateAuthStatus peut être incluse sans provoquer d'avertissement
   const value = useMemo(
     () => ({
       user,
       setUser,
       isLoggedIn,
       setLoggedIn,
-      updateAuthStatus, // updateAuthStatus est maintenant stable entre les rendus
+      updateAuthStatus,
     }),
-    [user, isLoggedIn, updateAuthStatus], // Ajoutez updateAuthStatus ici pour refléter sa stabilité
+    [user, isLoggedIn, updateAuthStatus],
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (<AuthContext.Provider value={value}>{children}</AuthContext.Provider>);
 }
 
 export default AuthContext;

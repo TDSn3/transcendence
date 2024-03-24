@@ -34,6 +34,11 @@ function OtherProfilePublicInfo({
   const [userWithBlocked, setUserWithBlocked] = useState<User>(user);
 
   const hook = () => {
+    if (!user || !user.id) {
+      console.error('Auth context hook not yet !');
+      return;
+    }
+
     userServices
       .getUserById(user.id)
       .then((userValue) => setUserWithFriends(userValue))
@@ -43,7 +48,7 @@ function OtherProfilePublicInfo({
       .then((userValue) => setUserWithBlocked(userValue))
       .catch((error) => console.error(error));
   };
-  useEffect(hook, [user]);
+  useEffect(hook, [user, user.id]);
 
   const isFriendHook = () => {
     const checkIfFriend = userWithFriends?.friends?.some(

@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { SignIn42Dto } from './dto/sign-in-42.dto';
-import { UsersService } from 'src/users/users.service';
 import { AuthTwoFAService } from './2fa/2faService';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Verify2FABody } from './interface/qrCode';
@@ -15,14 +14,13 @@ import { AuthGuardToken } from 'src/auth/guard/jwt.guard';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: UsersService,
     private readonly auth2FAService: AuthTwoFAService,
   ) {}
 
-  @Get('signin42')
-  async signin42(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
+  @Get('signIn42')
+  async signIn42(@Query() signIn42Dto: SignIn42Dto, @Res() res: Response) {
     try {
-      const user = await this.authService.signin42(signIn42Dto, res);
+      const user = await this.authService.signIn42(signIn42Dto, res);
       res.status(200).json({
         message: 'User successfully signed in',
         user,
@@ -59,6 +57,7 @@ export class AuthController {
       res.status(501).send({ message: 'Logout error' });
     }
   }
+
   // @UseGuards(AuthGuardToken)
   @Get('me')
   async checksession(@Req() req: Request, @Res() res: Response) {
@@ -72,18 +71,11 @@ export class AuthController {
       res.status(501).json({ message: 'User is not logged in' });
     }
   }
+
   // @UseGuards(AuthGuardToken)
-  @Get('UserByToken')
-  async getUserByToken(@Req() req: Request, @Res() res: Response) {
-    try {
-      const user = await this.authService.getUserFromToken(req);
-      res.status(200).json({
-        user,
-      });
-    } catch {
-      console.error('Error while getting user from token');
-      res.status(401).json({ message: 'User not found' });
-    }
+  @Get('user-by-token')
+  getUserByToken(@Req() req: Request) {
+    return this.authService.getUserByToken(req);
   }
 
   @Post('verify-2fa')

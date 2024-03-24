@@ -26,7 +26,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
   const hookIsLoggedSetSocket = () => {
     if (isLoggedIn) {
-      setSocket(io('http://localhost:5001/users/web-socket'));
+      setSocket(io(USERS_WEB_SOCKET_URL));
     }
   };
   useEffect(hookIsLoggedSetSocket, [isLoggedIn]);
@@ -34,24 +34,24 @@ export function SocketProvider({ children }: SocketProviderProps) {
   const hookStartMessage = () => {
     if (socket !== undefined) {
       const handleConnect = () => {
-        console.log('Web socket connected.');
+        console.log('%cWeb socket connected.', 'color: green;');
 
         socket.emit('message', { id: user.id, status: UserStatus.ONLINE });
       };
       socket.on('connect', handleConnect);
 
       const handleDisconnect = () => {
-        console.log('Web socket disconnected.');
+        console.log('%cWeb socket disconnected.', 'color: red;');
       };
       socket.on('disconnect', handleDisconnect);
 
       const handleMessage = (data: UserForStatusWebSocket) => {
-        console.log('Message from web socket: ', data);
+        console.log('%cMessage from web socket: ', 'color: #3333FF;', data);
       };
       socket.on('message', handleMessage);
 
       const handleUpdateStatus = (data: UserForStatusWebSocket) => {
-        console.log('New status from web socket: ', data);
+        console.log('%cNew status from web socket: ', 'color: #F3CC00;', data);
       };
       socket.on('updateStatus', handleUpdateStatus);
 

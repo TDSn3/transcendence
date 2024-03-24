@@ -17,6 +17,11 @@ function Friends() {
   const [userList, setUserList] = useState<User []>([]);
 
   const hook = () => {
+    if (!user || !user.id) {
+      console.error('Auth context hook not yet !');
+      return;
+    }
+
     userServices
       .getUserById(user.id)
       .then((userValue) => {
@@ -25,7 +30,7 @@ function Friends() {
       })
       .catch((error) => { console.error(error); });
   };
-  useEffect(hook, [user, change]);
+  useEffect(hook, [user, user.id, change]);
 
   const hookUserList = () => {
     userServices

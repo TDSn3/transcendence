@@ -6,7 +6,7 @@ import useAuth from '../contexts/Auth/useAuth';
 import authServices from '../services/auth';
 
 interface LogoutProps {
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined,
 }
 
 function Logout({ socket }: LogoutProps) {

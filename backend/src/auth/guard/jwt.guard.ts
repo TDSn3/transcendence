@@ -21,16 +21,13 @@ export class AuthGuardToken implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     const res = context.switchToHttp().getResponse();
-    // console.log('req.headers', req.headers);
     const cookies = cookie.parse(req.headers.cookie || '');
     const token = cookies?.token;
-    // console.log('cookies', cookies);
     const refreshToken = cookies?.refreshToken;
     const secret = token
       ? this.config.get('JWT_SECRET')
       : this.config.get('JWT_REFRESH_SECRET');
 
-    // console.log('cookies', cookies);
     if (!token || !refreshToken || !secret) {
       console.log('No token or refreshToken or secret');
       throw new UnauthorizedException('Please provide a valid token');
@@ -38,17 +35,21 @@ export class AuthGuardToken implements CanActivate {
 
     try {
       await this.verifyToken(token, process.env.JWT_SECRET);
+
       // Token is valid, proceed with the request
-      console.log('Token is valid');
+
       return true;
     } catch (error) {
       // If the token verification fails, attempt to verify and refresh using the refreshToken
+
       try {
         const decoded = await this.verifyToken(
           refreshToken,
           process.env.JWT_REFRESH_SECRET,
         );
+
         // Refresh token is valid, create a new token and set it in the response
+
         const { email42, id } = decoded;
         const newToken = await this.jwtService.signAsync(
           { email42, id },

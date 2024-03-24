@@ -49,7 +49,7 @@ const addFakeUser = async () => {
 
 const authentication42 = async (code: string) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/auth/signin42`, {
+    const response = await axios.get(`${API_BASE_URL}/auth/signIn42`, {
       params: { code },
       withCredentials: true,
     });

@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   // NOTE: typer la réponse
-  async signin42(signIn42Dto: SignIn42Dto, res: Response) {
+  async signIn42(signIn42Dto: SignIn42Dto, res: Response) {
     const ft_token = await this.exchangeCodeForFtToken(signIn42Dto.code);
     const userData = await this.fetchDataWithFtToken(ft_token);
     const userFormated = {
@@ -39,11 +39,9 @@ export class AuthService {
       avatar: userData.image.versions.medium,
     };
     const user = await this.saveUserData(userFormated);
-    console.log('user 222:', user);
     const tokens = await this.generateToken(user);
     if (!user.isTwoFactorAuthEnabled)
       this.setCookies(res, tokens.token, tokens.refreshToken);
-    console.log('signInResponse:', tokens);
     const userGoodData = {
       ...user,
       accessToken: tokens.token,
@@ -154,7 +152,6 @@ export class AuthService {
 
         return updateUser;
       } else {
-        // console.log('userData:', userData);
         const newUser = await this.prisma.user.create({
           data: {
             intraId: userData.intraId,
@@ -199,7 +196,7 @@ export class AuthService {
 
   async generateToken(
     user: User,
-  ): Promise<{ token: string; refreshToken: string }> {
+  ): Promise<{ token: string, refreshToken: string }> {
     try {
       const token = await this.jwtService.signAsync(
         {
@@ -249,7 +246,7 @@ export class AuthService {
         secure: false,
         sameSite: 'strict',
       });
-      console.log('userObject:', userObject);
+
       if (userObject && userObject.user.id) {
         await this.prisma.user.update({
           where: {
@@ -303,22 +300,20 @@ export class AuthService {
     return userData;
   }
 
-  async getUserFromToken(req): Promise<User> {
+  async getUserByToken(req: Request): Promise<User> {
     const cookies = cookie.parse(req.headers.cookie || '');
     const token = cookies?.token;
     const refreshToken = cookies?.refreshToken;
+
     if (!token) throw new ForbiddenException('No token found');
 
     const decoded = this.jwtService.verify(refreshToken, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // Utilisez le secret depuis les variables d'environnement
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
-    console.log('decoded:', decoded);
 
     const user = await this.userService.findById(decoded.id);
-    console.log(' getUserFromToken user:', user);
-    if (!user) {
-      throw new UnauthorizedException('User not found !!');
-    }
+
+    if (!user) throw new UnauthorizedException('User not found !!');
 
     return user;
   }

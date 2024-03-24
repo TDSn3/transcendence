@@ -14,7 +14,7 @@ function Login() {
     event.preventDefault();
 
     if (API_42_UID) {
-      window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${API_42_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FsignIn42&response_type=code`;
+      window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${API_42_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A${FRONTEND_PORT}%2FsignIn42&response_type=code`;
     } else {
       console.error('API 42 UID error. Needed on `.env.private` at root.');
     }

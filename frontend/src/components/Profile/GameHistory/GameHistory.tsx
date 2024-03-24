@@ -5,7 +5,7 @@ import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import userServices from '../../../services/user';
 
 interface GameHistoryProps {
-  userProfile: User;
+  userProfile: User,
 }
 
 function GameHistory({ userProfile }: GameHistoryProps) {
@@ -19,9 +19,7 @@ function GameHistory({ userProfile }: GameHistoryProps) {
         .then((userValue) => {
           setUserWithAllData(userValue);
         })
-        .catch((error) => {
-          console.error(error);
-        });
+        .catch((error) => { console.error(error); });
     }
   };
   useEffect(hookSetUserWithAllData, [userProfile]);

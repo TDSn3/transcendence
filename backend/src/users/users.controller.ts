@@ -23,7 +23,6 @@ export class UsersController {
   @UseGuards(AuthGuardToken)
   @Get('id/:id')
   findById(@Param('id') id: string): Promise<User> {
-    console.log('idughbhjb', id);
     return this.usersService.findById(id);
   }
 

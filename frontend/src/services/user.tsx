@@ -26,9 +26,13 @@ const getUserById = async (id: string): Promise<User> => {
 };
 
 const getUserByToken = async (): Promise<User> => {
-  // const { data } = await axios.get<User>(`${url}/login/bgervais`);
-  const { data } = await axios.get<User>(`${API_BASE_URL}/auth/UserByToken`);
-  return data;
+  try {
+    const { data } = await axios.get<User>(`${API_BASE_URL}/auth/user-by-token`);
+
+    return data;
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET User by ID.'));
+  }
 };
 
 const getUserByLogin = async (login: string): Promise<User> => {
@@ -80,7 +84,6 @@ const addBlock = async (userId: string, userIdToAdd: string): Promise<User> => {
     });
     return data;
   } catch (error: unknown) {
-    throw new Error(errorMessage(error, 'Error POST add block.'));
     throw new Error(errorMessage(error, 'Error POST add block.'));
   }
 };
