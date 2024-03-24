@@ -151,6 +151,7 @@ const ChatRoom = () => {
           channelName: channelName,
         });
         setInvitedUser('');
+        setButtonPopup(false);
       } catch (error) {
         console.error(error);
       }
