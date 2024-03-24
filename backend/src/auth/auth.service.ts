@@ -278,7 +278,6 @@ export class AuthService {
         email42: decoded.email42,
       },
     });
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -305,7 +304,7 @@ export class AuthService {
     const token = cookies?.token;
     const refreshToken = cookies?.refreshToken;
 
-    if (!token) throw new ForbiddenException('No token found');
+    if (!token) throw new UnauthorizedException('No token found');
 
     const decoded = this.jwtService.verify(refreshToken, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
