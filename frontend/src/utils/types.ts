@@ -96,3 +96,26 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   message: (data: UserForStatusWebSocket) => void,
 }
+
+// Chat
+
+export interface ChannelMember {
+  id: number,
+  userId: number,
+  channelId: number,
+  muteEnd: Date,
+  isMute: boolean,
+  isBan: boolean,
+  isAdmin: boolean,
+  isOwner: boolean,
+}
+
+export interface Channel {
+  id: number,
+  createdAt: Date,
+  updatedAt: Date,
+  name: string,
+  password: string,
+  private: boolean,
+  members: ChannelMember[],
+}

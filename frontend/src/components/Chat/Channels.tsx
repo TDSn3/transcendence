@@ -7,6 +7,7 @@ import axios from "axios";
 import Popup from "./Popup";
 import Channel from "./Channel";
 import Modal from '../Modal/Modal';
+import channelsServices from '../../services/channels';
 
 import "./channels.css";
 
@@ -23,21 +24,18 @@ const Channels = () => {
 	const [modalPasswordChannelValue, setModalPasswordChannelValue] = useState<string>('');
 	const [selectedChannel, setSelectedChannel] = useState<string>('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log('user.intraId:', user.intraId);
-      const data = (
-        await axios.get('http://localhost:5001/api/channels/names', {
-          params: {
-            intraId: user.intraId,
-          },
-        })
-      ).data;
-      console.log('data channel', data);
-      setChannelsNames(data);
-    };
-    fetchData();
-  }, [user.intraId]);
+	const hook = () => {
+		if (!user || !user.id) {
+			console.error('Auth context hook not yet !');
+			return;
+		}
+		
+		channelsServices
+			.getAll(user)
+			.then((allChannelsValue) => setChannelsNames(allChannelsValue))
+			.catch((error) => console.error(error));
+	};
+	useEffect(hook, [user]);
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();

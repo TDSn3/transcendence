@@ -27,41 +27,25 @@ export class ChannelsService {
 		}
 	}
 
-	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: any[] }[]> {
-
-		console.log("intraId:", intraId);
-		const publicChannels = await this.prisma.channel.findMany({
-			where: {
-				private: false,
-			},
-			select: {
-				id: true,
-				name: true,
-				private: true,
-				members: true,
-			},
-		});
-	
-		const privateChannelsWithMember = await this.prisma.channel.findMany({
-			where: {
-				private: true,
-			
-				members: {
-					some: {
-						userId: intraId,
-					},
+	async getAllNames(intraId: number): Promise<Channel[]> {
+		try {
+			const publicChannels = await this.prisma.channel.findMany({
+				where: { private: false },
+				include: { members: true },
+			});
+		
+			const privateChannelsWithMember = await this.prisma.channel.findMany({
+				where: {
+					private: true,
+					members: { some: { userId: intraId } },
 				},
-			},
-			select: {
-				id: true,
-				name: true,
-				private: true,
-				members: true,
-			},
-		});
-
-		const combinedChannels = [...publicChannels, ...privateChannelsWithMember];
-		return combinedChannels;
+				include: { members: true },
+			});
+			
+			return [...publicChannels, ...privateChannelsWithMember];
+		} catch (error: unknown) {
+			throw new Error('Failed to find all channels');
+		}
 	}
 	
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
