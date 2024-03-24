@@ -110,7 +110,7 @@ export interface ChannelMember {
   isOwner: boolean,
 }
 
-export interface Channel {
+export interface ChannelType {
   id: number,
   createdAt: Date,
   updatedAt: Date,

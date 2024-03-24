@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-import { User, Channel } from '../utils/types';
+import { User, ChannelType } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/channels`;
 
 const getAll = async (user: User) => {
   try {
-    const { data } = await axios.get<Channel[]>(`${url}/names`, {
+    const { data } = await axios.get<ChannelType[]>(`${url}/names`, {
       params: {
         intraId: user.intraId,
       },
