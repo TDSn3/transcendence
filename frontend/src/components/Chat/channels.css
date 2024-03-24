@@ -30,6 +30,15 @@
 	font-size: 23px;
 }
 
+.channels {
+	display: flex;
+	flex-direction: column;
+
+	height: 100%;
+
+	gap: var(--spacing-medium);
+}
+
 .channels a {
 	text-decoration: none;
 }

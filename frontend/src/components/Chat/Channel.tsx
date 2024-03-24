@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import './channel.css';
+
 interface ChannelProps {
   name: string,
   intraId: number,
@@ -18,7 +20,7 @@ function Channel({ name, intraId }: ChannelProps) {
   };
 
   return (
-    <button type="button" value={name} onClick={handleClick}>
+    <button className="channel" type="button" value={name} onClick={handleClick}>
       {name}
     </button>
   );
