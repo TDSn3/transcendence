@@ -12,10 +12,10 @@
     ├── frontend
     |    └── public/
     |    └── src/
-    |    └── .env
     |    └── Dockerfile
     |    └── index.html
     |    └── ...
+    └── .env
     └── .gitignore
     └── docker-compose.yml
     └── Makefile
@@ -23,6 +23,19 @@
 ```
 
 ## Usage
+
+### `.env.private`
+
+You must add a `.env.private` file to the root with these variables :
+
+```
+API_42_UID=<data>
+API_42_SECRET=<data>
+JWT_SECRET=<data>
+JWT_REFRESH_SECRET=<data>
+```
+
+If you don't have access to 42 profiles, ignore the first two and log in with the fake user.
 
 ### Makefile
 

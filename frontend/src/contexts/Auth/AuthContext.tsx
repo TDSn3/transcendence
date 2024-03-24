@@ -11,17 +11,17 @@ import { User, emptyUser } from '../../utils/types';
 import userServices from '../../services/user';
 
 interface AuthContextType {
-  isLoggedIn: boolean;
-  user: User;
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
-  updateAuthStatus: () => void;
+  isLoggedIn: boolean,
+  user: User,
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
+  setUser: React.Dispatch<React.SetStateAction<User>>,
+  updateAuthStatus: () => void,
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode,
 }
 
 axios.interceptors.response.use(
@@ -82,10 +82,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     console.log('location.pathname:', location.pathname);
     if (
-      location.pathname !== '/login' &&
-      location.pathname !== '/login/twofa' &&
-      location.pathname !== '/signIn42' &&
-      location.pathname !== '/logout'
+      location.pathname !== '/login'
+      && location.pathname !== '/login/twofa'
+      && location.pathname !== '/signIn42'
+      && location.pathname !== '/logout'
     ) {
       console.log('hookIsLogged', location.pathname);
       hookIsLogged();

@@ -86,8 +86,8 @@ export class AuthService {
   }
 
   async exchangeCodeForFtToken(code: string): Promise<string> {
-    const clientId = process.env.CLIENT_ID_42 as string;
-    const clientSecret = process.env.CLIENT_SECRET_42 as string;
+    const clientId = process.env.API_42_UID as string;
+    const clientSecret = process.env.API_42_SECRET as string;
     const redirectUri = process.env.REDIRECTION_URI_42 as string;
     const tokenEndpoint = process.env.TOKEN_ENDPOINT_42 as string;
 

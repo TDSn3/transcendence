@@ -13,8 +13,11 @@ function Login() {
   const handleClick42 = (event: React.FormEvent): void => {
     event.preventDefault();
 
-    window.location.href =
-      'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-84904227fc0a4c9b2bf80053ac3a28805d432b0970e0fa40c44ce8f1cb1f5403&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FsignIn42&response_type=code';
+    if (API_42_UID) {
+      window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${API_42_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2FsignIn42&response_type=code`;
+    } else {
+      console.error('API 42 UID error. Needed on `.env.private` at root.');
+    }
   };
 
   const handleClick = async (event: React.FormEvent): Promise<void> => {
@@ -43,7 +46,7 @@ function Login() {
         altImg="Sign in with 42"
         handleClick={handleClick42}
       />
-      <Cta text="Fake Users" handleClick={handleClick} />
+      <Cta text="Fake User" handleClick={handleClick} />
     </div>
   );
 }

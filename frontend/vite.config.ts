@@ -2,14 +2,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dotenv from 'dotenv';
 
-// https://vitejs.dev/config/
-
 dotenv.config();
-dotenv.config({ path: './.env' });
+dotenv.config({ path: '../.env' });
+dotenv.config({ path: '../.env.private' });
 
 const FRONTEND_PORT = process.env.FRONTEND_PORT || '3000';
 const BACKEND_PORT = process.env.BACKEND_PORT || '5001';
 const API_BASE_URL = `http://localhost:${BACKEND_PORT}/api`;
+
+const API_42_UID = process.env.API_42_UID;
 
 export default defineConfig({
   plugins: [react()],
@@ -21,5 +22,6 @@ export default defineConfig({
     'FRONTEND_PORT': JSON.stringify(FRONTEND_PORT),
     'BACKEND_PORT': JSON.stringify(BACKEND_PORT),
     'API_BASE_URL': JSON.stringify(API_BASE_URL),
+    'API_42_UID': JSON.stringify(API_42_UID),
   }
 });

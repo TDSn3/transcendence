@@ -3,6 +3,7 @@ import typeGuard from './typeGuard';
 
 dotenv.config();
 dotenv.config({ path: '../.env' });
+dotenv.config({ path: '../.env.private' });
 
 let FRONTEND_PORT;
 let BACKEND_PORT;
@@ -20,6 +21,15 @@ try {
 
   FRONTEND_PORT = '3000';
   BACKEND_PORT = '5001';
+}
+
+if (
+  !process.env.API_42_UID ||
+  !process.env.API_42_SECRET ||
+  !process.env.JWT_SECRET ||
+  !process.env.JWT_REFRESH_SECRET
+) {
+  console.error('Error : `.env.private` file needed at root.');
 }
 
 export default {

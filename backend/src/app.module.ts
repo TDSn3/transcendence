@@ -10,12 +10,18 @@ import { ChannelMembersModule } from './chat/channelMembers/channelMembers.modul
 import { ChatSocketModule } from './chat/chatSocket/chatSocket.module';
 import { GameSocketModule } from './game/socket.module';
 import { GameHistoryModule } from './game-history/game-history.module';
+import * as path from 'path';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-
     // Global
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        path.resolve(__dirname, '..', '.env'),
+        path.resolve(__dirname, '..', '.env.private'),
+      ],
+    }),
     PrismaModule,
 
     AuthModule,
