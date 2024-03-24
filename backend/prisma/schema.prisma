@@ -12,98 +12,98 @@ datasource db {
 
 model User {
   // Connexion process 
-  id                     String         @id @unique @default(uuid())
-  createdAt              DateTime       @default(now())
-  updatedAt              DateTime       @updatedAt
+  id                     String   @id @unique @default(uuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
   twoFactorAuthSecret    String?
-  isTwoFactorAuthEnabled Boolean        @default(false)
+  isTwoFactorAuthEnabled Boolean  @default(false)
 
   // Profile process
-  intraId                Int            @unique
-  email42                String         @unique
-  login                  String         @unique @db.VarChar(12)
-  firstName              String
-  lastName               String
-  avatar                 String
-  wins                   Int            @default(0)
-  losses                 Int            @default(0)
+  intraId   Int    @unique
+  email42   String @unique
+  login     String @unique @db.VarChar(12)
+  firstName String
+  lastName  String
+  avatar    String
+  wins      Int    @default(0)
+  losses    Int    @default(0)
 
-  status                 UserStatus     @default(ONLINE)
+  status UserStatus @default(ONLINE)
 
   // Relation to other tables
-  statusWebSocketId      UserStatusWebSocketId[]
-  members                ChannelMember[]
-  message                Message[]
-  blocked                User[]			    @relation("UserBlock")
-  blockedOf              User[]			    @relation("UserBlock")
-  friends                User[]         @relation("UserFriends")
-  friendOf               User[]         @relation("UserFriends")
+  statusWebSocketId UserStatusWebSocketId[]
+  members           ChannelMember[]
+  message           Message[]
+  blocked           User[]                  @relation("UserBlock")
+  blockedOf         User[]                  @relation("UserBlock")
+  friends           User[]                  @relation("UserFriends")
+  friendOf          User[]                  @relation("UserFriends")
 
-  historyGamesWon        GameHistory[]  @relation("WinningUser")
-  historyGamesLost       GameHistory[]  @relation("LosingUser")
+  historyGamesWon  GameHistory[] @relation("WinningUser")
+  historyGamesLost GameHistory[] @relation("LosingUser")
 }
 
 model UserStatusWebSocketId {
-  id          String  @id @unique @default(uuid())
+  id String @id @unique @default(uuid())
 
-  user        User    @relation(fields: [userId], references: [id])
+  user        User   @relation(fields: [userId], references: [id])
   userId      String
-  webSocketId String  @unique
+  webSocketId String @unique
 }
 
 model GameHistory {
-  id                String    @id @unique @default(uuid())
-  playedAt          DateTime  @default(now())
-   
-  WinningUser       User      @relation("WinningUser", fields: [WinningUserId], references: [id])
-  WinningUserId     String
-  WinningUserScore  Int
-   
-  LosingUser        User      @relation("LosingUser", fields: [LosingUserId], references: [id])
-  LosingUserId      String
-  LosingUserScore   Int
+  id       String   @id @unique @default(uuid())
+  playedAt DateTime @default(now())
+
+  WinningUser      User   @relation("WinningUser", fields: [WinningUserId], references: [id])
+  WinningUserId    String
+  WinningUserScore Int
+
+  LosingUser      User   @relation("LosingUser", fields: [LosingUserId], references: [id])
+  LosingUserId    String
+  LosingUserScore Int
 }
 
 model Channel {
-  id					Int     			@id @unique @default(autoincrement())
-  createdAt				DateTime			@default(now())
-  updatedAt				DateTime			@updatedAt
+  id        Int      @id @unique @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  name					String				@unique
-  password				String
-  private				Boolean				@default(false)
-
-  members				ChannelMember[]
-  messages				Message[]
+  name     String          @unique
+  password String?
+  private  Boolean         @default(false)
+  isDual   Boolean         @default(false)
+  members  ChannelMember[]
+  messages Message[]
 }
 
 model ChannelMember {
-  id					Int				@id @unique @default(autoincrement())
+  id Int @id @unique @default(autoincrement())
 
-  userId				Int
-  channelId			Int
-  user					User			@relation(fields: [userId], references: [intraId])
-  channel				Channel			@relation(fields: [channelId], references: [id])
+  userId    Int
+  channelId Int
+  user      User    @relation(fields: [userId], references: [intraId])
+  channel   Channel @relation(fields: [channelId], references: [id])
 
-  muteEnd				DateTime		@default(now())
-  isMute				Boolean			@default(false)
-  isBan					Boolean			@default(false)
-  isAdmin				Boolean			@default(false)
-  isOwner				Boolean			@default(false)
+  muteEnd DateTime @default(now())
+  isMute  Boolean  @default(false)
+  isBan   Boolean  @default(false)
+  isAdmin Boolean  @default(false)
+  isOwner Boolean  @default(false)
 
   @@unique([userId, channelId])
 }
 
 model Message {
-  id					Int				@id @unique @default(autoincrement())
-  createdAt				DateTime		@default(now())
+  id        Int      @id @unique @default(autoincrement())
+  createdAt DateTime @default(now())
 
-  userId				Int
-  channelId				Int
-  member				User			@relation(fields: [userId], references: [intraId])
-  channel				Channel			@relation(fields: [channelId], references: [id])
+  userId    Int
+  channelId Int
+  member    User    @relation(fields: [userId], references: [intraId])
+  channel   Channel @relation(fields: [channelId], references: [id])
 
-  content				String
+  content String
 }
 
 enum UserStatus {

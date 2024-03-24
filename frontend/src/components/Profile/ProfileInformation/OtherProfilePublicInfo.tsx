@@ -5,19 +5,18 @@ import ButtonRedHover from '../../Buttons/ButtonRedHover/ButtonRedHover';
 import useAuth from '../../../contexts/Auth/useAuth';
 import { User } from '../../../utils/types';
 import userServices from '../../../services/user';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 interface PublicOtherProfileInfoProps {
-  isFriend: boolean | undefined,
-  setIsFriend: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-  isBlocked: boolean | undefined,
-  setIsBlocked: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-  userProfile: User,
-  handleAddFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  handleDelFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  handleAddBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
-  handleDelBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
+  isFriend: boolean | undefined;
+  setIsFriend: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  isBlocked: boolean | undefined;
+  setIsBlocked: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  userProfile: User;
+  handleAddFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleDelFriendClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleAddBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleDelBlockClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleDirectMessages: () => Promise<void>;
 }
 
 function OtherProfilePublicInfo({
@@ -30,8 +29,8 @@ function OtherProfilePublicInfo({
   handleDelFriendClick,
   handleAddBlockClick,
   handleDelBlockClick,
+  handleDirectMessages,
 }: PublicOtherProfileInfoProps) {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
   const [userWithBlocked, setUserWithBlocked] = useState<User>(user);
@@ -75,11 +74,6 @@ function OtherProfilePublicInfo({
     setIsBlocked,
   ]);
 
-  const handleDirectMessages = async () => {
-	// const channelId = (await axios.post(`http://localhost:5001/api/channels/direct`), { intra: user.intraId, receiverId:  }).data.id;
-	navigate(`/chat/`, { state: { protected: true }});
-  }
-
   return (
     <div>
       {isFriend ? (
@@ -95,11 +89,11 @@ function OtherProfilePublicInfo({
           handleClick={handleAddFriendClick}
         />
       )}
-	  <ButtonRegular
-		icon={MessageText}
-	    text="Direct messages"
-		handleClick={handleDirectMessages}
-	  />
+      <ButtonRegular
+        icon={MessageText}
+        text="Direct messages"
+        handleClick={handleDirectMessages}
+      />
       {isBlocked ? (
         <ButtonRegular
           icon={Prohibition}

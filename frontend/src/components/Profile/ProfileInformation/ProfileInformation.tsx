@@ -9,15 +9,15 @@ import OtherProfilePublicInfo from './OtherProfilePublicInfo';
 import ReturnButton from '../../Buttons/ButtonReturn/ReturnButton';
 import Modal from '../../Modal/Modal';
 import RankWinsLosses from './RankWinsLosses';
-
+import axios from 'axios';
 import '../profile.css';
 
 interface ProfileInformationProps {
-  userProfile: User,
+  userProfile: User;
   // setUserProfile: React.Dispatch<React.SetStateAction<User | null>>;
-  isToggled: boolean,
-  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>,
-  handleQrCode: () => Promise<void>,
+  isToggled: boolean;
+  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  handleQrCode: () => Promise<void>;
 }
 
 function ProfileInformation({
@@ -33,7 +33,8 @@ function ProfileInformation({
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
   const [isBlocked, setIsBlocked] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] =
+    useState<boolean>(false);
   const [modalInputValue, setModalInputValue] = useState<string>('');
 
   // const hook = () => {
@@ -139,6 +140,27 @@ function ProfileInformation({
       });
   };
 
+  const handleDirectMessages = async () => {
+    try {
+      if (!user || !userProfile) return;
+      console.log('user', user);
+      console.log('userProfile', userProfile);
+      const response = await axios.post(
+        'http://localhost:5001/api/channels/createDirectChannel',
+        {
+          user1: user.intraId,
+          user2: userProfile.intraId,
+        },
+      );
+      console.log('response', response.data);
+      const channelName = response.data.param.name;
+      console.log('Direct Channel successfully created with ID:', channelName);
+      navigate(`/chat/${channelName}`, { state: { protected: true } });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="page profile-style">
       {isModalVisible && (
@@ -207,9 +229,7 @@ function ProfileInformation({
       </div>
 
       <p style={{ color: 'var(--color-dark-medium)' }}>
-        {userProfile.firstName}
-        {' '}
-        {userProfile.lastName}
+        {userProfile.firstName} {userProfile.lastName}
       </p>
 
       <RankWinsLosses userProfile={userProfile} />
@@ -227,6 +247,7 @@ function ProfileInformation({
           isFriend={isFriend}
           setIsFriend={setIsFriend}
           isBlocked={isBlocked}
+          handleDirectMessages={handleDirectMessages}
           setIsBlocked={setIsBlocked}
           userProfile={userProfile}
           handleAddFriendClick={handleAddFriendClick}

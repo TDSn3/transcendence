@@ -71,7 +71,7 @@ const Channels = () => {
       </div>
       <div className="channels">
         {channelsNames?.map((value: any) => (
-          <Channel key={value.id} name={value.name} intraId={user.intraId}/>
+          <Channel key={value.id} name={value.name} intraId={user.intraId} />
         ))}
       </div>
       <Popup
