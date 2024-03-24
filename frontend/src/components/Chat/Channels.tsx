@@ -1,18 +1,17 @@
 /* eslint-disable */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
 import axios from "axios";
 import Popup from "./Popup";
 import Channel from "./Channel";
-import Modal from '../Modal/Modal';
 
 import "./channels.css";
 
 const Channels = () => {
-	const { user } = useAuth();
-	const navigate = useNavigate();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
 	const [channelsNames, setChannelsNames] = useState<{id: number, name: string}[]>();
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
@@ -23,12 +22,22 @@ const Channels = () => {
 	const [modalPasswordChannelValue, setModalPasswordChannelValue] = useState<string>('');
 	const [selectedChannel, setSelectedChannel] = useState<string>('');
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setChannelsNames((await axios.get("http://localhost:5001/api/channels/names")).data);
-		}
-		fetchData();
-	}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('user.intraId:', user.intraId);
+      const data = (
+        await axios.get('http://localhost:5001/api/channels/names', {
+          params: {
+            // Assurez-vous d'utiliser l'option `params` pour passer des paramètres de requête
+            intraId: user.intraId,
+          },
+        })
+      ).data;
+      console.log('data channel', data);
+      setChannelsNames(data);
+    };
+    fetchData();
+  }, [user.intraId]); // Ajoutez `user.intraId` comme dépendance si `user` est susceptible de changer
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();

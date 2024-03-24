@@ -3,7 +3,6 @@
 import { Injectable } from '@nestjs/common';
 import { Channel, ChannelMember, Message } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
-
 @Injectable()
 export class ChannelsService {
 	constructor(private prisma: PrismaService) {}
@@ -28,15 +27,69 @@ export class ChannelsService {
 		}
 	}
 
+<<<<<<< HEAD
+	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: MemberType[] }[]> {
+
+		console.log("intraId:", intraId);
+		const publicChannels = await this.prisma.channel.findMany({
+			where: {
+				private: false,
+			},
+=======
+	async createDirect(intraId: number, receiverId: number): Promise<Channel> {
+		try {
+			const newChannel = await this.prisma.channel.create({
+				data: {
+					name: "lol",
+					password: "",
+					private: true,
+					members: {
+						create: [
+							{ userId: intraId },
+							{ userId: receiverId }
+						]
+					}
+				}
+			});
+			return (newChannel);
+		} catch {
+			
+		}
+	}
+
 	async getAllNames(): Promise<{id: number, name: string}[]> {
 		const channelsNames = await this.prisma.channel.findMany({
+>>>>>>> djanusz
 			select: {
 				id: true,
 				name: true,
-			}
+				private: true,
+				members: true,
+			},
 		});
-		return (channelsNames);
+	
+		const privateChannelsWithMember = await this.prisma.channel.findMany({
+			where: {
+				private: true,
+				members: {
+					some: {
+						userId: intraId,
+					},
+				},
+			},
+			select: {
+				id: true,
+				name: true,
+				private: true,
+				members: true,
+			},
+		});
+
+		const combinedChannels = [...publicChannels, ...privateChannelsWithMember];
+		return combinedChannels;
 	}
+	
+	
 
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
 		if (intraId === 0) {
@@ -69,6 +122,7 @@ export class ChannelsService {
 	}
 
 	async getChannelId(channelName: string): Promise<number> {
+		console.log("channelName:", channelName);
 		const res = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName
@@ -77,6 +131,7 @@ export class ChannelsService {
 				id: true
 			}
 		});
+		console.log("channelId:", res.id);
 		return (res.id);
 	}
 
@@ -123,5 +178,35 @@ export class ChannelsService {
 			}
 		});
 		return (res);
+	}
+
+	async addMember(user: string, channelName: string): Promise<ChannelMember> {
+		const channelId = await this.getChannelId(channelName);
+		console.log(channelId);
+		const userId = await this.prisma.user.findUnique({
+			where: {
+				login: user
+			}
+		});
+		const isExistChannelMember = await this.prisma.channelMember.findUnique({
+			where: {
+				userId_channelId: {
+					userId: userId.intraId,
+					channelId: channelId
+				}
+			}
+		});
+		if (!isExistChannelMember){
+			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
+				data: {
+					userId: userId.intraId,
+					channelId: channelId
+				}
+			});
+			console.log("newChannelMember:", newChannelMember);
+			return (newChannelMember);
+		}
+		console.log("isExistChannelMember:", isExistChannelMember);
+		return (isExistChannelMember);
 	}
 }

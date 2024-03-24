@@ -7,10 +7,11 @@ import './search.css';
 const { Option } = Select;
 
 interface SearchProps {
-  placeholder: string,
-  searchValue: string,
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>,
-  userList: User[],
+  placeholder: string;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  userList: User[];
+  redirect: boolean;
 }
 
 function Search({
@@ -18,16 +19,24 @@ function Search({
   searchValue,
   setSearchValue,
   userList,
+  redirect,
 }: SearchProps) {
   const navigate = useNavigate();
-  const filteredUser = userList.filter((userValue) => (searchValue !== '' && userValue.login.toLowerCase().includes(searchValue.toLowerCase())));
+  const filteredUser = userList.filter(
+    (userValue) =>
+      searchValue !== '' &&
+      userValue.login.toLowerCase().includes(searchValue.toLowerCase()),
+  );
 
-  const handleOnChange = (value: string) => navigate(`/profile/${value}`);
+  const handleOnChange = (value: string) => {
+    if (redirect) navigate(`/profile/${value}`);
+  };
+
   const handleOnSelect = (value: string) => {
     const selectedUser = userList.find((user) => user.login === value);
-
+    console.log('selectedUser', selectedUser);
     setSearchValue(value);
-    if (selectedUser) navigate(`/profile/${selectedUser.login}`);
+    if (selectedUser && redirect) navigate(`/profile/${selectedUser.login}`);
   };
 
   return (
@@ -58,7 +67,9 @@ function Search({
         filterOption={false}
       >
         {filteredUser.map((userValue) => (
-          <Option key={userValue.id} value={userValue.login}>{userValue.login}</Option>
+          <Option key={userValue.id} value={userValue.login}>
+            {userValue.login}
+          </Option>
         ))}
       </Select>
     </ConfigProvider>

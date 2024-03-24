@@ -4,7 +4,6 @@ import userServices from '../../services/user';
 import useAuth from '../../contexts/Auth/useAuth';
 import FriendCard from './FriendCard/FriendCard';
 import Search from '../Search/Search';
-
 import './friends.css';
 
 function Friends() {
@@ -14,7 +13,7 @@ function Friends() {
   const [change, setChange] = useState<boolean>(false);
 
   const [searchValue, setSearchValue] = useState<string>('');
-  const [userList, setUserList] = useState<User []>([]);
+  const [userList, setUserList] = useState<User[]>([]);
 
   const hook = () => {
     if (!user || !user.id) {
@@ -26,17 +25,25 @@ function Friends() {
       .getUserById(user.id)
       .then((userValue) => {
         setUserWithFriends(userValue);
-        setFriendsList(userValue?.friends?.map((userFriendValue) => userFriendValue));
+        setFriendsList(
+          userValue?.friends?.map((userFriendValue) => userFriendValue),
+        );
       })
-      .catch((error) => { console.error(error); });
+      .catch((error) => {
+        console.error(error);
+      });
   };
   useEffect(hook, [user, user.id, change]);
 
   const hookUserList = () => {
     userServices
       .getAll()
-      .then((usersListResponse) => { setUserList(usersListResponse); })
-      .catch((error) => { console.error(error); });
+      .then((usersListResponse) => {
+        setUserList(usersListResponse);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   useEffect(hookUserList, []);
 
@@ -47,9 +54,7 @@ function Friends() {
       <div className="friends-header">
         <div className="friends-title">
           <h3 style={{ marginLeft: 'var(--spacing-small)' }}>
-            Friends :
-            {' '}
-            {userWithFriends?.friends?.length ?? 0}
+            Friends : {userWithFriends?.friends?.length ?? 0}
           </h3>
         </div>
         <Search
@@ -57,22 +62,21 @@ function Friends() {
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           userList={userList}
+          redirect
         />
       </div>
       <div className="friend-card-container-parent">
-        {
-          friendsList?.map((userValue) => (
-            <div key={userValue.id} className="friend-card-container">
-              <FriendCard
-                userFriend={userValue}
-                friendsList={friendsList}
-                setFriendsList={setFriendsList}
-                change={change}
-                setChange={setChange}
-              />
-            </div>
-          ))
-        }
+        {friendsList?.map((userValue) => (
+          <div key={userValue.id} className="friend-card-container">
+            <FriendCard
+              userFriend={userValue}
+              friendsList={friendsList}
+              setFriendsList={setFriendsList}
+              change={change}
+              setChange={setChange}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

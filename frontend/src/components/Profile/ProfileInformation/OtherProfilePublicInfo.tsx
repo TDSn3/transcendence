@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { UserPlus, UserXmark, Prohibition } from 'iconoir-react';
+import { UserPlus, UserXmark, Prohibition, MessageText } from 'iconoir-react';
 import ButtonRegular from '../../Buttons/ButtonRegular/ButtonRegular';
 import ButtonRedHover from '../../Buttons/ButtonRedHover/ButtonRedHover';
 import useAuth from '../../../contexts/Auth/useAuth';
 import { User } from '../../../utils/types';
 import userServices from '../../../services/user';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface PublicOtherProfileInfoProps {
   isFriend: boolean | undefined,
@@ -29,6 +31,7 @@ function OtherProfilePublicInfo({
   handleAddBlockClick,
   handleDelBlockClick,
 }: PublicOtherProfileInfoProps) {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [userWithFriends, setUserWithFriends] = useState<User>(user);
   const [userWithBlocked, setUserWithBlocked] = useState<User>(user);
@@ -72,6 +75,11 @@ function OtherProfilePublicInfo({
     setIsBlocked,
   ]);
 
+  const handleDirectMessages = async () => {
+	// const channelId = (await axios.post(`http://localhost:5001/api/channels/direct`), { intra: user.intraId, receiverId:  }).data.id;
+	navigate(`/chat/`, { state: { protected: true }});
+  }
+
   return (
     <div>
       {isFriend ? (
@@ -87,6 +95,11 @@ function OtherProfilePublicInfo({
           handleClick={handleAddFriendClick}
         />
       )}
+	  <ButtonRegular
+		icon={MessageText}
+	    text="Direct messages"
+		handleClick={handleDirectMessages}
+	  />
       {isBlocked ? (
         <ButtonRegular
           icon={Prohibition}

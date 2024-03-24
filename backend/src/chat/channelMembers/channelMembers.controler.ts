@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ChannelMembersService } from "./channelMembers.service";
 import { ChannelsService } from "../channels/channels.service";
@@ -33,4 +33,5 @@ export class ChannelMembersController {
 	async channelAdmin(@Param("channelName") channelName: string, @Param("intraId") intraIdToOp: number, @Body() param: { intraId: number }): Promise<boolean> {
 	  return (this.channelMembersService.channelAdmin(await this.channelsService.getChannelId(channelName), intraIdToOp, param.intraId));
 	}
+	
 }
