@@ -3,7 +3,6 @@
 import { Injectable } from "@nestjs/common";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
-import { ChannelsService } from "../channels/channels.service";
 
 @Injectable()
 export class ChannelMembersService {
@@ -11,12 +10,10 @@ export class ChannelMembersService {
 
 	async create(intraId: number, channelId: number): Promise<ChannelMember> {
 		if (await this.isIn(channelId, intraId)) {
-			console.log("allready get-it");
 			return (await this.getChannelMember(channelId, intraId));
 		}
 		try {
-			console.log("creating");
-			console.log("new channelMember:", intraId, channelId);
+			console.log("creating", intraId, channelId);
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
 					userId: intraId,
@@ -28,15 +25,6 @@ export class ChannelMembersService {
 		catch (error) {
 			throw error;
 		}
-	}
-
-	async getAllChannelMembers(channelId: number): Promise<ChannelMember[]> {
-		const channelMembers: ChannelMember[] = await this.prisma.channelMember.findMany({
-			where: {
-				channelId: channelId,
-			}
-		});
-		return (channelMembers);
 	}
 
 	async isIn(channelId: number, idToFind: number): Promise<boolean> {
@@ -163,7 +151,7 @@ export class ChannelMembersService {
 			}
 		});
 
-		if (!executor.isAdmin || member.isAdmin){
+		if (!executor.isAdmin || member.isAdmin) {
 			return (member.isBan);
 		}
 
