@@ -5,25 +5,26 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
 import axios from "axios";
 import Popup from "./Popup";
-import Channel from "./Channel";
 import Modal from '../Modal/Modal';
 import channelsServices from '../../services/channels';
 import { ChannelType } from '../../utils/types';
 
 import "./channels.css";
+import './channel.css';
 
 const Channels = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+	const { user } = useAuth();
+	const navigate = useNavigate();
 
 	const [channelsNames, setChannelsNames] = useState<ChannelType[]>();
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
+
+	const [selectedChannel, setSelectedChannel] = useState<ChannelType>();
 	const [isModalVisiblePasswordChannel, setIsModalVisiblePasswordChannel] = useState<boolean>(false);
 	const [modalPasswordChannelValue, setModalPasswordChannelValue] = useState<string>('');
-	const [selectedChannel, setSelectedChannel] = useState<string>('');
 
 	const hook = () => {
 		if (!user || !user.id) {
@@ -57,37 +58,56 @@ const Channels = () => {
 	const handleOnSubmitPasswordChannel = (event: React.SyntheticEvent) => {
 		event.preventDefault();
 
-		const selectedChannelData = channelsNames?.find((channel) => channel.name === selectedChannel);
-
-		if (selectedChannelData)
+		if (selectedChannel)
 		{
-			console.log('Try to access to this channel :', selectedChannel, selectedChannelData);
+			console.log('Try to access to this channel :', selectedChannel);
 			
-			if (selectedChannelData?.password === modalPasswordChannelValue)
+			if (selectedChannel.password === modalPasswordChannelValue)
 			{
 				console.log('%cRight password', 'color: green;')
 
 				axios
-					.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: selectedChannelData.name })
+					.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: selectedChannel.name })
 					.then(() => {
+						setSelectedChannel(undefined);
 						setIsModalVisiblePasswordChannel(false);
-						setSelectedChannel('');
+						setModalPasswordChannelValue('');
 
-						navigate(`/chat/${selectedChannelData.name}`)
+						navigate(`/chat/${selectedChannel.name}`)
 					});
 			} else {
 				console.log('%cWrong password', 'color: red;')
 			}
 		}
 
+		setSelectedChannel(undefined);
 		setIsModalVisiblePasswordChannel(false);
-		setSelectedChannel('');
-	  };
+		setModalPasswordChannelValue('');
+	};
 
 	const handleOnChangeModalPasswordChannel = (
 		event: React.ChangeEvent<HTMLInputElement>,
 	) => {
 		setModalPasswordChannelValue(event.target.value);
+	};
+
+	const handleClick = (channelData: ChannelType) => (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+
+		if (!channelData.password || channelData.password === '') {
+			axios
+				.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: channelData.name })
+				.then(() => {
+					setSelectedChannel(undefined);
+					setIsModalVisiblePasswordChannel(false);
+					setModalPasswordChannelValue('');
+		
+					navigate(`/chat/${channelData.name}`);
+				});
+		} else {
+			setSelectedChannel(channelData);
+			setIsModalVisiblePasswordChannel(true);
+		}
 	};
 
 	return (
@@ -116,13 +136,10 @@ const Channels = () => {
 			</div>
 			<div className="channels">
 				{
-					channelsNames?.map((value: any) =>
-						<Channel
-							key={value.id}
-							name={value.name}
-							setIsModalVisible={setIsModalVisiblePasswordChannel}
-							setSelectedChannel={setSelectedChannel}
-						/>
+					channelsNames?.map((value) =>
+						<button key={value.id} className="channel" type="button" onClick={handleClick(value)}>
+							{value.name}
+					 	</button>
 					)
 				}
 			</div>
