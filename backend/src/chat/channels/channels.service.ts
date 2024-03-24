@@ -27,27 +27,6 @@ export class ChannelsService {
 		}
 	}
 
-	async createDirect(intraId: number, receiverId: number): Promise<Channel> {
-		try {
-			const newChannel = await this.prisma.channel.create({
-				data: {
-					name: "lol",
-					password: "",
-					private: true,
-					members: {
-						create: [
-							{ userId: intraId },
-							{ userId: receiverId }
-						]
-					}
-				}
-			});
-			return (newChannel);
-		} catch {
-			
-		}
-	}
-
 	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: any[] }[]> {
 
 		console.log("intraId:", intraId);
@@ -99,7 +78,8 @@ export class ChannelsService {
 		if (!channel) {
 			return (true);
 		}
-
+		console.log("intraId", intraId)
+		console.log("channel.id", channel.id)
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
@@ -109,6 +89,7 @@ export class ChannelsService {
 			}
 		});
 
+		console.log(member);
 		if (member.isBan) {
 			return (true);
 		}
