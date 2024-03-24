@@ -81,7 +81,7 @@ model ChannelMember {
   id					Int				@id @unique @default(autoincrement())
 
   userId				Int
-  channelId				Int
+  channelId			Int
   user					User			@relation(fields: [userId], references: [intraId])
   channel				Channel			@relation(fields: [channelId], references: [id])
 

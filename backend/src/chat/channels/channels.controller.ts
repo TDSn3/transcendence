@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, Req, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ChannelsService } from "./channels.service";
@@ -23,10 +23,24 @@ export class ChannelsController {
       })
 	);
   }
+  @Post("addMember")
+  async addMember(@Body() param: { user: string, channelName: string }, @Res() res: Response) {
+    console.log(param);
+    return (this.channelService.addMember(param.user, param.channelName)
+      .then((param) => {
+        res.status(200).json({ message: "Member successfully added", param });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(501).json({ message: "Member addition failed" });
+      })
+    );
+  }
 
   @Get("names")
-  async getAllNames(): Promise<{id: number, name: string}[]> {
-	return (this.channelService.getAllNames());
+  async getAllNames(@Query("intraId") intraId: number): Promise<{id: number, name: string}[]> {
+    console.log("intraId:", intraId);
+    return this.channelService.getAllNames(intraId);
   }
 
   @Get(":channelName/:intraId/check") //je bosse ici
@@ -48,4 +62,5 @@ export class ChannelsController {
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
 	return (this.channelService.channelUpdate(await this.getChannelId(channelName), param.newPassword, param.newPrivate, param.intraId));
   }
+
 }

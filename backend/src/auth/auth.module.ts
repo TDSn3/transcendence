@@ -17,5 +17,6 @@ import { AuthTwoFAService } from './2fa/2faService';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, UsersService, AuthTwoFAService],
+  exports: [AuthService],
 })
 export class AuthModule {}

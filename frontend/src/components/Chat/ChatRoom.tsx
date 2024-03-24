@@ -1,125 +1,244 @@
 /* eslint-disable */
 
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import Messages from "./Messages.tsx";
-import "./chat.css";
+import Messages from './Messages.tsx';
+import './chat.css';
 import useAuth from '../../contexts/Auth/useAuth.tsx';
+import userServices from '../../services/user';
+import { User } from '../../utils/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import Popup from './Popup.tsx';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import Search from '../Search/Search.tsx';
 
 interface InputBarProps {
-	socketRef: any,
-	user: any,
-	channelName: string,
+  socketRef: any;
+  user: any;
+  channelName: string;
 }
 
 interface MemberInfo {
-	login: string,
-	avatar: string
+  login: string;
+  avatar: string;
 }
 
 interface MessageInfo {
-	id: number,
-	createdAt: any,
-	userId: number,
-	channelId: number,
-	content: string,
-	member: MemberInfo
+  id: number;
+  createdAt: any;
+  userId: number;
+  channelId: number;
+  content: string;
+  member: MemberInfo;
 }
-
 
 const InputBar = ({ socketRef, user, channelName }: InputBarProps) => {
-	const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>('');
 
-	const handleSubmit: React.FormEventHandler<HTMLFormElement>  = (e: FormEvent) => {
-		e.preventDefault();
-		if (/\S/.test(message)) {
-			socketRef.current.emit("chatSend", { user: user, channelName: channelName, message: message });
-			setMessage("");
-		}
-	}
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (
+    e: FormEvent,
+  ) => {
+    e.preventDefault();
+    if (/\S/.test(message)) {
+      socketRef.current.emit('chatSend', {
+        user: user,
+        channelName: channelName,
+        message: message,
+      });
+      setMessage('');
+    }
+  };
 
-	return (
-		<form className="input-bar" onSubmit={handleSubmit}>
-			<input className="input-text" type="text" autoComplete="off" autoFocus value={message} onChange={(e) => { setMessage(e.target.value); }}/>
-			<button className="input-button">Send</button>
-		</form>
-	);
-}
+  return (
+    <form className="input-bar" onSubmit={handleSubmit}>
+      <input
+        className="input-text"
+        type="text"
+        autoComplete="off"
+        autoFocus
+        value={message}
+        onChange={(e) => {
+          setMessage(e.target.value);
+        }}
+      />
+      <button className="input-button">Send</button>
+    </form>
+  );
+};
 
 const ChatRoom = () => {
-	const { channelName } = useParams();
-	const { user } = useAuth();
-	const navigate = useNavigate();
+  const { channelName } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-	const memberRef = useRef<any>(null);
-	const socketRef = useRef<any>(null);
-	const blockedUsersRef = useRef<any[]>([]);
-	const [messages, setMessages] = useState<any[]>([]);
-	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
-	const [newChannelPassword, setNewChannelPassword] = useState<string>("");
-	const [newChannelPrivate, setNewChannelPrivate] = useState<boolean>(false);
+  const memberRef = useRef<any>(null);
+  const socketRef = useRef<any>(null);
+  const blockedUsersRef = useRef<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [invitedUser, setInvitedUser] = useState<string>('');
+  const [buttonPopup, setButtonPopup] = useState<boolean>(false);
+  const [newChannelPassword, setNewChannelPassword] = useState<string>('');
+  const [userList, setUserList] = useState<User[]>([]);
+  const [newChannelPrivate, setNewChannelPrivate] = useState<boolean>(false);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			console.log("ooooooo");
-			memberRef.current = (await axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelName: channelName })).data;
-			if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
-				navigate("/chat");
-			}
-			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
-			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
-		};
-		fetchData();
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('ooooooo');
+      memberRef.current = (
+        await axios.post('http://localhost:5001/api/channelMembers', {
+          intraId: user.intraId,
+          channelName: channelName,
+        })
+      ).data;
+      if (
+        (
+          await axios.get<boolean>(
+            `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
+          )
+        ).data
+      ) {
+        navigate('/chat');
+      }
+      blockedUsersRef.current = (
+        await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)
+      ).data;
+      setMessages(
+        (
+          await axios.get(
+            `http://localhost:5001/api/channels/${channelName}/messages`,
+          )
+        ).data,
+      );
+    };
+    fetchData();
 
-		socketRef.current = io("http://localhost:5001/chat");
-		socketRef.current.emit("chatJoin", {intraId: user.intraId, channelName: channelName});
-		socketRef.current.on("chatReceive", (payload: { newMessage: MessageInfo }) => {
-			setMessages(prevMessages => [...prevMessages, payload.newMessage]);
-		});
-		socketRef.current.on("chatKick", (payload: { intraIdToKick: number }) => {
-			if (payload.intraIdToKick === user.intraId) {
-				navigate("/chat");
-			}
-		});
+    socketRef.current = io('http://localhost:5001/chat');
+    socketRef.current.emit('chatJoin', {
+      intraId: user.intraId,
+      channelName: channelName,
+    });
+    socketRef.current.on(
+      'chatReceive',
+      (payload: { newMessage: MessageInfo }) => {
+        setMessages((prevMessages) => [...prevMessages, payload.newMessage]);
+      },
+    );
+    socketRef.current.on('chatKick', (payload: { intraIdToKick: number }) => {
+      if (payload.intraIdToKick === user.intraId) {
+        navigate('/chat');
+      }
+    });
 
-		return () => {
-			socketRef.current.disconnect();
-		}
-	}, []);
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, [user]);
 
-	const handleSubmit: any = (e: any) => {
-		e.preventDefault();
-		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { intra: user.intraId, newPassword: newChannelPassword, newPrivate: newChannelPrivate });
-		setButtonPopup(false);
-	}
+  const hookUserList = () => {
+    userServices
+      .getAll()
+      .then((usersListResponse) => {
+        setUserList(usersListResponse);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  useEffect(hookUserList, []);
 
-	return (
-		<div className="page" id="kekw">
-			<div className="banner">
-				<input type="button" value="←" onClick={() => navigate("/chat")}/>
-				<h3>{channelName}</h3>
-				{/* !memberRef.current || !memberRef.current.isOwner ? "" : */}
-				{
-					<input type="button" value="⚙️" onClick={() => setButtonPopup(!buttonPopup)}/>
-				}
-			</div>
-			<Messages userSocketRef={socketRef} messages={messages} blockedUsers={blockedUsersRef.current}/>
-			<InputBar socketRef={socketRef} user={user} channelName={channelName !== undefined ? channelName : ""}/>
-			<Popup className="option" trigger={buttonPopup} setTrigger={setButtonPopup} x="30px" y="75px">
-				<h4 className="option-title">Channel option</h4>
-				<form className="option-form" onSubmit={handleSubmit}>
-					<input type="text" placeholder="New password" value={newChannelPassword} onChange={(e) => {setNewChannelPassword(e.target.value)}}/>
-					<div className="option-form-end">
-						Private: <input type="checkbox" checked={newChannelPrivate} onChange={() => setNewChannelPrivate(!newChannelPrivate)}/>
-						<input type="button" value="Update" onClick={handleSubmit}/>
-					</div>
-				</form>
-			</Popup>
-		</div>
-	);
-}
+  useEffect(() => {
+    console.log('invitedUser : ', invitedUser);
+  }, [invitedUser]);
+
+  const handleAdd = async (e: any) => {
+    e.preventDefault();
+    console.log(' handleAdd invitedUser : ', invitedUser);
+    if (invitedUser !== '') {
+      try {
+        await axios.post(`http://localhost:5001/api/channels/addMember`, {
+          user: invitedUser,
+          channelName: channelName,
+        });
+        setInvitedUser('');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+  const handleSubmit: any = (e: any) => {
+    e.preventDefault();
+    axios.patch(`http://localhost:5001/api/channels/${channelName}`, {
+      intraId: user.intraId,
+      newPassword: newChannelPassword,
+      newPrivate: newChannelPrivate,
+    });
+    setButtonPopup(false);
+  };
+
+  return (
+    <div className="page" id="kekw">
+      <div className="banner">
+        <input type="button" value="←" onClick={() => navigate('/chat')} />
+        <h3>{channelName}</h3>
+        {/* !memberRef.current || !memberRef.current.isOwner ? "" : */}
+        {
+          <input
+            type="button"
+            value="⚙️"
+            onClick={() => setButtonPopup(!buttonPopup)}
+          />
+        }
+      </div>
+      <Messages
+        userSocketRef={socketRef}
+        messages={messages}
+        blockedUsers={blockedUsersRef.current}
+      />
+      <InputBar
+        socketRef={socketRef}
+        user={user}
+        channelName={channelName !== undefined ? channelName : ''}
+      />
+      <Popup
+        className="option"
+        trigger={buttonPopup}
+        setTrigger={setButtonPopup}
+        x="30px"
+        y="75px"
+      >
+        <h4 className="option-title">Channel option</h4>
+        <form className="option-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="New password"
+            value={newChannelPassword}
+            onChange={(e) => {
+              setNewChannelPassword(e.target.value);
+            }}
+          />
+          <div className="option-form-end">
+            Private:{' '}
+            <input
+              type="checkbox"
+              checked={newChannelPrivate}
+              onChange={() => setNewChannelPrivate(!newChannelPrivate)}
+            />
+            <br />
+            <input type="button" value="Update" onClick={handleSubmit} />
+          </div>
+          <h4>Add Members</h4>
+          <Search
+            placeholder="Search"
+            searchValue={invitedUser}
+            setSearchValue={setInvitedUser}
+            userList={userList}
+            redirect={false}
+          />
+          <button onClick={handleAdd}>Add</button>
+        </form>
+      </Popup>
+    </div>
+  );
+};
 
 export default ChatRoom;
