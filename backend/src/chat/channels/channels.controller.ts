@@ -37,10 +37,10 @@ export class ChannelsController {
     );
   }
 
-  @Post("direct")
-  async createDirect(@Body() param: { intraId: number, receiverId: number }): Promise<Channel> {
-	return (this.channelService.createDirect(param.intraId, param.receiverId));
-  }
+//   @Post("direct")
+//   async createDirect(@Body() param: { intraId: number, receiverId: number }): Promise<Channel> {
+// 	return (this.channelService.createDirect(param.intraId, param.receiverId));
+//   }
 
   @Get("names")
   async getAllNames(@Query("intraId") intraId: number): Promise<{id: number, name: string}[]> {
@@ -65,6 +65,7 @@ export class ChannelsController {
 
   @Patch(":channelName/update")
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
+	console.log("update");
 	return (this.channelService.channelUpdate(await this.getChannelId(channelName), param.newPassword, param.newPrivate, param.intraId));
   }
 

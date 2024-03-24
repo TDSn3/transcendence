@@ -27,39 +27,13 @@ export class ChannelsService {
 		}
 	}
 
-<<<<<<< HEAD
-	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: MemberType[] }[]> {
+	async getAllNames(intraId: number): Promise<{ id: number; name: string; private: boolean; members: any[] }[]> {
 
 		console.log("intraId:", intraId);
 		const publicChannels = await this.prisma.channel.findMany({
 			where: {
 				private: false,
 			},
-=======
-	async createDirect(intraId: number, receiverId: number): Promise<Channel> {
-		try {
-			const newChannel = await this.prisma.channel.create({
-				data: {
-					name: "lol",
-					password: "",
-					private: true,
-					members: {
-						create: [
-							{ userId: intraId },
-							{ userId: receiverId }
-						]
-					}
-				}
-			});
-			return (newChannel);
-		} catch {
-			
-		}
-	}
-
-	async getAllNames(): Promise<{id: number, name: string}[]> {
-		const channelsNames = await this.prisma.channel.findMany({
->>>>>>> djanusz
 			select: {
 				id: true,
 				name: true,
@@ -88,8 +62,6 @@ export class ChannelsService {
 		const combinedChannels = [...publicChannels, ...privateChannelsWithMember];
 		return combinedChannels;
 	}
-	
-	
 
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
 		if (intraId === 0) {
@@ -105,7 +77,8 @@ export class ChannelsService {
 		if (!channel) {
 			return (true);
 		}
-
+		console.log("intraId", intraId)
+		console.log("channel.id", channel.id)
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
@@ -115,6 +88,7 @@ export class ChannelsService {
 			}
 		});
 
+		console.log(member);
 		if (member.isBan) {
 			return (true);
 		}

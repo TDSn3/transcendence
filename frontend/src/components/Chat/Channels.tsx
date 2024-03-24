@@ -2,28 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Channel from './Channel.tsx';
 import useAuth from '../../contexts/Auth/useAuth.tsx';
 import axios from 'axios';
 import Popup from './Popup.tsx';
 import './channels.css';
-
-interface ChannelProps {
-  name: string;
-}
-
-const Channel = ({ name }: ChannelProps) => {
-  const navigate = useNavigate();
-
-  const handleClick: any = () => {
-    navigate('/chat/' + name);
-  };
-
-  return (
-    <div className="channel">
-      <input type="button" value={name} onClick={handleClick} />
-    </div>
-  );
-};
 
 const Channels = () => {
   const { user } = useAuth();
@@ -88,7 +71,7 @@ const Channels = () => {
       </div>
       <div className="channels">
         {channelsNames?.map((value: any) => (
-          <Channel key={value.id} name={value.name} />
+          <Channel key={value.id} name={value.name} intraId={user.intraId}/>
         ))}
       </div>
       <Popup

@@ -159,7 +159,7 @@ const ChatRoom = () => {
   };
   const handleSubmit: any = (e: any) => {
     e.preventDefault();
-    axios.patch(`http://localhost:5001/api/channels/${channelName}`, {
+    axios.patch(`http://localhost:5001/api/channels/${channelName}/update`, {
       intraId: user.intraId,
       newPassword: newChannelPassword,
       newPrivate: newChannelPrivate,
