@@ -30,6 +30,13 @@ export class ChannelsService {
 
 	async getAllNames(): Promise<{id: number, name: string}[]> {
 		const channelsNames = await this.prisma.channel.findMany({
+			where: {
+				members: {
+					where: {
+						isBan: false
+					}
+				}
+			},
 			select: {
 				id: true,
 				name: true,
@@ -46,7 +53,7 @@ export class ChannelsService {
 		});
 
 		if (!channel) {
-			return (false);
+			return (true);
 		}
 
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
@@ -58,8 +65,8 @@ export class ChannelsService {
 			}
 		});
 
-		if (member.isBan || (channel.private)) {
-			return (false);
+		if (member.isBan) {
+			return (true);
 		}
 		return (false);
 	}
@@ -100,7 +107,7 @@ export class ChannelsService {
 		return (res);
 	}
 
-	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId): Promise<Channel> {
+	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId: number): Promise<Channel> {
 		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
