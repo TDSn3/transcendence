@@ -54,9 +54,9 @@ const ChatRoom = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
 
+	const memberRef = useRef<any>(null);
 	const socketRef = useRef<any>(null);
 	const blockedUsersRef = useRef<any[]>([]);
-	const isOwnerRef = useRef<boolean>(false);
 	const [messages, setMessages] = useState<any[]>([]);
 	const [buttonPopup, setButtonPopup] = useState<boolean>(false);
 	const [newChannelPassword, setNewChannelPassword] = useState<string>("");
@@ -64,11 +64,12 @@ const ChatRoom = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			if (!(await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/check`)).data) {
+			console.log("ooooooo");
+			memberRef.current = (await axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelName: channelName })).data;
+			if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
 				navigate("/chat");
 			}
 			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
-			isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
 			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 		};
 		fetchData();
@@ -78,14 +79,13 @@ const ChatRoom = () => {
 		socketRef.current.on("chatReceive", (payload: { newMessage: MessageInfo }) => {
 			setMessages(prevMessages => [...prevMessages, payload.newMessage]);
 		});
-		socketRef.current.on("chatKick", (payload: { intraIdBanned: number }) => {
-			if (payload.intraIdBanned === user.intraId) {
+		socketRef.current.on("chatKick", (payload: { intraIdToKick: number }) => {
+			if (payload.intraIdToKick === user.intraId) {
 				navigate("/chat");
 			}
 		});
 
 		return () => {
-			socketRef.current.off("chatJoin");
 			socketRef.current.disconnect();
 		}
 	}, []);
@@ -101,11 +101,12 @@ const ChatRoom = () => {
 			<div className="banner">
 				<input type="button" value="←" onClick={() => navigate("/chat")}/>
 				<h3>{channelName}</h3>
-				{ !isOwnerRef.current ? "" :
+				{/* !memberRef.current || !memberRef.current.isOwner ? "" : */}
+				{
 					<input type="button" value="⚙️" onClick={() => setButtonPopup(!buttonPopup)}/>
 				}
 			</div>
-			<Messages messages={messages} blockedUsers={blockedUsersRef.current}/>
+			<Messages userSocketRef={socketRef} messages={messages} blockedUsers={blockedUsersRef.current}/>
 			<InputBar socketRef={socketRef} user={user} channelName={channelName !== undefined ? channelName : ""}/>
 			<Popup className="option" trigger={buttonPopup} setTrigger={setButtonPopup} x="30px" y="75px">
 				<h4 className="option-title">Channel option</h4>

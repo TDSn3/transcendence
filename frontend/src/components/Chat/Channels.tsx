@@ -8,16 +8,13 @@ import Popup from "./Popup.tsx";
 import "./channels.css";
 
 interface ChannelProps {
-	id: number,
-	name: string,
-	intraId: number,
+	name: string
 }
 
-const Channel = ({ id, name, intraId }: ChannelProps) => {
+const Channel = ({ name }: ChannelProps) => {
 	const navigate = useNavigate();
 
 	const handleClick: any = () => {
-		axios.post("http://localhost:5001/api/channelMembers", { intraId: intraId, channelId: id });
 		navigate("/chat/" + name);
 	}
 
@@ -39,10 +36,10 @@ const Channels = () => {
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
 
 	useEffect(() => {
-		const channelsNamesGetter = async () => {
+		const fetchData = async () => {
 			setChannelsNames((await axios.get("http://localhost:5001/api/channels/names")).data);
 		}
-		channelsNamesGetter();
+		fetchData();
 	}, []);
 
 	const handleSubmit: any = (e: any) => {
@@ -72,7 +69,7 @@ const Channels = () => {
 			<div className="channels">
 				{
 					channelsNames?.map((value: any) =>
-						<Channel key={value.id} id={value.id} name={value.name} intraId={user.intraId}/>
+						<Channel key={value.id} name={value.name}/>
 					)
 				}
 			</div>
