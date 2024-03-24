@@ -30,13 +30,6 @@ export class ChannelsService {
 
 	async getAllNames(): Promise<{id: number, name: string}[]> {
 		const channelsNames = await this.prisma.channel.findMany({
-			where: {
-				members: {
-					where: {
-						isBan: false
-					}
-				}
-			},
 			select: {
 				id: true,
 				name: true,
@@ -46,6 +39,10 @@ export class ChannelsService {
 	}
 
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
+		if (intraId === 0) {
+			return (true);
+		}
+
 		const channel = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName

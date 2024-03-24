@@ -54,7 +54,6 @@ const ChatRoom = () => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
 
-	const memberRef = useRef<any>(null);
 	const socketRef = useRef<any>(null);
 	const blockedUsersRef = useRef<any[]>([]);
 	const [messages, setMessages] = useState<any[]>([]);
@@ -64,14 +63,11 @@ const ChatRoom = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			if (user.intraId !== 0) {
-				memberRef.current = (await axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelName: channelName })).data; //il faut le bouger dans channel.ts dans le handleClick
-				if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
-					navigate("/chat");
-				}
-				blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
-				setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
+			if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
+				navigate("/chat");
 			}
+			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
+			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 		};
 		fetchData();
 

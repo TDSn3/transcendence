@@ -52,7 +52,7 @@ const Channels = () => {
 			<div className="channels">
 				{
 					channelsNames?.map((value: any) =>
-						<Channel key={value.id} name={value.name}/>
+						<Channel key={value.id} name={value.name} intraId={user.intraId}/>
 					)
 				}
 			</div>
