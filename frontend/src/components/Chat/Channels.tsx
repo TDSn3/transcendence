@@ -2,28 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../contexts/Auth/useAuth.tsx';
+import useAuth from '../../contexts/Auth/useAuth';
 import axios from "axios";
-import Popup from "./Popup.tsx";
+import Popup from "./Popup";
+import Channel from "./Channel";
+
 import "./channels.css";
-
-interface ChannelProps {
-	name: string
-}
-
-const Channel = ({ name }: ChannelProps) => {
-	const navigate = useNavigate();
-
-	const handleClick: any = () => {
-		navigate("/chat/" + name);
-	}
-
-	return (
-		<div className="channel">
-			<input type="button" value={name} onClick={handleClick}/>
-		</div>
-	);
-}
 
 const Channels = () => {
 	const { user } = useAuth();
