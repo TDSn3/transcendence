@@ -23,6 +23,7 @@ export class ChannelsController {
       })
 	);
   }
+
   @Post("addMember")
   async addMember(@Body() param: { user: string, channelName: string }, @Res() res: Response) {
     console.log(param);
@@ -53,8 +54,7 @@ export class ChannelsController {
 //   }
 
   @Get("names")
-  async getAllNames(@Query("intraId") intraId: number): Promise<{id: number, name: string}[]> {
-    console.log("intraId:", intraId);
+  async getAllNames(@Query("intraId") intraId: number): Promise<Channel[]> {
     return this.channelService.getAllNames(intraId);
   }
 

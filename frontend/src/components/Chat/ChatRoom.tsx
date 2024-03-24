@@ -168,7 +168,7 @@ const ChatRoom = () => {
   };
 
   return (
-    <div className="page" id="kekw">
+    <div className="page">
       <div className="banner">
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>

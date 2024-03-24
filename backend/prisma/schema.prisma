@@ -65,16 +65,17 @@ model GameHistory {
 }
 
 model Channel {
-  id        Int      @id @unique @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int             @id @unique @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 
-  name     String          @unique
-  password String?
-  private  Boolean         @default(false)
-  isDual   Boolean         @default(false)
-  members  ChannelMember[]
-  messages Message[]
+  name      String          @unique
+  password  String?
+  private   Boolean         @default(false)
+  isDual    Boolean         @default(false)
+
+  members   ChannelMember[]
+  messages  Message[]
 }
 
 model ChannelMember {

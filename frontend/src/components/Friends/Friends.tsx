@@ -54,7 +54,9 @@ function Friends() {
       <div className="friends-header">
         <div className="friends-title">
           <h3 style={{ marginLeft: 'var(--spacing-small)' }}>
-            Friends : {userWithFriends?.friends?.length ?? 0}
+            Friends :
+            {' '}
+            {userWithFriends?.friends?.length ?? 0}
           </h3>
         </div>
         <Search
