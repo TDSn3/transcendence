@@ -11,16 +11,15 @@ interface LogoutProps {
 
 function Logout({ socket }: LogoutProps) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setLoggedIn } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
       try {
         await authServices.logoutUser(user);
-        if (socket !== undefined) {
-          socket.disconnect();
-        }
+        if (socket !== undefined) socket.disconnect();
 
+        setLoggedIn(false);
         localStorage.removeItem('userLogin');
         localStorage.removeItem('token');
 
@@ -37,7 +36,7 @@ function Logout({ socket }: LogoutProps) {
     };
 
     performLogout();
-  }, [navigate, socket, user]);
+  }, [navigate, setLoggedIn, socket, user]);
 
   return <> </>;
 }

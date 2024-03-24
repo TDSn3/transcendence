@@ -8,7 +8,7 @@ import './login.css';
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setUser, setLoggedIn } = useAuth();
 
   const handleClick42 = (event: React.FormEvent): void => {
     event.preventDefault();
@@ -27,6 +27,8 @@ function Login() {
       const user = await authServices.addFakeUser();
 
       setUser(user);
+      setLoggedIn(true);
+
       navigate(`/profile/${user.login}`);
     } catch (error: unknown) {
       if (error instanceof Error) {
