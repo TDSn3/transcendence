@@ -44,9 +44,10 @@ const MessageButtons = ({ userSocketRef, channelName, author, userIntraId, isUse
 		await axios.patch(`http://localhost:5001/api/channelMembers/${channelName}/${author.intraId}/mute`, { intraId: userIntraId });
 	}
 	const handleKickClick = async () => {
-		userSocketRef.current.emit("chatKick", { channelName: channelName, intraIdToKick: author.intraId, intraId: userIntraId })
+		userSocketRef.current.emit("chatKick", { channelName: channelName, intraIdToKick: author.intraId, intraId: userIntraId });
 	}
 	const handleBanClick = async () => {
+		userSocketRef.current.emit("chatKick", { channelName: channelName, intraIdToKick: author.intraId, intraId: userIntraId });
 		setBan((await axios.patch(`http://localhost:5001/api/channelMembers/${channelName}/${author.intraId}/ban`, { intraId: userIntraId })).data);
 	}
 	const handleAdminClick = async () => {

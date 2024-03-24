@@ -29,7 +29,6 @@ export class ChatSocketGateway {
 
 	@SubscribeMessage("chatJoin")
 	async handleChatJoin(client: Socket, payload: { intraId: number, channelName: string }) {
-		const channelId = await this.channelsService.getChannelId(payload.channelName);
 		client.join(payload.channelName);
 	}
 

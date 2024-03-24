@@ -51,8 +51,7 @@ const Channels = () => {
 				})
 				.catch(() => {
 					console.log("channelName is not valid");
-				}
-			);
+				});
 		}
 		setChannelName("");
 		setChannelPassword("");

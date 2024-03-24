@@ -64,13 +64,14 @@ const ChatRoom = () => {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			console.log("ooooooo");
-			memberRef.current = (await axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelName: channelName })).data;
-			if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
-				navigate("/chat");
+			if (user.intraId !== 0) {
+				memberRef.current = (await axios.post("http://localhost:5001/api/channelMembers", { intraId: user.intraId, channelName: channelName })).data; //il faut le bouger dans channel.ts dans le handleClick
+				if ((await axios.get<boolean>(`http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`)).data) {
+					navigate("/chat");
+				}
+				blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
+				setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 			}
-			blockedUsersRef.current = (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data;
-			setMessages((await axios.get(`http://localhost:5001/api/channels/${channelName}/messages`)).data);
 		};
 		fetchData();
 
@@ -88,11 +89,11 @@ const ChatRoom = () => {
 		return () => {
 			socketRef.current.disconnect();
 		}
-	}, []);
+	}, [user]);
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
-		axios.patch(`http://localhost:5001/api/channels/${channelName}`, { intra: user.intraId, newPassword: newChannelPassword, newPrivate: newChannelPrivate });
+		axios.patch(`http://localhost:5001/api/channels/${channelName}/update`, { intraId: user.intraId, newPassword: newChannelPassword, newPrivate: newChannelPrivate });
 		setButtonPopup(false);
 	}
 

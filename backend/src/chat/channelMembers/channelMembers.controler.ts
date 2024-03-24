@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ChannelMembersService } from "./channelMembers.service";
-import { Response } from "express";
 import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
 
