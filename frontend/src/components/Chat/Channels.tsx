@@ -21,6 +21,7 @@ const Channels = () => {
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
 	const [isModalVisiblePasswordChannel, setIsModalVisiblePasswordChannel] = useState<boolean>(false);
 	const [modalPasswordChannelValue, setModalPasswordChannelValue] = useState<string>('');
+	const [selectedChannel, setSelectedChannel] = useState<string>('');
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -47,6 +48,10 @@ const Channels = () => {
 
 	const handleOnSubmitPasswordChannel = (event: React.SyntheticEvent) => {
 		event.preventDefault();
+
+		console.log('Try to access to this channel :', selectedChannel);
+		setIsModalVisiblePasswordChannel(false);
+		setSelectedChannel('');
 	  };
 
 	const handleOnChangeModalPasswordChannel = (
@@ -73,6 +78,7 @@ const Channels = () => {
 		          }}
 		        />
 	      	)}
+
 			<div className="banner">
 				<input type="button" value="🏠" onClick={() => navigate("/home")}/>
 				<h3>Chat</h3>
@@ -86,6 +92,7 @@ const Channels = () => {
 							name={value.name}
 							intraId={user.intraId}
 							setIsModalVisible={setIsModalVisiblePasswordChannel}
+							setSelectedChannel={setSelectedChannel}
 						/>
 					)
 				}

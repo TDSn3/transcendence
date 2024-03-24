@@ -10,15 +10,22 @@ interface ChannelProps {
   name: string,
   intraId: number,
   setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  setSelectedChannel: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function Channel({ name, intraId, setIsModalVisible }: ChannelProps) {
+function Channel({
+  name,
+  intraId,
+  setIsModalVisible,
+  setSelectedChannel,
+}: ChannelProps) {
   const navigate = useNavigate();
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     setIsModalVisible(true);
+    setSelectedChannel(name);
 
     // await axios.post('http://localhost:5001/api/channelMembers', { intraId, channelName: name });
 
