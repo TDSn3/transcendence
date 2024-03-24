@@ -6,6 +6,7 @@ import useAuth from '../../contexts/Auth/useAuth';
 import axios from "axios";
 import Popup from "./Popup";
 import Channel from "./Channel";
+import Modal from '../Modal/Modal';
 
 import "./channels.css";
 
@@ -18,6 +19,8 @@ const Channels = () => {
 	const [channelName, setChannelName] = useState<string>("");
 	const [channelPassword, setChannelPassword] = useState<string>("");
 	const [channelPrivate, setChannelPrivate] = useState<boolean>(false);
+	const [isModalVisiblePasswordChannel, setIsModalVisiblePasswordChannel] = useState<boolean>(false);
+	const [modalPasswordChannelValue, setModalPasswordChannelValue] = useState<string>('');
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -42,8 +45,34 @@ const Channels = () => {
 		setChannelPrivate(false);
 	}
 
+	const handleOnSubmitPasswordChannel = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+	  };
+
+	const handleOnChangeModalPasswordChannel = (
+		event: React.ChangeEvent<HTMLInputElement>,
+	) => {
+		setModalPasswordChannelValue(event.target.value);
+	};
+
 	return (
-		<div id="kekw" className="page">
+		<div className="page">
+			{isModalVisiblePasswordChannel && (
+		        <Modal
+		          title="Password"
+		          placeholder="Enter your password"
+		          handleOnSubmitForm={handleOnSubmitPasswordChannel}
+		          formValue={modalPasswordChannelValue}
+		          HandleFormOnChange={handleOnChangeModalPasswordChannel}
+		          handleXmarkButtonClick={(
+		            event: React.MouseEvent<HTMLButtonElement>,
+		          ) => {
+		            event.preventDefault();
+		            setIsModalVisiblePasswordChannel(false);
+		            setModalPasswordChannelValue('');
+		          }}
+		        />
+	      	)}
 			<div className="banner">
 				<input type="button" value="🏠" onClick={() => navigate("/home")}/>
 				<h3>Chat</h3>
@@ -52,7 +81,12 @@ const Channels = () => {
 			<div className="channels">
 				{
 					channelsNames?.map((value: any) =>
-						<Channel key={value.id} name={value.name} intraId={user.intraId}/>
+						<Channel
+							key={value.id}
+							name={value.name}
+							intraId={user.intraId}
+							setIsModalVisible={setIsModalVisiblePasswordChannel}
+						/>
 					)
 				}
 			</div>
