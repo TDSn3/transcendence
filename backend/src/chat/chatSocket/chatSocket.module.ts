@@ -14,7 +14,7 @@ import { MessagesService } from "../messages/messages.service";
 @Module({
 	imports: [PrismaModule],
 	controllers: [ChannelsController, ChannelMembersController, MessagesController],
-	providers: [ChatSocketGateway, ChannelsService, ChannelMembersService, MessagesService, PrismaService],
+	providers: [ChannelsService, ChatSocketGateway, ChannelMembersService, MessagesService, PrismaService],
 })
 
 export class ChatSocketModule {}

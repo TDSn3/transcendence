@@ -3,6 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { ChannelMembersService } from "./channelMembers.service";
 import { Response } from "express";
 import { ChannelsService } from "../channels/channels.service";
+import { ChannelMember } from "@prisma/client";
 
 @Controller("api/channelMembers")
 @ApiTags("channelMembers")
@@ -10,25 +11,18 @@ export class ChannelMembersController {
 	constructor(private channelMembersService: ChannelMembersService, private channelsService: ChannelsService) {}
 
 	@Post()
-	async create(@Body() param: { intraId: number, channelId: number }, @Res() res: Response) {
-		return (this.channelMembersService.create(param.intraId, param.channelId))
-			.then((param) => {
-				res.status(200).json({ message: "ChannelMember successfully created", param });
-			})
-			.catch(() => {
-				res.status(501).json({ message: "ChannelMember creation failed" });
-			}
-		);
+	async create(@Body() param: { channelName: string, intraId: number }) {
+		return (this.channelMembersService.create(param.intraId, await this.channelsService.getChannelId(param.channelName)));
 	}
 
 	@Get(":channelName/:intraId")
-	async getChannelMember(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<any> {
+	async getChannelMember(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<ChannelMember> {
 		return (this.channelMembersService.getChannelMember(await this.channelsService.getChannelId(channelName), intraId));
 	}
 
 	@Patch(":channelName/:intraId/mute")
-	async channelMute(@Param("channelName") channelName: string, @Param("intraId") intraIdToMute: number, @Body() param: { intraId: number }): Promise<boolean> {
-	  return (this.channelMembersService.channelMute(await this.channelsService.getChannelId(channelName), intraIdToMute, param.intraId));
+	async channelMute(@Param("channelName") channelName: string, @Param("intraId") intraIdToMute: number, @Body() param: { intraId: number }) {
+	  this.channelMembersService.channelMute(await this.channelsService.getChannelId(channelName), intraIdToMute, param.intraId);
 	}
 
 	@Patch(":channelName/:intraId/ban")
