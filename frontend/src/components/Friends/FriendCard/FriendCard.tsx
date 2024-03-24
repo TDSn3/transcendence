@@ -11,11 +11,11 @@ import Status from './Status';
 import './friend-card.css';
 
 interface FriendCardProps {
-  userFriend: User,
-  friendsList: User[],
-  setFriendsList: React.Dispatch<React.SetStateAction<User[]>>,
-  change: boolean,
-  setChange: React.Dispatch<React.SetStateAction<boolean>>,
+  userFriend: User;
+  friendsList: User[];
+  setFriendsList: React.Dispatch<React.SetStateAction<User[]>>;
+  change: boolean;
+  setChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function FriendCard({
@@ -34,7 +34,9 @@ function FriendCard({
     userServices
       .getStatus(userFriend.id)
       .then((data) => setUserStatus(data.status))
-      .catch((error) => { console.error(error); });
+      .catch((error) => {
+        console.error(error);
+      });
   };
   useEffect(hook, [userFriend]);
 
@@ -42,7 +44,9 @@ function FriendCard({
     if (socket !== undefined) {
       const handleMessage = (data: UserForStatusWebSocket) => {
         if (data.id === userFriend.id) {
-          console.log(`My friend ${userFriend.login} changed status to ${data.status}`);
+          console.log(
+            `My friend ${userFriend.login} changed status to ${data.status}`,
+          );
           setUserStatus(data.status);
         }
       };
@@ -50,24 +54,29 @@ function FriendCard({
 
       const handleUpdateStatus = (data: UserForStatusWebSocket) => {
         if (data.id === userFriend.id) {
-          console.log(`My friend ${userFriend.login} changed status to ${data.status}`);
+          console.log(
+            `My friend ${userFriend.login} changed status to ${data.status}`,
+          );
           setUserStatus(data.status);
         }
       };
       socket.on('updateStatus', handleUpdateStatus);
 
-      return (() => {
+      return () => {
         socket.off('message', handleMessage);
         socket.off('updateStatus', handleUpdateStatus);
-      });
+      };
     }
 
-    return (() => {});
+    return () => {};
   };
   useEffect(hookSocket, [socket, userFriend.id, userFriend.login]);
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>
-  | React.KeyboardEvent<HTMLDivElement>) => {
+  const handleClick = (
+    event:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>,
+  ) => {
     event.preventDefault();
 
     navigate(`/profile/${userFriend.login}`);
@@ -82,10 +91,14 @@ function FriendCard({
       .then(() => {
         const copyList = [...friendsList];
 
-        setFriendsList(copyList.filter((friend) => friend.id !== userFriend.id));
+        setFriendsList(
+          copyList.filter((friend) => friend.id !== userFriend.id),
+        );
         setChange(!change);
       })
-      .catch((error) => { console.error(error); });
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -98,16 +111,18 @@ function FriendCard({
     >
       <XmarkIconoirButton handleClick={handleClickXmark} />
       <div className="friend-card-picture-container">
-        <ProfilePicture size="128px" imageUrl={userFriend.avatar} margin="0px" />
+        <ProfilePicture
+          size="128px"
+          imageUrl={userFriend.avatar}
+          margin="0px"
+        />
         <div className="background-overlay"> </div>
         <div className="overlay">view profile</div>
       </div>
       <div className="text-container">
         <div className="title">{userFriend.login}</div>
         <div className="subtitle">
-          {userFriend.firstName}
-          {' '}
-          {userFriend.lastName}
+          {userFriend.firstName} {userFriend.lastName}
         </div>
       </div>
       <Status userStatus={userStatus} />

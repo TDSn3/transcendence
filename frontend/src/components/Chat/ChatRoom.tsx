@@ -73,6 +73,7 @@ const ChatRoom = () => {
 
   const socketRef = useRef<any>(null);
   const blockedUsersRef = useRef<any[]>([]);
+  const [channel, setChannel] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [invitedUser, setInvitedUser] = useState<string>('');
   const [buttonPopup, setButtonPopup] = useState<boolean>(false);
@@ -82,15 +83,13 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (
-        (
-          await axios.get<boolean>(
-            `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
-          )
-        ).data
-      ) {
-        navigate('/chat');
-      }
+      const channel = await axios.get<boolean>(
+        `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
+      );
+      console.log('channel 234 : ', channel);
+      if (channel.data) {
+        setChannel(channel.data);
+      } else navigate('/chat');
       blockedUsersRef.current = (
         await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)
       ).data;
@@ -152,6 +151,7 @@ const ChatRoom = () => {
           channelName: channelName,
         });
         setInvitedUser('');
+        setButtonPopup(false);
       } catch (error) {
         console.error(error);
       }
@@ -191,44 +191,46 @@ const ChatRoom = () => {
         user={user}
         channelName={channelName !== undefined ? channelName : ''}
       />
-      <Popup
-        className="option"
-        trigger={buttonPopup}
-        setTrigger={setButtonPopup}
-        x="30px"
-        y="75px"
-      >
-        <h4 className="option-title">Channel option</h4>
-        <form className="option-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="New password"
-            value={newChannelPassword}
-            onChange={(e) => {
-              setNewChannelPassword(e.target.value);
-            }}
-          />
-          <div className="option-form-end">
-            Private:{' '}
+      {channel?.isDual === false && (
+        <Popup
+          className="option"
+          trigger={buttonPopup}
+          setTrigger={setButtonPopup}
+          x="30px"
+          y="75px"
+        >
+          <h4 className="option-title">Channel option</h4>
+          <form className="option-form" onSubmit={handleSubmit}>
             <input
-              type="checkbox"
-              checked={newChannelPrivate}
-              onChange={() => setNewChannelPrivate(!newChannelPrivate)}
+              type="text"
+              placeholder="New password"
+              value={newChannelPassword}
+              onChange={(e) => {
+                setNewChannelPassword(e.target.value);
+              }}
             />
-            <br />
-            <input type="button" value="Update" onClick={handleSubmit} />
-          </div>
-          <h4>Add Members</h4>
-          <Search
-            placeholder="Search"
-            searchValue={invitedUser}
-            setSearchValue={setInvitedUser}
-            userList={userList}
-            redirect={false}
-          />
-          <button onClick={handleAdd}>Add</button>
-        </form>
-      </Popup>
+            <div className="option-form-end">
+              Private:{' '}
+              <input
+                type="checkbox"
+                checked={newChannelPrivate}
+                onChange={() => setNewChannelPrivate(!newChannelPrivate)}
+              />
+              <br />
+              <input type="button" value="Update" onClick={handleSubmit} />
+            </div>
+            <h4>Add Members</h4>
+            <Search
+              placeholder="Search"
+              searchValue={invitedUser}
+              setSearchValue={setInvitedUser}
+              userList={userList}
+              redirect={false}
+            />
+            <button onClick={handleAdd}>Add</button>
+          </form>
+        </Popup>
+      )}
     </div>
   );
 };

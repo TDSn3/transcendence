@@ -37,7 +37,17 @@ export class ChannelsController {
       })
     );
   }
-
+  @Post("createDirectChannel")
+  async createDirectChannel(@Body() param: { user1: number, user2: number }, @Res() res: Response) {
+    return (this.channelService.createDirectChannel(param.user1, param.user2)
+      .then((param) => {
+        res.status(200).json({ message: "Direct Channel successfully created", param });
+      })
+      .catch(() => {
+        res.status(501).json({ message: "Direct Channel creation failed" });
+      })
+    );
+  }
 //   @Post("direct")
 //   async createDirect(@Body() param: { intraId: number, receiverId: number }): Promise<Channel> {
 // 	return (this.channelService.createDirect(param.intraId, param.receiverId));
@@ -49,7 +59,7 @@ export class ChannelsController {
   }
 
   @Get(":channelName/:intraId/check")
-  async channelChecker(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<boolean> {
+  async channelChecker(@Param("channelName") channelName: string, @Param("intraId") intraId: number): Promise<Channel | null> {
 	return (this.channelService.channelChecker(channelName, intraId));
   }
 

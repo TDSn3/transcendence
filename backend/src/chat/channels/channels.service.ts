@@ -26,6 +26,40 @@ export class ChannelsService {
 			throw error;
 		}
 	}
+	async createDirectChannel(userOneIntraId: number, userTwoIntraId: number): Promise<Channel> {
+		try {
+			// Créer une nouvelle room de chat directe
+			const channelExist = await this.prisma.channel.findFirst({
+				where: {
+					AND: [
+						{ members: { some: { userId: userOneIntraId } } },
+						{ members: { some: { userId: userTwoIntraId } } },
+						{ isDual: true }
+					]
+				}
+			});
+			console.log("channelExist:", channelExist);
+			if (channelExist) {
+				return channelExist;
+			}
+			const newDirectChannel = await this.prisma.channel.create({
+				data: {
+					name: `direct-${userOneIntraId}-${userTwoIntraId}`,
+					private: true,
+					isDual: true, // Indique qu'il s'agit d'un chat direct
+					members: {
+						create: [
+							{ userId: userOneIntraId, isOwner: true, isAdmin: true},
+							{ userId: userTwoIntraId }
+						]
+					}
+				}
+			});
+			return newDirectChannel;
+		} catch (error) {
+			throw error;
+		}
+	}
 
 	async getAllNames(intraId: number): Promise<Channel[]> {
 		try {
@@ -50,7 +84,7 @@ export class ChannelsService {
 	
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
 		if (intraId === 0) {
-			return (true);
+			return (null);
 		}
 
 		const channel = await this.prisma.channel.findUnique({
@@ -60,7 +94,7 @@ export class ChannelsService {
 		});
 
 		if (!channel) {
-			return (true);
+			return (null);
 		}
 		console.log("intraId", intraId)
 		console.log("channel.id", channel.id)
@@ -75,9 +109,9 @@ export class ChannelsService {
 
 		console.log(member);
 		if (member.isBan) {
-			return (true);
+			return (null);
 		}
-		return (false);
+		return (channel);
 	}
 
 	async getChannelId(channelName: string): Promise<number> {
