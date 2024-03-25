@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User } from '../../../utils/types';
+import { User, InterfaceGameHistory } from '../../../utils/types';
 import userServices from '../../../services/user';
 
 interface RankWinsLossesProps {
@@ -22,6 +22,18 @@ function RankWinsLosses({ userProfile }: RankWinsLossesProps) {
   };
   useEffect(hook, [userProfile, userProfile.id]);
 
+  // eslint-disable-next-line max-len
+  const Wins = userProfile?.historyGamesWon?.reduce((accumulator, currentValue: InterfaceGameHistory) => {
+    if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+    return (accumulator + 1);
+  }, 0);
+
+  // eslint-disable-next-line max-len
+  const Losses = userProfile?.historyGamesLost?.reduce((accumulator, currentValue: InterfaceGameHistory) => {
+    if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+    return (accumulator + 1);
+  }, 0);
+
   return (
     <div className="profile-content">
       <div>
@@ -33,11 +45,11 @@ function RankWinsLosses({ userProfile }: RankWinsLossesProps) {
       <div className="wins-losses">
         <p className="box">
           Wins&nbsp;&nbsp;
-          <span className="number">{userProfile?.historyGamesWon?.length ?? 0}</span>
+          <span className="number">{Wins}</span>
         </p>
         <p className="box">
           Losses&nbsp;&nbsp;
-          <span className="number">{userProfile?.historyGamesLost?.length ?? 0}</span>
+          <span className="number">{Losses}</span>
         </p>
       </div>
     </div>
