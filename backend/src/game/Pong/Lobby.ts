@@ -53,6 +53,8 @@ export class Lobby {
 	public startGamePVP(lobbyID: string, callback: () => void): void {
 		this.pongGame.gameMode = 'vsPlayer';
 		this.pongGame.isStarted = true;
+		console.log('l',this.pongGame.leftPaddle.userId);
+		console.log('r',this.pongGame.rightPaddle.userId);
 		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.PLAYING });
 		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.rightPaddle.userId, status: UserStatus.PLAYING });
 

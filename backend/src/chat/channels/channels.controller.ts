@@ -63,6 +63,12 @@ export class ChannelsController {
 	return (this.channelService.getAllMessages(channelName));
   }
 
+  @Get(":channelName/isDual")
+  async getIsDual(@Param("channelName") channelName: string): Promise<boolean> {
+	console.log("isDual", await this.channelService.getIsDual(channelName));
+	return (this.channelService.getIsDual(channelName));
+  }
+
   @Patch(":channelName/update")
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
 	console.log("update");
