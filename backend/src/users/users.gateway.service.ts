@@ -17,11 +17,14 @@ export class UsersStatusGatewayService {
   init(server: Server<ServerToClientEvents>) { this.server = server }
 
   async disconnect(client: Socket): Promise<void> {
-    printClientDisconnected(client);
-
     this.usersService
       .removeUserWebSocketId(client.id)
       .then((deletedUserStatusWebSocketId) => {
+
+        this.usersService
+          .findById(deletedUserStatusWebSocketId.userId)
+          .then((user) => printClientDisconnected(client, user))
+          .catch();
 
         this.usersService
           .changeStatus(deletedUserStatusWebSocketId.userId, UserStatus.OFFLINE)
@@ -85,13 +88,22 @@ const printReceivedMessage = (user: User, content: string | UserStatus) => {
   );
 };
 
-const printClientDisconnected = (client: Socket) => {
+const printClientDisconnected = (client: Socket, user: User) => {  
   console.log(
     color.RED,
     'Client disconnected',
     color.RESET,
     color.DIM_RED,
     `id: ${client.id}`,
+    color.RESET,
+  );
+
+  console.log(
+    color.BOLD_RED,
+    '└─',
+    color.RESET,
+    color.DIM,
+    user.login,
     color.RESET,
   );
 };

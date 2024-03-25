@@ -249,7 +249,7 @@ export class UsersService {
             });
 
           if (deletedUserStatusWebSocketId) {
-            printRemoveUserStatusWebSocketId(deletedUserStatusWebSocketId);
+            // printRemoveUserStatusWebSocketId(deletedUserStatusWebSocketId);
 
             return deletedUserStatusWebSocketId;
           }
@@ -280,15 +280,18 @@ export class UsersService {
   }
 
   async getStatus(id: string): Promise<{ status: UserStatus }> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      include: { statusWebSocketId: true },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { statusWebSocketId: true },
+      });
 
-    if (user && user.statusWebSocketId.length > 0) {
-      return { status: UserStatus.ONLINE };
+      if (user) return { status: user.status };
+      
+      throw new Error();
+    } catch (error: unknown) {
+      throw new NotFoundException('Failed to find user status'); // HTTP 404 Not Found
     }
-    return { status: UserStatus.OFFLINE };
   }
 
   async getRank(id: string): Promise<{ rank: number }> {

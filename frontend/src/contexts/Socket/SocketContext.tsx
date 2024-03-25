@@ -47,6 +47,10 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
       const handleMessage = (data: UserForStatusWebSocket) => {
         console.log('%cMessage from web socket: ', 'color: #3333FF;', data);
+
+        if (data.id === user.id) {
+          console.log(`I changed status to ${data.status} on other place. Here, my status is ${user.status}`);
+        }
       };
       socket.on('message', handleMessage);
 
