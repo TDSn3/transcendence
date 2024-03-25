@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-import { User, ChannelType } from '../utils/types';
+import { User, ChannelType, AddChannelType } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
 const url = `${API_BASE_URL}/channels`;
 
-const getAll = async (user: User) => {
+const getAll = async (user: User): Promise<ChannelType[]> => {
   try {
     const { data } = await axios.get<ChannelType[]>(`${url}/names`, {
       params: {
@@ -13,7 +13,17 @@ const getAll = async (user: User) => {
       },
     });
 
-    return data;
+    return (data);
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET all channels.'));
+  }
+};
+
+const addChannel = async (newChannel: AddChannelType): Promise<ChannelType> => {
+  try {
+    const { data } = await axios.post<ChannelType>(`${url}`, newChannel);
+
+    return (data);
   } catch (error: unknown) {
     throw new Error(errorMessage(error, 'Error GET all channels.'));
   }
@@ -21,4 +31,5 @@ const getAll = async (user: User) => {
 
 export default {
   getAll,
+  addChannel,
 };

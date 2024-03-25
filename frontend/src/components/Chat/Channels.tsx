@@ -41,15 +41,14 @@ const Channels = () => {
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
+
 		if (/^[a-zA-Z]+$/.test(channelName)) {
-			axios.post("http://localhost:5001/api/channels", { intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
-				.then(() => {
-					navigate("/chat/" + channelName);
-				})
-				.catch(() => {
-					console.log("channelName is not valid");
-				});
+			channelsServices
+				.addChannel({ intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
+				.then(() => navigate("/chat/" + channelName))
+				.catch((error) => console.error(error));
 		}
+
 		setChannelName("");
 		setChannelPassword("");
 		setChannelPrivate(false);

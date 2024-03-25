@@ -119,3 +119,10 @@ export interface ChannelType {
   private: boolean,
   members: ChannelMember[],
 }
+
+export interface AddChannelType {
+  intraId: number,
+  name: string,
+  password?: string,
+  private: boolean,
+}
