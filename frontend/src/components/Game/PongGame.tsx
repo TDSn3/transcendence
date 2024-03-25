@@ -38,6 +38,7 @@ const PongGame = ({ gameInfo }: { gameInfo: any }) => {
 			context.font = '20px Arial';
 			context.fillText(`${gameInfo.score[0]}`, gameInfo.width / 2 - 30, 30);
 			context.fillText(`${gameInfo.score[1]}`, gameInfo.width / 2 + 30, 30);
+			// console.log(gameInfo.score[0]);
 		}
 
 		const drawCountdown = ():void => {
