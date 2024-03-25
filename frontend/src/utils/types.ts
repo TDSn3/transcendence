@@ -115,7 +115,7 @@ export interface ChannelType {
   createdAt: Date,
   updatedAt: Date,
   name: string,
-  password: string,
+  password?: string,
   private: boolean,
   members: ChannelMember[],
 }

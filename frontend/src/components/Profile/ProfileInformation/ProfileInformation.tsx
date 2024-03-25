@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { User } from '../../../utils/types';
 import ProfilePicture from '../../ProfilePicture/ProfilePicture';
 import AntSwitch from '../SwitchButton/AntSwitch';
@@ -9,15 +10,14 @@ import OtherProfilePublicInfo from './OtherProfilePublicInfo';
 import ReturnButton from '../../Buttons/ButtonReturn/ReturnButton';
 import Modal from '../../Modal/Modal';
 import RankWinsLosses from './RankWinsLosses';
-import axios from 'axios';
 import '../profile.css';
 
 interface ProfileInformationProps {
-  userProfile: User;
+  userProfile: User,
   // setUserProfile: React.Dispatch<React.SetStateAction<User | null>>;
-  isToggled: boolean;
-  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
-  handleQrCode: () => Promise<void>;
+  isToggled: boolean,
+  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>,
+  handleQrCode: () => Promise<void>,
 }
 
 function ProfileInformation({
@@ -33,8 +33,7 @@ function ProfileInformation({
   const [isFriend, setIsFriend] = useState<boolean | undefined>();
   const [isBlocked, setIsBlocked] = useState<boolean | undefined>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] =
-    useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState<boolean>(false);
   const [modalInputValue, setModalInputValue] = useState<string>('');
 
   // const hook = () => {
@@ -229,7 +228,9 @@ function ProfileInformation({
       </div>
 
       <p style={{ color: 'var(--color-dark-medium)' }}>
-        {userProfile.firstName} {userProfile.lastName}
+        {userProfile.firstName}
+        {' '}
+        {userProfile.lastName}
       </p>
 
       <RankWinsLosses userProfile={userProfile} />
