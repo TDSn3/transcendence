@@ -271,6 +271,36 @@ export class UsersService {
     return { status: UserStatus.OFFLINE };
   }
 
+  async getRank(id: string): Promise<{ rank: number }> {
+    try {
+      const users = await this.prisma.user.findMany({
+        include: {
+          historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+          historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+        },
+      });
+
+      if (users && users.length > 0) {
+        const usersSortByRank = users.sort(
+          (a, b) => {
+            const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
+            const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
+  
+            return rankB - rankA;
+          },
+        );
+
+        const selectUserRank = usersSortByRank.findIndex((user) => user.id === id);
+
+        return ({ rank: selectUserRank + 1 });
+      }
+
+      throw new Error();
+    } catch (error: unknown) {
+      throw new Error('Failed to find user rank');
+    }
+  }
+
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
     try {
       const user = await this.prisma.user.update({
