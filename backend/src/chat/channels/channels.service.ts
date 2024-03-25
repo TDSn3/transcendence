@@ -110,8 +110,7 @@ export class ChannelsService {
 		if (!channel) {
 			return (null);
 		}
-		console.log("intraId", intraId)
-		console.log("channel.id", channel.id)
+
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
@@ -121,15 +120,14 @@ export class ChannelsService {
 			}
 		});
 
-		console.log(member);
 		if (member.isBan) {
 			return (null);
 		}
+
 		return (channel);
 	}
 
 	async getChannelId(channelName: string): Promise<number> {
-		console.log("channelName:", channelName);
 		const res = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName
@@ -145,6 +143,20 @@ export class ChannelsService {
 		try {
 			const channel = await this.prisma.channel.findUnique({
 				where: { name },
+			});
+
+			if (channel) return channel;
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to find channel by name');
+		}
+	}
+
+	async findById(id: number): Promise<Channel> {	
+		try {
+			const channel = await this.prisma.channel.findUnique({
+				where: { id },
 			});
 
 			if (channel) return channel;

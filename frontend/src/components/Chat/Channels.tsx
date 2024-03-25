@@ -91,34 +91,24 @@ const Channels = () => {
 
 	const handleClick = (channelData: ChannelType) => (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
+
 		channelsServices
-			.getAll(user)
-			.then((allChannelsValue) => setChannelsNames(allChannelsValue))
+			.addChannelMembers({ intraId: user.intraId, name: channelData.name })
+			.then((object) => {
+				if ('message' in object) {
+					console.log('%cAccess denied. Password needed.', 'color: red;')
+
+					setSelectedChannel(channelData);
+					setIsModalVisiblePasswordChannel(true);
+				} else {
+					setSelectedChannel(undefined);
+					setIsModalVisiblePasswordChannel(false);
+					setModalPasswordChannelValue('');
+
+					navigate(`/chat/${channelData.name}`);
+				}
+			})
 			.catch((error) => console.error(error));
-		console.log(channelsNames);
-
-		// if (!channelData.password || channelData.password === '') {
-			channelsServices
-				.addChannelMembers({ intraId: user.intraId, name: channelData.name })
-				.then((object) => {
-					if ('message' in object) {
-						console.log('%cWrong password', 'color: red;')
-
-						setSelectedChannel(channelData);
-						setIsModalVisiblePasswordChannel(true);
-					} else {
-						setSelectedChannel(undefined);
-						setIsModalVisiblePasswordChannel(false);
-						setModalPasswordChannelValue('');
-
-						navigate(`/chat/${channelData.name}`);
-					}
-				})
-				.catch((error) => console.error(error));
-		// } else {
-		// 	setSelectedChannel(channelData);
-		// 	setIsModalVisiblePasswordChannel(true);
-		// }
 	};
 
 	return (

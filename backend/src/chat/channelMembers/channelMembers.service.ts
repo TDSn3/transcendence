@@ -26,6 +26,10 @@ export class ChannelMembersService {
 
 			const channelId = await this.channelsService.getChannelId(name);
 
+			const channel = await this.channelsService.findById(channelId);
+
+			if (channel.password && password === undefined) return ({ message: 'Wrong password' });
+
 			if (await this.isIn(channelId, intraId)) {
 				return (await this.getChannelMember(channelId, intraId));
 			}
