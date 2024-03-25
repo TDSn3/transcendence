@@ -110,7 +110,19 @@ const getStatus = async (userId: string): Promise<{ status: UserStatus }> => {
 
     return data;
   } catch (error: unknown) {
-    throw new Error(errorMessage(error, 'Error GET get status.'));
+    throw new Error(errorMessage(error, 'Error GET status.'));
+  }
+};
+
+const getRank = async (userId: string): Promise<{ rank: number }> => {
+  try {
+    const { data } = await axios.get<{ rank: number }>(
+      `${url}/rank/id/${userId}`,
+    );
+
+    return data;
+  } catch (error: unknown) {
+    throw new Error(errorMessage(error, 'Error GET rank.'));
   }
 };
 
@@ -152,6 +164,7 @@ export default {
   addBlock,
   deleteBlock,
   getStatus,
+  getRank,
   updateAvatar,
   updateLogin,
   getUserByLogin,

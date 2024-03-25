@@ -7,11 +7,11 @@ import './search.css';
 const { Option } = Select;
 
 interface SearchProps {
-  placeholder: string;
-  searchValue: string;
-  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
-  userList: User[];
-  redirect: boolean;
+  placeholder: string,
+  searchValue: string,
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>,
+  userList: User[],
+  redirect: boolean,
 }
 
 function Search({
@@ -23,9 +23,8 @@ function Search({
 }: SearchProps) {
   const navigate = useNavigate();
   const filteredUser = userList.filter(
-    (userValue) =>
-      searchValue !== '' &&
-      userValue.login.toLowerCase().includes(searchValue.toLowerCase()),
+    (userValue) => searchValue !== ''
+      && userValue.login.toLowerCase().includes(searchValue.toLowerCase()),
   );
 
   const handleOnChange = (value: string) => {
