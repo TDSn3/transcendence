@@ -60,22 +60,22 @@ const Channels = () => {
 		{
 			console.log('Try to access to this channel :', selectedChannel);
 			
-			if (selectedChannel.password === modalPasswordChannelValue)
-			{
-				console.log('%cRight password', 'color: green;')
-
-				channelsServices
-					.addChannelMembers({ intraId: user.intraId, name: selectedChannel.name })
-					.then(() => {
+			channelsServices
+				.addChannelMembers({ intraId: user.intraId, name: selectedChannel.name, password: modalPasswordChannelValue })
+				.then((object) => {
+					if ('message' in object) {
+						console.log('%cWrong password', 'color: red;')
+					} else {
+						console.log('%cRight password', 'color: green;')
+						
 						setSelectedChannel(undefined);
 						setIsModalVisiblePasswordChannel(false);
 						setModalPasswordChannelValue('');
-
+	
 						navigate(`/chat/${selectedChannel.name}`)
-					});
-			} else {
-				console.log('%cWrong password', 'color: red;')
-			}
+					}
+				})
+				.catch((error) => console.error(error));
 		}
 
 		setSelectedChannel(undefined);
@@ -101,7 +101,8 @@ const Channels = () => {
 					setModalPasswordChannelValue('');
 		
 					navigate(`/chat/${channelData.name}`);
-				});
+				})
+				.catch((error) => console.error(error));
 		} else {
 			setSelectedChannel(channelData);
 			setIsModalVisiblePasswordChannel(true);

@@ -32,9 +32,11 @@ const addChannel = async (newChannel: AddChannelType): Promise<ChannelType> => {
   }
 };
 
-const addChannelMembers = async (channelMembersData: AddChannelMembers): Promise<ChannelMember> => {
+const addChannelMembers = async (
+  channelMembersData: AddChannelMembers,
+):Promise<ChannelMember | { message: string }> => {
   try {
-    const { data } = await axios.post<ChannelMember>(`${urlChannelMembers}`, channelMembersData);
+    const { data } = await axios.post<ChannelMember | { message: string }>(`${urlChannelMembers}`, channelMembersData);
 
     return (data);
   } catch (error: unknown) {

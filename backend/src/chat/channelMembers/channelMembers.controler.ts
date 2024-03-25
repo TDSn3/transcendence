@@ -11,7 +11,7 @@ export class ChannelMembersController {
 	constructor(private channelMembersService: ChannelMembersService, private channelsService: ChannelsService) {}
 
 	@Post()
-	async create(@Body() addChannelMembersDto: AddChannelMembersDto): Promise<ChannelMember> {
+	async create(@Body() addChannelMembersDto: AddChannelMembersDto): Promise<ChannelMember | { message: string }> {
 		return (this.channelMembersService.create(addChannelMembersDto));
 	}
 

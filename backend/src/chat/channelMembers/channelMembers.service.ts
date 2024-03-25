@@ -5,6 +5,7 @@ import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 import { AddChannelMembersDto } from './dto/Dto';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChannelMembersService {
@@ -13,10 +14,18 @@ export class ChannelMembersService {
 		private channelsService: ChannelsService,
 		) {}
 
-	async create({ intraId, name }: AddChannelMembersDto): Promise<ChannelMember> {
+	async create({ intraId, name, password }: AddChannelMembersDto): Promise<ChannelMember | { message: string }> {
 		try {
+			if (password !== undefined) {
+				const channel = await this.channelsService.findByName(name);
+
+				const passwordCorrect = await bcrypt.compare(password, channel?.password);
+
+				if (passwordCorrect === false) return ({ message: 'Wrong password' });
+			}
+
 			const channelId = await this.channelsService.getChannelId(name);
-		
+
 			if (await this.isIn(channelId, intraId)) {
 				return (await this.getChannelMember(channelId, intraId));
 			}
@@ -27,7 +36,10 @@ export class ChannelMembersService {
 					channelId: channelId,
 				}
 			});
-			return (newChannelMember);
+
+			if (newChannelMember) return (newChannelMember);
+
+			throw new Error();
 		} catch (error: unknown) {
 			throw new Error('Failed to add a channel member');
 		}

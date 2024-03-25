@@ -138,8 +138,21 @@ export class ChannelsService {
 				id: true
 			}
 		});
-		console.log("channelId:", res.id);
 		return (res.id);
+	}
+
+	async findByName(name: string): Promise<Channel> {	
+		try {
+			const channel = await this.prisma.channel.findUnique({
+				where: { name },
+			});
+
+			if (channel) return channel;
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to find channel by name');
+		}
 	}
 
 	async getAllMessages(channelName: string): Promise<Message[]> {

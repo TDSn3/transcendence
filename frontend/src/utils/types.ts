@@ -130,4 +130,5 @@ export interface AddChannelType {
 export interface AddChannelMembers {
   intraId: number,
   name: string,
+  password?: string,
 }
