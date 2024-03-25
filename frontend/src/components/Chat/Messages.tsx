@@ -110,7 +110,7 @@ const Messages = ({ userSocketRef, messages, blockedUsers }: MessagesProps) => {
 					if (!isIn(blockedUsers, value.member)) {
 						return (<Message key={index} userSocketRef={userSocketRef} channelName={value.channel.name} author={value.member} message={value.content}/>);
 					}
-					return (<Message userSocketRef={userSocketRef} channelName={value.channel.name} author={value.member} message={(<strong>[blocked user]</strong>)}/>);
+					return (<Message key={index} userSocketRef={userSocketRef} channelName={value.channel.name} author={value.member} message={(<strong>[blocked user]</strong>)}/>);
 				})
 			}
 		</div>

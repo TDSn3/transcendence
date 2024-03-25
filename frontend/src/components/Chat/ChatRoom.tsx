@@ -72,7 +72,8 @@ const ChatRoom = () => {
   const navigate = useNavigate();
 
   const socketRef = useRef<any>(null);
-  const blockedUsersRef = useRef<any[]>([]);
+  const isOwnerRef = useRef<boolean>(false);
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
   const [channel, setChannel] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [invitedUser, setInvitedUser] = useState<string>('');
@@ -86,13 +87,12 @@ const ChatRoom = () => {
       const channel = await axios.get<boolean>(
         `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
       );
-      console.log('channel 234 : ', channel);
       if (channel.data) {
         setChannel(channel.data);
       } else navigate('/chat');
-      blockedUsersRef.current = (
-        await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)
-      ).data;
+      setBlockedUsers((
+        await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data
+	  );
       setMessages(
         (
           await axios.get(
@@ -100,6 +100,7 @@ const ChatRoom = () => {
           )
         ).data,
       );
+	  isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
     };
     fetchData();
 
@@ -172,8 +173,7 @@ const ChatRoom = () => {
       <div className="banner">
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>
-        {/* !memberRef.current || !memberRef.current.isOwner ? "" : */}
-        {
+        { !isOwnerRef.current ? "" :
           <input
             type="button"
             value="⚙️"
@@ -184,7 +184,7 @@ const ChatRoom = () => {
       <Messages
         userSocketRef={socketRef}
         messages={messages}
-        blockedUsers={blockedUsersRef.current}
+        blockedUsers={blockedUsers}
       />
       <InputBar
         socketRef={socketRef}
