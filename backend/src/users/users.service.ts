@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserStatus, UserStatusWebSocketId, GameHistory } from '@prisma/client';
+import { UserExtend } from './interface/user.interface';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
-import color from '../utils/color';
 
 @Injectable()
 export class UsersService {
@@ -21,16 +21,17 @@ export class UsersService {
     return users;
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserExtend> {
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
+        statusWebSocketId: true,
         friends: true,
         friendOf: true,
-		blocked: true,
+		    blocked: true,
         historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
         historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
       },
@@ -201,82 +202,61 @@ export class UsersService {
 // Socket ─────────────────────────────────────────────────────────────────────────────────────────
 
   async addUserStatusWebSocketId(id: string, webSocketId: string): Promise<User> {
-    try {
-      const user = await this.findById(id);
+    const user = await this.findById(id);
 
-      // const statusValue = UserStatus.ONLINE;
-      // let statusValue: UserStatus;
-
-      // if (user.status === UserStatus.PLAYING) statusValue = UserStatus.PLAYING
-      // else statusValue = UserStatus.ONLINE;
-
-      if (user) {
-        const userUpdated = await this.prisma.user.update({
-          where: { id: user.id },
-          data: {
-            statusWebSocketId: {
-              create: [{ webSocketId: webSocketId }],
-            },
-            // status: statusValue,
+    if (user) {
+      const userUpdated = await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          statusWebSocketId: {
+            create: [{ webSocketId: webSocketId }],
           },
-        });
+        },
+      });
 
-        if (userUpdated) {
-          return userUpdated;
-        }
-      }
-
-      throw new Error();
-    } catch (error: unknown) {
-      throw new NotFoundException('Failed to add web socket id'); // HTTP 404 Not Found
-    }
+      if (userUpdated) return userUpdated
+      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
+    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
   }
 
   async removeUserWebSocketId(webSocketId: string): Promise<UserStatusWebSocketId> {
-    try {
-      const userStatusWebSocketId =
-        await this.prisma.userStatusWebSocketId.findUnique({
-          where: { webSocketId: webSocketId },
-        });
+    const userStatusWebSocketId =
+      await this.prisma.userStatusWebSocketId.findUnique({
+        where: { webSocketId: webSocketId },
+      });
 
-      if (userStatusWebSocketId) {
-        const user = await this.findById(userStatusWebSocketId.userId);
+    if (userStatusWebSocketId) {
+      const user = await this.findById(userStatusWebSocketId.userId);
 
-        if (user) {
-          const deletedUserStatusWebSocketId =
-            await this.prisma.userStatusWebSocketId.delete({
-              where: { id: userStatusWebSocketId.id },
-            });
+      if (user) {
+        const deletedUserStatusWebSocketId =
+          await this.prisma.userStatusWebSocketId.delete({
+            where: { id: userStatusWebSocketId.id },
+          });
 
-          if (deletedUserStatusWebSocketId) {
-            // printRemoveUserStatusWebSocketId(deletedUserStatusWebSocketId);
-
-            return deletedUserStatusWebSocketId;
-          }
-        }
-
-        throw new Error();
-      }
-
-      throw new Error();
-    } catch (error: unknown) {
-      throw new NotFoundException('Failed to remove web socket id'); // HTTP 404 Not Found
-    }
+        if (deletedUserStatusWebSocketId) return deletedUserStatusWebSocketId
+        else throw new UnprocessableEntityException('Failed to remove userStatusWebSocketId'); // HTTP 422 Unprocessable Entity
+      } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } else throw new NotFoundException('Failed to find userStatusWebSocketId by id'); // HTTP 404 Not Found
   }
 
 // ────────────────────────────────────────────────────────────────────────────────────────────────
 
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
-    try {
-      const user = await this.prisma.user.update({
+    const user = await this.findById(id);
+    
+    if (user) {      
+      if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) return user;
+      if (newStatus === UserStatus.END_PLAYING) newStatus = UserStatus.ONLINE;
+
+      const userUpdated = await this.prisma.user.update({
         where: { id },
         data: { status: newStatus },
       });
 
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update user status');
-    }
+      if (userUpdated) return userUpdated
+      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
+    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
   }
 
   async getStatus(id: string): Promise<{ status: UserStatus }> {
@@ -418,18 +398,3 @@ export class UsersService {
     }
   }
 }
-
-const printRemoveUserStatusWebSocketId = (
-  deletedUserStatusWebSocketId: UserStatusWebSocketId,
-) => {
-  console.log(
-    color.BOLD_RED,
-    'Remove UserStatusWebSocketId: ',
-    color.RESET,
-    color.DIM_RED,
-    '{\n webSocketId: ',
-    deletedUserStatusWebSocketId.webSocketId,
-    '\n }',
-    color.RESET,
-  );
-};

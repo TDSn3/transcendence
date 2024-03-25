@@ -67,7 +67,7 @@ export class UsersStatusGatewayService {
 
         this.usersService
           .changeStatus(user.id, data.status)
-          .then(() => this.server.emit('updateStatus', data))
+          .then((userUpdated) => this.server.emit('updateStatus', { ...data, status: userUpdated.status }))
           .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
       })
       .catch((error) => console.log(`Error findById: {\n`, error, '\n}'));

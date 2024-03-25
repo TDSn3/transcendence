@@ -24,6 +24,7 @@ export enum UserStatus {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
   PLAYING = 'PLAYING',
+  END_PLAYING = 'END_PLAYING',
 }
 
 export interface User {
