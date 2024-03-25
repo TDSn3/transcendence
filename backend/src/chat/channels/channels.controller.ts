@@ -65,7 +65,6 @@ export class ChannelsController {
 
   @Patch(":channelName/update")
   async channelUpdate(@Param("channelName") channelName: string, @Body() param: { intraId: number, newPassword: string, newPrivate: boolean }): Promise<Channel> {
-	console.log("update");
 	return (this.channelService.channelUpdate(await this.getChannelId(channelName), param.newPassword, param.newPrivate, param.intraId));
   }
 

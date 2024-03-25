@@ -19,13 +19,13 @@ export class ChannelsService {
 					create: [
 						{ userId: addChannelDto.intraId, isAdmin: true, isOwner: true }
 					]
-				}				
+				}
 			}
 
 			if (addChannelDto.password && addChannelDto.password !== '') {
 				const saltRounds = 10
 				const passwordHash = await bcrypt.hash(addChannelDto.password, saltRounds);
-				
+
 				data.password = passwordHash;
 			}
 
@@ -81,7 +81,7 @@ export class ChannelsService {
 				where: { private: false },
 				include: { members: true },
 			});
-		
+
 			const privateChannelsWithMember = await this.prisma.channel.findMany({
 				where: {
 					private: true,
@@ -89,13 +89,13 @@ export class ChannelsService {
 				},
 				include: { members: true },
 			});
-			
+
 			return [...publicChannels, ...privateChannelsWithMember];
 		} catch (error: unknown) {
 			throw new Error('Failed to find all channels');
 		}
 	}
-	
+
 	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
 		if (intraId === 0) {
 			return (null);
@@ -188,16 +188,20 @@ export class ChannelsService {
 				}
 			}
 		});
-		const res = await this.prisma.channel.update({
-			where: {
-				id: channelId
-			},
-			data: {
-				password: newPassword,
-				private: newPrivate
-			}
-		});
-		return (res);
+
+		console.log(newPassword);
+		return (
+			await this.prisma.channel.update({
+				where: {
+					id: channelId
+				},
+				data: {
+					password: await bcrypt.hash(newPassword, 10),
+					private: newPrivate
+				}
+			})
+		);
+		// return (null);
 	}
 
 	async addMember(user: string, channelName: string): Promise<ChannelMember> {
