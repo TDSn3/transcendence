@@ -67,9 +67,10 @@ function Friends() {
           redirect
         />
       </div>
+
       <div className="friend-card-container-parent">
         {friendsList?.map((userValue) => (
-          <div key={userValue.id} className="friend-card-container">
+          <div key={userValue.id}>
             <FriendCard
               userFriend={userValue}
               friendsList={friendsList}
