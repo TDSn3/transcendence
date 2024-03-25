@@ -28,7 +28,6 @@ export class ChannelsService {
 	}
 	async createDirectChannel(userOneIntraId: number, userTwoIntraId: number): Promise<Channel> {
 		try {
-			// Créer une nouvelle room de chat directe
 			const channelExist = await this.prisma.channel.findFirst({
 				where: {
 					AND: [

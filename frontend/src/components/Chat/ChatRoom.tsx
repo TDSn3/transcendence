@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import Messages from './Messages.tsx';
 import './chat.css';
 import useAuth from '../../contexts/Auth/useAuth.tsx';
+import toast, { Toaster } from 'react-hot-toast';
 import userServices from '../../services/user';
 import { User } from '../../utils/types';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -151,8 +152,10 @@ const ChatRoom = () => {
           channelName: channelName,
         });
         setInvitedUser('');
+        toast.success('Member successfully added');
         setButtonPopup(false);
       } catch (error) {
+        toast.error('Member addition failed');
         console.error(error);
       }
     }
@@ -165,6 +168,7 @@ const ChatRoom = () => {
       newPrivate: newChannelPrivate,
     });
     setButtonPopup(false);
+    toast.success('Channel updated');
   };
 
   return (
@@ -231,6 +235,7 @@ const ChatRoom = () => {
           </form>
         </Popup>
       )}
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };
