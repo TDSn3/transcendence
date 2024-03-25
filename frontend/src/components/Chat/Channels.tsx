@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
-import axios from "axios";
 import Popup from "./Popup";
 import Modal from '../Modal/Modal';
 import channelsServices from '../../services/channels';
@@ -65,8 +64,8 @@ const Channels = () => {
 			{
 				console.log('%cRight password', 'color: green;')
 
-				axios
-					.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: selectedChannel.name })
+				channelsServices
+					.addChannelMembers({ intraId: user.intraId, name: selectedChannel.name })
 					.then(() => {
 						setSelectedChannel(undefined);
 						setIsModalVisiblePasswordChannel(false);
@@ -94,8 +93,8 @@ const Channels = () => {
 		event.preventDefault();
 
 		if (!channelData.password || channelData.password === '') {
-			axios
-				.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: channelData.name })
+			channelsServices
+				.addChannelMembers({ intraId: user.intraId, name: channelData.name })
 				.then(() => {
 					setSelectedChannel(undefined);
 					setIsModalVisiblePasswordChannel(false);

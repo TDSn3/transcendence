@@ -126,3 +126,8 @@ export interface AddChannelType {
   password?: string,
   private: boolean,
 }
+
+export interface AddChannelMembers {
+  intraId: number,
+  name: string,
+}

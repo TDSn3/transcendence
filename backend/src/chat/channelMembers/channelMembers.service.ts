@@ -1,19 +1,26 @@
 /* eslint-disable */
 
 import { Injectable } from "@nestjs/common";
+import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
+import { AddChannelMembersDto } from './dto/Dto';
 
 @Injectable()
 export class ChannelMembersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private channelsService: ChannelsService,
+		) {}
 
-	async create(intraId: number, channelId: number): Promise<ChannelMember> {
-		if (await this.isIn(channelId, intraId)) {
-			return (await this.getChannelMember(channelId, intraId));
-		}
+	async create({ intraId, name }: AddChannelMembersDto): Promise<ChannelMember> {
 		try {
-			console.log("creating", intraId, channelId);
+			const channelId = await this.channelsService.getChannelId(name);
+		
+			if (await this.isIn(channelId, intraId)) {
+				return (await this.getChannelMember(channelId, intraId));
+			}
+			
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
 					userId: intraId,
@@ -21,9 +28,8 @@ export class ChannelMembersService {
 				}
 			});
 			return (newChannelMember);
-		}
-		catch (error) {
-			throw error;
+		} catch (error: unknown) {
+			throw new Error('Failed to add a channel member');
 		}
 	}
 
