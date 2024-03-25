@@ -15,13 +15,17 @@
 	display: flex;
 
 	overflow-y: auto;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
+	gap: var(--spacing-medium);
+	width: 100%;
 }
 
 .friend-card-container {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(192px, 1fr));
 	gap: var(--spacing-medium);
-	width: 100%;	
+	width: 100%;
 }
 
 .friend-card-container-parent::-webkit-scrollbar {
