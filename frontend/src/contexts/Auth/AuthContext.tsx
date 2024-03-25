@@ -75,7 +75,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [navigate, location.pathname]);
 
   useEffect(() => {
-    console.log('location.pathname:', location.pathname);
     if (
       location.pathname !== '/login' &&
       location.pathname !== '/login/twofa' &&

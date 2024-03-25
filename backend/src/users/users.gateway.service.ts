@@ -14,8 +14,26 @@ export class UsersStatusGatewayService {
 
   private server: Server<ServerToClientEvents>;
 
-  init(server: Server<ServerToClientEvents>) {
-    this.server = server;
+  init(server: Server<ServerToClientEvents>) { this.server = server }
+
+  async disconnect(client: Socket): Promise<void> {
+    printClientDisconnected(client);
+
+    this.usersService
+      .removeUserWebSocketId(client.id)
+      .then((deletedUserStatusWebSocketId) => {
+
+        this.usersService
+          .changeStatus(deletedUserStatusWebSocketId.userId, UserStatus.OFFLINE)
+          .then(() => {
+            
+            this.server.emit('message', {
+              id: deletedUserStatusWebSocketId.userId,
+              status: UserStatus.OFFLINE,
+          })})
+          .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
+      })
+      .catch((error) => console.log('Error removeUserWebSocketId: {\n', error, '\n}'));
   }
 
   async message(data: UserForStatusWebSocket, client: Socket): Promise<void> {
@@ -27,15 +45,15 @@ export class UsersStatusGatewayService {
         this.usersService
           .addUserStatusWebSocketId(user.id, client.id)
           .then(() => {
-            this.server.emit('message', data);
+
+            this.usersService
+              .changeStatus(user.id, data.status)
+              .then(() => this.server.emit('message', data))
+              .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
           })
-          .catch((error) => {
-            console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}');
-          });
+          .catch((error) => console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}'));
       })
-      .catch((error) => {
-        console.log(`Error findById: {\n`, error, '\n}');
-      });
+      .catch((error) => console.log(`Error findById: {\n`, error, '\n}'));
   }
 
   async updateStatus(data: UserForStatusWebSocket): Promise<void> {
@@ -46,16 +64,10 @@ export class UsersStatusGatewayService {
 
         this.usersService
           .changeStatus(user.id, data.status)
-          .then(() => {
-            this.server.emit('updateStatus', data);
-          })
-          .catch((error) => {
-            console.log(`Error changeStatus: {\n`, error, '\n}');
-          });
+          .then(() => this.server.emit('updateStatus', data))
+          .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
       })
-      .catch((error) => {
-        console.log(`Error findById: {\n`, error, '\n}');
-      });
+      .catch((error) => console.log(`Error findById: {\n`, error, '\n}'));
   }
 }
 
@@ -69,6 +81,17 @@ const printReceivedMessage = (user: User, content: string | UserStatus) => {
     color.RESET,
     color.DIM,
     `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printClientDisconnected = (client: Socket) => {
+  console.log(
+    color.RED,
+    'Client disconnected',
+    color.RESET,
+    color.DIM_RED,
+    `id: ${client.id}`,
     color.RESET,
   );
 };

@@ -11,11 +11,11 @@ import Status from './Status';
 import './friend-card.css';
 
 interface FriendCardProps {
-  userFriend: User;
-  friendsList: User[];
-  setFriendsList: React.Dispatch<React.SetStateAction<User[]>>;
-  change: boolean;
-  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+  userFriend: User,
+  friendsList: User[],
+  setFriendsList: React.Dispatch<React.SetStateAction<User[]>>,
+  change: boolean,
+  setChange: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 function FriendCard({
@@ -74,8 +74,8 @@ function FriendCard({
 
   const handleClick = (
     event:
-      | React.MouseEvent<HTMLDivElement>
-      | React.KeyboardEvent<HTMLDivElement>,
+    | React.MouseEvent<HTMLDivElement>
+    | React.KeyboardEvent<HTMLDivElement>,
   ) => {
     event.preventDefault();
 
@@ -122,7 +122,9 @@ function FriendCard({
       <div className="text-container">
         <div className="title">{userFriend.login}</div>
         <div className="subtitle">
-          {userFriend.firstName} {userFriend.lastName}
+          {userFriend.firstName}
+          {' '}
+          {userFriend.lastName}
         </div>
       </div>
       <Status userStatus={userStatus} />

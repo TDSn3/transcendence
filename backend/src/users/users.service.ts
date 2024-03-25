@@ -198,12 +198,17 @@ export class UsersService {
     }
   }
 
-  async addUserStatusWebSocketId(
-    id: string,
-    webSocketId: string,
-  ): Promise<User> {
+// Socket ─────────────────────────────────────────────────────────────────────────────────────────
+
+  async addUserStatusWebSocketId(id: string, webSocketId: string): Promise<User> {
     try {
       const user = await this.findById(id);
+
+      // const statusValue = UserStatus.ONLINE;
+      // let statusValue: UserStatus;
+
+      // if (user.status === UserStatus.PLAYING) statusValue = UserStatus.PLAYING
+      // else statusValue = UserStatus.ONLINE;
 
       if (user) {
         const userUpdated = await this.prisma.user.update({
@@ -212,6 +217,7 @@ export class UsersService {
             statusWebSocketId: {
               create: [{ webSocketId: webSocketId }],
             },
+            // status: statusValue,
           },
         });
 
@@ -222,13 +228,11 @@ export class UsersService {
 
       throw new Error();
     } catch (error: unknown) {
-      throw new Error('Failed to add web socket id');
+      throw new NotFoundException('Failed to add web socket id'); // HTTP 404 Not Found
     }
   }
 
-  async removeUserWebSocketId(
-    webSocketId: string,
-  ): Promise<UserStatusWebSocketId> {
+  async removeUserWebSocketId(webSocketId: string): Promise<UserStatusWebSocketId> {
     try {
       const userStatusWebSocketId =
         await this.prisma.userStatusWebSocketId.findUnique({
@@ -256,7 +260,22 @@ export class UsersService {
 
       throw new Error();
     } catch (error: unknown) {
-      throw new Error('Failed to remove web socket id');
+      throw new NotFoundException('Failed to remove web socket id'); // HTTP 404 Not Found
+    }
+  }
+
+// ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: { status: newStatus },
+      });
+
+      return user;
+    } catch (error: unknown) {
+      throw new Error('Failed to update user status');
     }
   }
 
@@ -319,19 +338,6 @@ export class UsersService {
       throw new Error();
     } catch (error: unknown) {
       throw new Error('Failed to find user rank');
-    }
-  }
-
-  async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
-    try {
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: { status: newStatus },
-      });
-
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update user status');
     }
   }
 
