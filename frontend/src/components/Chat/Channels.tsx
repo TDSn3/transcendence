@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
-import axios from "axios";
 import Popup from "./Popup";
 import Modal from '../Modal/Modal';
 import channelsServices from '../../services/channels';
@@ -41,15 +40,14 @@ const Channels = () => {
 
 	const handleSubmit: any = (e: any) => {
 		e.preventDefault();
+
 		if (/^[a-zA-Z]+$/.test(channelName)) {
-			axios.post("http://localhost:5001/api/channels", { intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
-				.then(() => {
-					navigate("/chat/" + channelName);
-				})
-				.catch(() => {
-					console.log("channelName is not valid");
-				});
+			channelsServices
+				.addChannel({ intraId: user.intraId, name: channelName, password: channelPassword, private: channelPrivate })
+				.then(() => navigate("/chat/" + channelName))
+				.catch((error) => console.error(error));
 		}
+
 		setChannelName("");
 		setChannelPassword("");
 		setChannelPrivate(false);
@@ -62,22 +60,22 @@ const Channels = () => {
 		{
 			console.log('Try to access to this channel :', selectedChannel);
 			
-			if (selectedChannel.password === modalPasswordChannelValue)
-			{
-				console.log('%cRight password', 'color: green;')
-
-				axios
-					.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: selectedChannel.name })
-					.then(() => {
+			channelsServices
+				.addChannelMembers({ intraId: user.intraId, name: selectedChannel.name, password: modalPasswordChannelValue })
+				.then((object) => {
+					if ('message' in object) {
+						console.log('%cWrong password', 'color: red;')
+					} else {
+						console.log('%cRight password', 'color: green;')
+						
 						setSelectedChannel(undefined);
 						setIsModalVisiblePasswordChannel(false);
 						setModalPasswordChannelValue('');
-
+	
 						navigate(`/chat/${selectedChannel.name}`)
-					});
-			} else {
-				console.log('%cWrong password', 'color: red;')
-			}
+					}
+				})
+				.catch((error) => console.error(error));
 		}
 
 		setSelectedChannel(undefined);
@@ -95,15 +93,16 @@ const Channels = () => {
 		event.preventDefault();
 
 		if (!channelData.password || channelData.password === '') {
-			axios
-				.post('http://localhost:5001/api/channelMembers', { intraId: user.intraId, channelName: channelData.name })
+			channelsServices
+				.addChannelMembers({ intraId: user.intraId, name: channelData.name })
 				.then(() => {
 					setSelectedChannel(undefined);
 					setIsModalVisiblePasswordChannel(false);
 					setModalPasswordChannelValue('');
 		
 					navigate(`/chat/${channelData.name}`);
-				});
+				})
+				.catch((error) => console.error(error));
 		} else {
 			setSelectedChannel(channelData);
 			setIsModalVisiblePasswordChannel(true);
