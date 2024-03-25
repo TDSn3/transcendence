@@ -91,9 +91,11 @@ const ChatRoom = () => {
       if (channel.data) {
         setChannel(channel.data);
       } else navigate('/chat');
-      setBlockedUsers((
-        await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data
-	  );
+
+      setBlockedUsers(
+        (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`))
+          .data,
+      );
       setMessages(
         (
           await axios.get(
@@ -101,9 +103,13 @@ const ChatRoom = () => {
           )
         ).data,
       );
-	  isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
+      isOwnerRef.current = (
+        await axios.get(
+          `http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`,
+        )
+      ).data.isOwner;
     };
-    fetchData();
+    if (user.id) fetchData();
 
     socketRef.current = io('http://localhost:5001/chat');
     socketRef.current.emit('chatJoin', {
@@ -177,13 +183,15 @@ const ChatRoom = () => {
       <div className="banner">
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>
-        { !isOwnerRef.current ? "" :
+        {!isOwnerRef.current ? (
+          ''
+        ) : (
           <input
             type="button"
             value="⚙️"
             onClick={() => setButtonPopup(!buttonPopup)}
           />
-        }
+        )}
       </div>
       <Messages
         userSocketRef={socketRef}
