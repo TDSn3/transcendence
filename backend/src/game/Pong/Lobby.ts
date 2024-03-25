@@ -1,5 +1,9 @@
 import { Pong } from "./Pong";
 import { Server, Socket } from "socket.io";
+import { UsersStatusGatewayService } from 'src/users/users.gateway.service';
+import { UserStatus } from '@prisma/client';
+
+
 
 
 export class Lobby {
@@ -11,7 +15,7 @@ export class Lobby {
 	public isPrivate: boolean;
 	public key?: string;
 
-	constructor(gameMode:string, server:Server) {
+	constructor(gameMode:string, server:Server, private usersStatusGatewayService: UsersStatusGatewayService) {
 		this.pongGame = new Pong();
 		this.clients = [];
 		this.updateInterval = null;
@@ -31,8 +35,14 @@ export class Lobby {
 				this.pongGame.timerStart = Date.now();
 				this.updateInterval = setInterval(() => {
 					this.pongGame.nextFrame();
-					this.sendGameInfo(client, gameMode);
-				
+					this.sendGameInfo(client, gameMode);				
+					if (this.pongGame.isFinished) {
+						console.log('ici');
+						console.log(this.pongGame.leftPaddle.userId);
+						// this.usersStatusGatewayService
+						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
+						clearInterval(this.updateInterval);
+					}
 				}, 1000 / 60); 
 			}
 		}, 1000);
@@ -43,6 +53,10 @@ export class Lobby {
 	public startGamePVP(lobbyID: string, callback: () => void): void {
 		this.pongGame.gameMode = 'vsPlayer';
 		this.pongGame.isStarted = true;
+		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.PLAYING });
+		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.rightPaddle.userId, status: UserStatus.PLAYING });
+
+
 	
 		const countdownInterval = setInterval(() => {
 			if (this.pongGame.countdown > 0) {
@@ -55,6 +69,8 @@ export class Lobby {
 					this.pongGame.nextFrame();
 					this.sendGameInfoRoom(lobbyID);
 					if (this.pongGame.isFinished) {
+						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
+						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.rightPaddle.userId, status: UserStatus.ONLINE });
 						clearInterval(this.updateInterval);
 						callback();
 					}

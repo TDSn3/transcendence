@@ -1,29 +1,47 @@
 /* eslint-disable */
 
 import { Injectable } from "@nestjs/common";
+import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
+import { AddChannelMembersDto } from './dto/Dto';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChannelMembersService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private channelsService: ChannelsService,
+		) {}
 
-	async create(intraId: number, channelId: number): Promise<ChannelMember> {
-		if (await this.isIn(channelId, intraId)) {
-			return (await this.getChannelMember(channelId, intraId));
-		}
+	async create({ intraId, name, password }: AddChannelMembersDto): Promise<ChannelMember | { message: string }> {
 		try {
-			console.log("creating", intraId, channelId);
+			if (password !== undefined) {
+				const channel = await this.channelsService.findByName(name);
+
+				const passwordCorrect = await bcrypt.compare(password, channel?.password);
+
+				if (passwordCorrect === false) return ({ message: 'Wrong password' });
+			}
+
+			const channelId = await this.channelsService.getChannelId(name);
+
+			if (await this.isIn(channelId, intraId)) {
+				return (await this.getChannelMember(channelId, intraId));
+			}
+			
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
 					userId: intraId,
 					channelId: channelId,
 				}
 			});
-			return (newChannelMember);
-		}
-		catch (error) {
-			throw error;
+
+			if (newChannelMember) return (newChannelMember);
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to add a channel member');
 		}
 	}
 

@@ -49,6 +49,7 @@ function OtherProfilePublicInfo({
       .getUserById(user.id)
       .then((userValue) => setUserWithBlocked(userValue))
       .catch((error) => console.error(error));
+	console.log("here", userWithBlocked.blocked);
   };
   useEffect(hook, [user, user.id]);
 
@@ -68,11 +69,7 @@ function OtherProfilePublicInfo({
 
     setIsBlocked(checkIfBlock || false);
   };
-  useEffect(isBlockedHook, [
-    userWithBlocked?.blocked,
-    userProfile,
-    setIsBlocked,
-  ]);
+  useEffect(isBlockedHook, [userWithBlocked?.blocked, userProfile, setIsBlocked]);
 
   return (
     <div>

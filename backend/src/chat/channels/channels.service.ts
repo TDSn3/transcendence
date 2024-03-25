@@ -3,29 +3,44 @@
 import { Injectable } from '@nestjs/common';
 import { Channel, ChannelMember, Message } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
+import { AddChannelDto } from './dto/Dto';
+import bcrypt from 'bcrypt';
+
 @Injectable()
 export class ChannelsService {
 	constructor(private prisma: PrismaService) {}
 
-	async create(intraId: number, param: { name: string, password: string, private: boolean }): Promise<Channel> {
+	async create(addChannelDto: AddChannelDto): Promise<Channel> {
 		try {
+			const data: any = {
+				name: addChannelDto.name,
+				private: addChannelDto.private,
+				members: {
+					create: [
+						{ userId: addChannelDto.intraId, isAdmin: true, isOwner: true }
+					]
+				}				
+			}
+
+			if (addChannelDto.password && addChannelDto.password !== '') {
+				const saltRounds = 10
+				const passwordHash = await bcrypt.hash(addChannelDto.password, saltRounds);
+				
+				data.password = passwordHash;
+			}
+
 			const newChannel = await this.prisma.channel.create({
-				data: {
-					name: param.name,
-					password: param.password,
-					private: param.private,
-					members: {
-						create: [
-							{ userId: intraId, isAdmin: true, isOwner: true }
-						]
-					}
-				}
+				data: data
 			});
-			return (newChannel);
-		} catch (error) {
-			throw error;
+
+			if (newChannel) return newChannel;
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to add a channel');
 		}
 	}
+
 	async createDirectChannel(userOneIntraId: number, userTwoIntraId: number): Promise<Channel> {
 		try {
 			const channelExist = await this.prisma.channel.findFirst({
@@ -45,7 +60,7 @@ export class ChannelsService {
 				data: {
 					name: `direct-${userOneIntraId}-${userTwoIntraId}`,
 					private: true,
-					isDual: true, // Indique qu'il s'agit d'un chat direct
+					isDual: true,
 					members: {
 						create: [
 							{ userId: userOneIntraId, isOwner: true, isAdmin: true},
@@ -123,8 +138,21 @@ export class ChannelsService {
 				id: true
 			}
 		});
-		console.log("channelId:", res.id);
 		return (res.id);
+	}
+
+	async findByName(name: string): Promise<Channel> {	
+		try {
+			const channel = await this.prisma.channel.findUnique({
+				where: { name },
+			});
+
+			if (channel) return channel;
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to find channel by name');
+		}
 	}
 
 	async getAllMessages(channelName: string): Promise<Message[]> {

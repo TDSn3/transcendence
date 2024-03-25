@@ -7,6 +7,7 @@ import { UsersStatusGatewayService } from 'src/users/users.gateway.service';
 import { GamesService } from './Pong/Game.service';
 import { GameHistoryService } from 'src/game-history/game-history.service';
 import { UserStatus } from '@prisma/client';
+import { Scope } from '@nestjs/common';
 
 @WebSocketGateway({
 	namespace: "/game"
@@ -53,9 +54,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(client: any) {
         console.log("Déconnexion du client:", client.id);
+		// this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
+
 		for (const lobbyID in this.lobbies) {
+			// console.log(this.lobbies[lobbyID].pongGame);
 			for (let i = 0; i < this.lobbies[lobbyID].clients.length; i++) {
 				if (client.id === this.lobbies[lobbyID].clients[i]) {
+					console.log('coicou');
 					if (this.lobbies[lobbyID].clients.length === 2 && !this.lobbies[lobbyID].pongGame.isFinished) {
 						if (this.lobbies[lobbyID].clients[i] === this.lobbies[lobbyID].pongGame.leftPaddle.websocket) {
 							this.lobbies[lobbyID].pongGame.loserUserId = this.lobbies[lobbyID].pongGame.leftPaddle.userId;
@@ -69,13 +74,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 							this.lobbies[lobbyID].pongGame.score[0] = 10;
 							this.lobbies[lobbyID].pongGame.score[1] = 0;
 						}
+						console.log(this.lobbies[lobbyID].pongGame.gameMode);
+						
+
 					}
+					if (this.lobbies[lobbyID].pongGame.gameMode === 'vsBot') {
+						// console.log('test');
+						this.lobbies[lobbyID].pongGame.score[0] = 5;
+					}
+					// this.usersStatusGatewayService.updateStatus({ id: this.lobbies[lobbyID].pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
 					this.lobbies[lobbyID].clients.splice(i, 1);
-					if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
-						clearInterval(this.lobbies[lobbyID].updateInterval);
-						delete this.lobbies[lobbyID];
-						console.log(`Lobby ${lobbyID} a ete supprime`);
-					}
+
+					// this.lobbies[lobbyID].pongGame.leftPaddle.userId;
+					// if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
+					// 	// clearInterval(this.lobbies[lobbyID].updateInterval);
+					// 	delete this.lobbies[lobbyID];
+					// 	console.log(`Lobby ${lobbyID} a ete supprime`);
+					// }
 					break;
 			}
 			}
@@ -126,13 +141,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const lobbyID: string = `vsBotLobby_${client.id}`;
 		client.join(lobbyID);
 
-		this.lobbies[lobbyID] = new Lobby('vsBot', this.server);
+		this.lobbies[lobbyID] = new Lobby('vsBot', this.server, this.usersStatusGatewayService);
 		this.lobbies[lobbyID].clients[0] = client.id;
 		this.lobbies[lobbyID].startGamePVE(client, PaddleInfo.gameMode);
 		this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
 		this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
 		this.lobbies[lobbyID].pongGame.rightPaddle.avatar = "https://i.pinimg.com/originals/a5/39/07/a53907b134abfe7fdc26da8eeef1e268.jpg";
 		this.lobbies[lobbyID].pongGame.rightPaddle.playerName = "BOT";
+		this.lobbies[lobbyID].pongGame.leftPaddle.userId = PaddleInfo.userId;
 		this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
 	};
 
@@ -149,24 +165,25 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			lobby.startGamePVP(lobbyID, () => {
 				this.gameHistoryService.addGameHistory(lobby.pongGame.winnerUserId, lobby.pongGame.winnerScore, lobby.pongGame.loserUserId, lobby.pongGame.loserScore);
 			});
+			// this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
 		}
 		else {
 			const lobbyID: string = `vsPlayerLobby_${client.id}`;
 			client.join(lobbyID);
-			this.lobbies[lobbyID] = new Lobby('vsPlayer', this.server);
+			this.lobbies[lobbyID] = new Lobby('vsPlayer', this.server, this.usersStatusGatewayService);
 			this.lobbies[lobbyID].clients[0] = client.id;
 			this.lobbies[lobbyID].pongGame.leftPaddle.websocket = client.id;
 			this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
 			this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
 			this.lobbies[lobbyID].pongGame.leftPaddle.userId = PaddleInfo.userId;
-
+			// this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
 		}
 	}
 	InitPrivateLobby(PaddleInfo:any, client:Socket) {
 		if (PaddleInfo.isHost) {
 			const lobbyID: string = `PrivateGame_${client.id}`;
 			client.join(lobbyID);
-			this.lobbies[lobbyID] = new Lobby ('vsPlayer', this.server);
+			this.lobbies[lobbyID] = new Lobby ('vsPlayer', this.server, this.usersStatusGatewayService);
 			this.lobbies[lobbyID].key = PaddleInfo.key;
 			this.lobbies[lobbyID].isPrivate = true;
 			this.lobbies[lobbyID].clients[0] = client.id;

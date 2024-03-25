@@ -30,6 +30,7 @@ export class UsersService {
       include: {
         friends: true,
         friendOf: true,
+		blocked: true,
         historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
         historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
       },

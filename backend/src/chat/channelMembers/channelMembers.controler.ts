@@ -3,6 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { ChannelMembersService } from "./channelMembers.service";
 import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
+import { AddChannelMembersDto } from './dto/Dto';
 
 @Controller("api/channelMembers")
 @ApiTags("channelMembers")
@@ -10,8 +11,8 @@ export class ChannelMembersController {
 	constructor(private channelMembersService: ChannelMembersService, private channelsService: ChannelsService) {}
 
 	@Post()
-	async create(@Body() param: { channelName: string, intraId: number }) {
-		return (this.channelMembersService.create(param.intraId, await this.channelsService.getChannelId(param.channelName)));
+	async create(@Body() addChannelMembersDto: AddChannelMembersDto): Promise<ChannelMember | { message: string }> {
+		return (this.channelMembersService.create(addChannelMembersDto));
 	}
 
 	@Get(":channelName/:intraId")
