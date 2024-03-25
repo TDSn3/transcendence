@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, UserStatus, UserStatusWebSocketId } from '@prisma/client';
+import { User, UserStatus, UserStatusWebSocketId, GameHistory } from '@prisma/client';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 import color from '../utils/color';
@@ -284,8 +284,28 @@ export class UsersService {
       if (users && users.length > 0) {
         const usersSortByRank = users.sort(
           (a, b) => {
-            const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
-            const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
+            const rankA = a?.historyGamesWon?.reduce((accumulator, currentValue: GameHistory) => {
+              if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+              return (accumulator + 1);
+            }, 0)
+            -
+            a?.historyGamesLost?.reduce((accumulator, currentValue: GameHistory) => {
+              if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+              return (accumulator + 1);
+            }, 0);
+
+            const rankB = b?.historyGamesWon?.reduce((accumulator, currentValue: GameHistory) => {
+              if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+              return (accumulator + 1);
+            }, 0)
+            -
+            b?.historyGamesLost?.reduce((accumulator, currentValue: GameHistory) => {
+              if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
+              return (accumulator + 1);
+            }, 0);
+
+            // const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
+            // const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
   
             return rankB - rankA;
           },
