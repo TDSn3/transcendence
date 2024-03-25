@@ -33,6 +33,12 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuardToken)
+  @Get('rank/id/:id')
+  getRank(@Param('id') id: string): Promise<{ rank: number }> {
+    return this.usersService.getRank(id);
+  }
+
+  @UseGuards(AuthGuardToken)
   @Get('login/:login')
   findByLogin(@Param('login') login: string): Promise<User> {
     return this.usersService.findByLogin(login);
