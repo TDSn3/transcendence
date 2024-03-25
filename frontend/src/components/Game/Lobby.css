@@ -5,10 +5,35 @@
   }
   
   .button-container button {
-	margin: 0 10px; 
+	margin: 0 10px;
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	background-color: #8052ff;
+	border: 2px solid #000;
+	border-radius: 10px;
+	box-shadow: 5px 5px 0px #000;
+	transition: all 0.3s ease;
+	cursor: pointer;
   }
-
+  .button-container button:hover {
+	background-color: #fff;
+	color: #8052ff;
+	border: 2px solid #8052ff;
+	box-shadow: 5px 5px 0px #8052ff;
+  }
+  
+  .button-container button:active {
+	background-color: #fcf414;
+	box-shadow: none;
+	transform: translateY(4px);
+  }
   .card-container {
+	height: 100%;
 	display: flex;
 	justify-content: space-around;
 	margin-bottom: 20px;
@@ -16,11 +41,11 @@
   
   .card {
 	width: 25vw;
-	height: 30vw;
+	height: 100%;
 	border-radius: 20px;
 	padding: 2px;
 	box-shadow: #111111 0 1px 3px 2px;
-	background: linear-gradient(0deg, #000000ea, #272727);
+	background: linear-gradient(20deg, #000000ea, #031d64);
 	display: flex;
 	flex-direction: column; 
 	justify-content:flex-start;
@@ -31,7 +56,7 @@
 	font-weight: bold;
 	margin-top: 10px;
 	margin-bottom: 30px;
-	color: aqua;
+	color: rgb(247, 248, 248);
 	text-align: center;
 
   }
@@ -45,6 +70,15 @@
 	margin-bottom: 2%;
 	margin-left: 5%;
    }
+
+
+   .gamePage {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+  }
+  
    
   
 

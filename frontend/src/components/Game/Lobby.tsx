@@ -172,9 +172,9 @@ const Lobby = (props: LobbyProps) => {
   }
 
   return (
-	<div className="page">
+	<div className="gamePage">
 	  {displayButtons && (
-		<div>
+		<>
 		  <div className="card-container">
 			<div className="card">
 				<h2>PVP</h2>
@@ -206,7 +206,7 @@ const Lobby = (props: LobbyProps) => {
 			<button onClick={handleIAPong}>Jouer contre l'ordi</button>
 			<button onClick={handleSoloGame}>Solo Game</button>
 		  </div>
-		</div>
+		</>
 	  )}
   
 	  {}
