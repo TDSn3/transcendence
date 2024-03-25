@@ -30,7 +30,7 @@ const Channels = () => {
 			console.error('Auth context hook not yet !');
 			return;
 		}
-		
+
 		channelsServices
 			.getAll(user)
 			.then((allChannelsValue) => setChannelsNames(allChannelsValue))
@@ -59,7 +59,7 @@ const Channels = () => {
 		if (selectedChannel)
 		{
 			console.log('Try to access to this channel :', selectedChannel);
-			
+
 			channelsServices
 				.addChannelMembers({ intraId: user.intraId, name: selectedChannel.name, password: modalPasswordChannelValue })
 				.then((object) => {
@@ -67,11 +67,11 @@ const Channels = () => {
 						console.log('%cWrong password', 'color: red;')
 					} else {
 						console.log('%cRight password', 'color: green;')
-						
+
 						setSelectedChannel(undefined);
 						setIsModalVisiblePasswordChannel(false);
 						setModalPasswordChannelValue('');
-	
+
 						navigate(`/chat/${selectedChannel.name}`)
 					}
 				})
@@ -91,22 +91,34 @@ const Channels = () => {
 
 	const handleClick = (channelData: ChannelType) => (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
+		channelsServices
+			.getAll(user)
+			.then((allChannelsValue) => setChannelsNames(allChannelsValue))
+			.catch((error) => console.error(error));
+		console.log(channelsNames);
 
-		if (!channelData.password || channelData.password === '') {
+		// if (!channelData.password || channelData.password === '') {
 			channelsServices
 				.addChannelMembers({ intraId: user.intraId, name: channelData.name })
-				.then(() => {
-					setSelectedChannel(undefined);
-					setIsModalVisiblePasswordChannel(false);
-					setModalPasswordChannelValue('');
-		
-					navigate(`/chat/${channelData.name}`);
+				.then((object) => {
+					if ('message' in object) {
+						console.log('%cWrong password', 'color: red;')
+
+						setSelectedChannel(channelData);
+						setIsModalVisiblePasswordChannel(true);
+					} else {
+						setSelectedChannel(undefined);
+						setIsModalVisiblePasswordChannel(false);
+						setModalPasswordChannelValue('');
+
+						navigate(`/chat/${channelData.name}`);
+					}
 				})
 				.catch((error) => console.error(error));
-		} else {
-			setSelectedChannel(channelData);
-			setIsModalVisiblePasswordChannel(true);
-		}
+		// } else {
+		// 	setSelectedChannel(channelData);
+		// 	setIsModalVisiblePasswordChannel(true);
+		// }
 	};
 
 	return (
@@ -148,6 +160,7 @@ const Channels = () => {
 					<input type="text" placeholder="Name" autoComplete="off" autoFocus value={channelName} onChange={(e) => {setChannelName(e.target.value)}}/>
 					<input type="text" placeholder="Password" autoComplete="off" value={channelPassword} onChange={(e) => {setChannelPassword(e.target.value)}}/>
 					<div className="create-form-end">
+						{/* Delete password: <input type="checkbox" onChange={set}/> */}
 						Private: <input type="checkbox" onChange={() => {setChannelPrivate(!channelPrivate)}}/>
 						<input type="button" value="Send" onClick={handleSubmit}/>
 					</div>
