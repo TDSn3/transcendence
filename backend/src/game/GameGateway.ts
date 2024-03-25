@@ -85,11 +85,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 					this.lobbies[lobbyID].clients.splice(i, 1);
 
 					// this.lobbies[lobbyID].pongGame.leftPaddle.userId;
-					// if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
-					// 	// clearInterval(this.lobbies[lobbyID].updateInterval);
-					// 	delete this.lobbies[lobbyID];
-					// 	console.log(`Lobby ${lobbyID} a ete supprime`);
-					// }
+					if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
+						// clearInterval(this.lobbies[lobbyID].updateInterval);
+						delete this.lobbies[lobbyID];
+						console.log(`Lobby ${lobbyID} a ete supprime`);
+					}
 					break;
 			}
 			}
@@ -179,32 +179,52 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 	}
 	InitPrivateLobby(PaddleInfo:any, client:Socket) {
-		if (PaddleInfo.isHost) {
-			const lobbyID: string = `PrivateGame_${client.id}`;
-			client.join(lobbyID);
+		const lobby = this.findLobbyByKey(PaddleInfo.key);
+		if (lobby === null) {
+			client.join(PaddleInfo.key);
+			const lobbyID:string = PaddleInfo.key;
 			this.lobbies[lobbyID] = new Lobby ('vsPlayer', this.server, this.usersStatusGatewayService);
 			this.lobbies[lobbyID].key = PaddleInfo.key;
 			this.lobbies[lobbyID].isPrivate = true;
 			this.lobbies[lobbyID].clients[0] = client.id;
 			this.lobbies[lobbyID].pongGame.leftPaddle.websocket = client.id;
+			this.lobbies[lobbyID].pongGame.leftPaddle.userId = PaddleInfo.userId;
 			this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
 			this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
+		} else {
+			lobby.clients[1] = client.id;
+			client.join(PaddleInfo.key);
+			lobby.pongGame.rightPaddle.websocket = client.id;
+			lobby.pongGame.rightPaddle.userId = PaddleInfo.userId;
+			lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
+			lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
+			lobby.startGamePVP(PaddleInfo.key, () => {});
 		}
-		else {
-			console.log('ici', PaddleInfo.key);
-			let lobby = this.findLobbyByKey(PaddleInfo.key);
-			if (lobby != null) {
-				lobby.clients[1] = client.id;
-				const lobbyID:string = this.findKey(lobby);
-				client.join(lobbyID);
-				lobby.startGamePVP(lobbyID, () => {});
-				lobby.pongGame.rightPaddle.websocket = client.id;
-				lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
-				lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
-			}
-			else {
-				console.log('trop tard l invitation est expire');
-			}
-		}
+		// if (PaddleInfo.isHost) {
+		// 	const lobbyID: string = `PrivateGame_${client.id}`;
+		// 	client.join(lobbyID);
+		// 	this.lobbies[lobbyID] = new Lobby ('vsPlayer', this.server, this.usersStatusGatewayService);
+		// 	this.lobbies[lobbyID].key = PaddleInfo.key;
+		// 	this.lobbies[lobbyID].isPrivate = true;
+		// 	this.lobbies[lobbyID].clients[0] = client.id;
+		// 	this.lobbies[lobbyID].pongGame.leftPaddle.websocket = client.id;
+		// 	this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
+		// 	this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
+		// }
+		// else {
+		// 	let lobby = this.findLobbyByKey(PaddleInfo.key);
+		// 	if (lobby != null) {
+		// 		lobby.clients[1] = client.id;
+		// 		const lobbyID:string = this.findKey(lobby);
+		// 		client.join(lobbyID);
+		// 		lobby.startGamePVP(lobbyID, () => {});
+		// 		lobby.pongGame.rightPaddle.websocket = client.id;
+		// 		lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
+		// 		lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
+		// 	}
+		// 	else {
+		// 		console.log('trop tard l invitation est expire');
+		// 	}
+		// }
 	}
 }

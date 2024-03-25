@@ -95,8 +95,8 @@ export class ChannelsService {
 			throw new Error('Failed to find all channels');
 		}
 	}
-
-	async channelChecker(channelName: string, intraId: number): Promise<boolean> {
+	
+	async channelChecker(channelName: string, intraId: number): Promise<Channel | null> {
 		if (intraId === 0) {
 			return (null);
 		}
@@ -189,6 +189,15 @@ export class ChannelsService {
 			}
 		});
 		return (res);
+	}
+
+	async getIsDual(channelName: string): Promise<boolean> {
+		const res = await this.prisma.channel.findUnique({
+			where: {
+				name: channelName
+			}
+		})
+		return (res.isDual);
 	}
 
 	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId: number): Promise<Channel> {
