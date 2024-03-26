@@ -194,7 +194,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			this.lobbies[lobbyID].pongGame.leftPaddle.userId = PaddleInfo.userId;
 			this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
 			this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
-		} else {
+		} else if (lobby.pongGame.leftPaddle.userId !== PaddleInfo.userId){
 			lobby.clients[1] = client.id;
 			client.join(PaddleInfo.key);
 			lobby.pongGame.rightPaddle.websocket = client.id;

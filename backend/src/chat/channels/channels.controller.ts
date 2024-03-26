@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, Res } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, Delete, Req, Res } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ChannelsService } from "./channels.service";
 import { Response } from "express";
@@ -34,6 +34,20 @@ export class ChannelsController {
     );
   }
 
+  @UseGuards(AuthGuardToken)
+  @Delete("removeMember")
+  async removeMember(@Query() query: { intraId: number, channelName: string }, @Res() res: Response) {
+    console.log("param", query);
+    return (this.channelService.leaveChannel(query.channelName, +query.intraId)
+      .then(() => {
+        res.status(200).json({ message: "Member successfully removed" });
+      })
+      .catch(() => {
+        res.status(501).json({ message: "Member removal failed" });
+      })
+    );
+  }
+  
   @UseGuards(AuthGuardToken)
   @Post("createDirectChannel")
   async createDirectChannel(@Body() param: { user1: number, user2: number }, @Res() res: Response) {

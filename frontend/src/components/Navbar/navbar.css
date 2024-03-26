@@ -8,6 +8,9 @@
 	width: 192px;
 	border-radius: var(--border-radius-small-medium);
 	box-sizing: border-box;
+	@media screen and (max-width: 768px) {
+		width: fit-content;
+	}
 }
 
 .first-container-navbar {
@@ -15,4 +18,7 @@
 	flex-direction: column;
 
 	gap: var(--spacing-extra-extra-small);
+	@media screen and (max-width: 768px) {
+		width: fit-content;
+	}
 }
