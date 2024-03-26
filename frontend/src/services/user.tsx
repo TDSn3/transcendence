@@ -1,10 +1,9 @@
 import axios from 'axios';
-import config from '../utils/config';
 
 import { User, UserStatus } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
-const url = `${config.API_BASE_URL}/users`;
+const url = `${API_BASE_URL}/users`;
 
 const getAll = async () => {
   try {
@@ -28,7 +27,7 @@ const getUserById = async (id: string): Promise<User> => {
 
 const getUserByToken = async (): Promise<User> => {
   try {
-    const { data } = await axios.get<User>(`${config.API_BASE_URL}/auth/user-by-token`);
+    const { data } = await axios.get<User>(`${API_BASE_URL}/auth/user-by-token`);
 
     return data;
   } catch (error: unknown) {

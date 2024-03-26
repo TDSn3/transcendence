@@ -9,7 +9,6 @@ import useAuth from '../Auth/useAuth';
 import {
   UserStatus, ServerToClientEvents, ClientToServerEvents, UserForStatusWebSocket,
 } from '../../utils/types';
-import config from '../../utils/config';
 
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined,
@@ -27,7 +26,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
   const hookIsLoggedSetSocket = () => {
     if (isLoggedIn) {
-      setSocket(io(config.USERS_WEB_SOCKET_URL));
+      setSocket(io(USERS_WEB_SOCKET_URL));
     }
   };
   useEffect(hookIsLoggedSetSocket, [isLoggedIn]);

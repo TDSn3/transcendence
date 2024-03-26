@@ -1,5 +1,4 @@
 import axios from 'axios';
-import config from '../utils/config';
 
 import {
   User,
@@ -10,8 +9,8 @@ import {
 } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
 
-const url = `${config.API_BASE_URL}/channels`;
-const urlChannelMembers = `${config.API_BASE_URL}/channelMembers`;
+const url = `${API_BASE_URL}/channels`;
+const urlChannelMembers = `${API_BASE_URL}/channelMembers`;
 
 const getAll = async (user: User): Promise<ChannelType[]> => {
   try {

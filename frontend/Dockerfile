@@ -7,10 +7,4 @@ RUN			npm install
 
 RUN			npm run build
 
-# CMD			["npm", "run", "dev"]
-
-RUN			npm install -g serve
-
-# CMD			["serve", "dist"]
-
-CMD			["serve", "-s", "dist"]
+CMD			["npm", "run", "dev"]
