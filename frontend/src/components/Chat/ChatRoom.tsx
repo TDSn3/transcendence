@@ -12,7 +12,7 @@ import Popup from './Popup.tsx';
 import { io } from 'socket.io-client';
 import axios from 'axios';
 import Search from '../Search/Search.tsx';
-
+import { ChannelType } from '../../utils/types';
 interface InputBarProps {
   socketRef: any;
   user: any;
@@ -86,7 +86,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const channel = await axios.get<boolean>(
+      const channel = await axios.get<ChannelType | null>(
         `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
       );
       if (channel?.data) {

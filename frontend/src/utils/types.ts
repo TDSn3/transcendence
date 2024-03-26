@@ -120,6 +120,8 @@ export interface ChannelType {
   password?: string,
   private: boolean,
   members: ChannelMember[],
+  isDual: boolean,
+  isPrivate: boolean,
 }
 
 export interface AddChannelType {
