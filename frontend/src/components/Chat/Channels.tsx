@@ -113,7 +113,6 @@ const Channels = () => {
           if ('message' in object) {
             console.log('%cWrong password', 'color: red;');
           } else {
-            console.log('%cRight password', 'color: green;');
 
             setSelectedChannel(undefined);
             setIsModalVisiblePasswordChannel(false);
