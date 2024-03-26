@@ -39,12 +39,12 @@ const FormCardInputWrapper = styled.div`
 const FormCardInput = styled.input`
   display: flex;
   justify-content: center;
-  width: 250px;
-  font-size: 2rem;
+  width: 330px;
+  font-size: 1.75rem;
   font-weight: bold;
   letter-spacing: 2rem;
   text-align: start;
-  position: absolute;
+  /* position: absolute; */
   z-index: 3;
   border: none;
   background-color: transparent;
@@ -56,7 +56,7 @@ const FormCardInput = styled.input`
     outline: none;
   }
   &::placeholder {
-    text-align: center;
+    letter-spacing: 2.5rem;
   }
 `;
 

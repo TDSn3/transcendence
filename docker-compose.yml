@@ -84,7 +84,7 @@ services:
     #     build: ./frontend
     #     env_file:
     #         - .env
-    #         - ./frontend/.env
+    #         - .env.private
     #     ports:
     #         - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     #     depends_on:
@@ -99,6 +99,7 @@ services:
     #     env_file:
     #         - .env
     #         - ./backend/.env
+    #         - .env.private
     #     ports:
     #         - "${BACKEND_PORT}:${BACKEND_PORT}"
     #     depends_on:

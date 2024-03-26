@@ -44,21 +44,6 @@ export class AuthController {
     }
   }
 
-  // TODO: type userObject
-  // @UseGuards(JwtGuard)
-  @Post('logout')
-  async logout(@Res() res: Response, @Body() userObject: any) {
-    try {
-      await this.authService.logout(res, userObject);
-      res.status(200).send({
-        message: 'User successfully logged out',
-      });
-    } catch {
-      res.status(501).send({ message: 'Logout error' });
-    }
-  }
-
-  // @UseGuards(AuthGuardToken)
   @Get('me')
   async checksession(@Req() req: Request, @Res() res: Response) {
     try {
@@ -72,7 +57,6 @@ export class AuthController {
     }
   }
 
-  // @UseGuards(AuthGuardToken)
   @Get('user-by-token')
   getUserByToken(@Req() req: Request) {
     return this.authService.getUserByToken(req);
@@ -104,6 +88,19 @@ export class AuthController {
         .send('Error while verifying code');
     }
   }
+
+  @Post('logout')
+  async logout(@Res() res: Response, @Body() userObject: any) {
+    try {
+      await this.authService.logout(res, userObject);
+      res.status(200).send({
+        message: 'User successfully logged out',
+      });
+    } catch {
+      res.status(501).send({ message: 'Logout error' });
+    }
+  }
+
   @UseGuards(AuthGuardToken)
   @Post('2fa')
   async handleTwoFactorAuth(
@@ -115,7 +112,7 @@ export class AuthController {
       await this.auth2FAService.generateQRCode(userData.id, res);
     } catch (error) {
       console.error(error);
-      return res.status(500).send('Error while handling 2FA');
+      return res.status(501).send('Error while handling 2FA');
     }
   }
 }

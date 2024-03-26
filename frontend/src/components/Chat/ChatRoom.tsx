@@ -4,6 +4,7 @@ import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import Messages from './Messages.tsx';
 import './chat.css';
 import useAuth from '../../contexts/Auth/useAuth.tsx';
+import toast, { Toaster } from 'react-hot-toast';
 import userServices from '../../services/user';
 import { User } from '../../utils/types';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -88,12 +89,15 @@ const ChatRoom = () => {
       const channel = await axios.get<boolean>(
         `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
       );
-      if (channel.data) {
-        setChannel(channel.data);
+      if (channel?.data) {
+        setChannel(channel?.data);
+        setNewChannelPrivate(channel?.data?.private);
       } else navigate('/chat');
-      setBlockedUsers((
-        await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`)).data
-	  );
+
+      setBlockedUsers(
+        (await axios.get(`http://localhost:5001/api/users/${user.id}/blocked`))
+          .data,
+      );
       setMessages(
         (
           await axios.get(
@@ -101,11 +105,27 @@ const ChatRoom = () => {
           )
         ).data,
       );
-	  isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
-	  console.log((await axios.get(`http://localhost:5001/api/channels/${channelName}/isDual`)).data);
-	  setDual((await axios.get(`http://localhost:5001/api/channels/${channelName}/isDual`)).data);
+      isOwnerRef.current = (
+        await axios.get(
+          `http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`,
+        )
+      ).data.isOwner;
+      console.log(
+        (
+          await axios.get(
+            `http://localhost:5001/api/channels/${channelName}/isDual`,
+          )
+        ).data,
+      );
+      setDual(
+        (
+          await axios.get(
+            `http://localhost:5001/api/channels/${channelName}/isDual`,
+          )
+        ).data,
+      );
     };
-    fetchData();
+    if (user.id) fetchData();
 
     socketRef.current = io('http://localhost:5001/chat');
     socketRef.current.emit('chatJoin', {
@@ -155,8 +175,10 @@ const ChatRoom = () => {
           channelName: channelName,
         });
         setInvitedUser('');
+        toast.success('Member successfully added');
         setButtonPopup(false);
       } catch (error) {
+        toast.error('Member addition failed');
         console.error(error);
       }
     }
@@ -169,6 +191,7 @@ const ChatRoom = () => {
       newPrivate: newChannelPrivate,
     });
     setButtonPopup(false);
+    toast.success('Channel updated');
   };
 
   return (
@@ -176,18 +199,28 @@ const ChatRoom = () => {
       <div className="banner">
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>
-		{ isDual && <input type="button" value="⚔️" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: channelName}})}/> }
-		{/* <input type="button" value="→" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: false, key: "cest un test"}})}/> */}
-		
-{/* // 	  <input type="button" value="←" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: "CEST LA CLE"}})}/> */}
+        {isDual && (
+          <input
+            type="button"
+            value="⚔️"
+            onClick={() =>
+              navigate('/game', {
+                state: { isPrivate: true, isHost: true, key: channelName },
+              })
+            }
+          />
+        )}
+        {/* <input type="button" value="→" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: false, key: "cest un test"}})}/> */}
 
-        { isOwnerRef.current &&
+        {/* // 	  <input type="button" value="←" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: "CEST LA CLE"}})}/> */}
+
+        {isOwnerRef.current && (
           <input
             type="button"
             value="⚙️"
             onClick={() => setButtonPopup(!buttonPopup)}
           />
-        }
+        )}
       </div>
       <Messages
         userSocketRef={socketRef}
@@ -239,6 +272,7 @@ const ChatRoom = () => {
           </form>
         </Popup>
       )}
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

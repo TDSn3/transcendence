@@ -18,7 +18,7 @@ function isUser(obj: unknown): obj is User {
       && typeof user.createdAt === 'number'
       && typeof user.updatedAt === 'number'
       && typeof user.TwoFactorAuthSecret === 'string'
-      && typeof user.isTwoFactorEnabled === 'boolean'
+      && typeof user.isTwoFactorAuthEnabled === 'boolean'
       && typeof user.intraId === 'number'
       && typeof user.email42 === 'string'
       && typeof user.login === 'string'

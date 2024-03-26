@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { ChannelsService } from "../channels/channels.service";
 import { ChannelMember } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
@@ -33,7 +33,7 @@ export class ChannelMembersService {
 			if (await this.isIn(channelId, intraId)) {
 				return (await this.getChannelMember(channelId, intraId));
 			}
-			
+
 			const newChannelMember: ChannelMember = await this.prisma.channelMember.create({
 				data: {
 					userId: intraId,
@@ -42,10 +42,10 @@ export class ChannelMembersService {
 			});
 
 			if (newChannelMember) return (newChannelMember);
-
-			throw new Error();
+			throw new NotFoundException('Failed to add a channel member');
 		} catch (error: unknown) {
-			throw new Error('Failed to add a channel member');
+			if (error instanceof NotFoundException) throw new NotFoundException(error.message);
+			throw new UnprocessableEntityException('Failed to find all users');
 		}
 	}
 

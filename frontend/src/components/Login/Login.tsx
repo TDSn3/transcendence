@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cta from '../Cta/cta';
 import useAuth from '../../contexts/Auth/useAuth';
 import authServices from '../../services/auth';
+import { UserStatus } from '../../utils/types';
 
 import './login.css';
 
@@ -26,7 +27,7 @@ function Login() {
     try {
       const user = await authServices.addFakeUser();
 
-      setUser(user);
+      setUser({ ...user, status: UserStatus.ONLINE });
       setLoggedIn(true);
 
       navigate(`/profile/${user.login}`);
