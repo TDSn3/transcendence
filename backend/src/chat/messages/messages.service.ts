@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { Message } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
@@ -29,9 +29,11 @@ export class MessagesService {
 					content: content,
 				}
 			})
-			return (newMessage);
-		} catch (error) {
-			throw error;
+			if (newMessage) return (newMessage);
+			throw new NotFoundException('Failed to find all users');
+		} catch (error: unknown) {
+			if (error instanceof NotFoundException) throw new NotFoundException(error.message);
+			throw new UnprocessableEntityException('Failed to create message');
 		}
 	}
 }

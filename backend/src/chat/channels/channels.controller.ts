@@ -65,7 +65,6 @@ export class ChannelsController {
 
   @Get(":channelName/isDual")
   async getIsDual(@Param("channelName") channelName: string): Promise<boolean> {
-	console.log("isDual", await this.channelService.getIsDual(channelName));
 	return (this.channelService.getIsDual(channelName));
   }
 

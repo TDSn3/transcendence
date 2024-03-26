@@ -177,9 +177,6 @@ const ChatRoom = () => {
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>
 		{ isDual && <input type="button" value="⚔️" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key:"cest un test"}})}/> }
-		{/* <input type="button" value="→" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: false, key: "cest un test"}})}/> */}
-		
-{/* // 	  <input type="button" value="←" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: "CEST LA CLE"}})}/> */}
 
         { isOwnerRef.current &&
           <input

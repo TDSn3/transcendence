@@ -63,7 +63,7 @@ export class ChannelsService {
 					isDual: true,
 					members: {
 						create: [
-							{ userId: userOneIntraId, isOwner: true, isAdmin: true},
+							{ userId: userOneIntraId },
 							{ userId: userTwoIntraId }
 						]
 					}
@@ -153,7 +153,7 @@ export class ChannelsService {
 		}
 	}
 
-	async findById(id: number): Promise<Channel> {	
+	async findById(id: number): Promise<Channel> {
 		try {
 			const channel = await this.prisma.channel.findUnique({
 				where: { id },
@@ -210,19 +210,17 @@ export class ChannelsService {
 			}
 		});
 
-		console.log(newPassword);
 		return (
 			await this.prisma.channel.update({
 				where: {
 					id: channelId
 				},
 				data: {
-					password: await bcrypt.hash(newPassword, 10),
+					password: (newPassword !== "" ? await bcrypt.hash(newPassword, 10) : ""),
 					private: newPrivate
 				}
 			})
 		);
-		// return (null);
 	}
 
 	async addMember(user: string, channelName: string): Promise<ChannelMember> {
