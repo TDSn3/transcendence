@@ -14,6 +14,10 @@
 	float: left;
 }
 
+.messages {
+	overflow-y: auto;
+}
+
 .message {
 	display: flex;
 	flex-direction: row;
