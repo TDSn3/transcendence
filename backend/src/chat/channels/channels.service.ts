@@ -1,7 +1,8 @@
 /* eslint-disable */
 
 import { Injectable } from '@nestjs/common';
-import { Channel, ChannelMember, Message } from '@prisma/client';
+import { Channel, ChannelMember, Message, User } from '@prisma/client';
+import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { AddChannelDto } from './dto/Dto';
 import bcrypt from 'bcrypt';
@@ -11,15 +12,30 @@ export class ChannelsService {
 	constructor(private prisma: PrismaService) {}
 
 	async create(addChannelDto: AddChannelDto): Promise<Channel> {
+		const channelExist = await this.prisma.channel.findFirst({
+			where: {
+				name: addChannelDto.name
+			}
+		});
+		if (channelExist) {
+			console.log("channelExist:", channelExist);
+			throw new BadRequestException('Channel already exists');
+		}
 		try {
+	
+				
+			const users = await this.prisma.user.findMany();
+			const membersToCreate = users.map(({ intraId }) => ({
+				userId: intraId,
+				isAdmin: intraId === addChannelDto.intraId,
+				isOwner: intraId === addChannelDto.intraId,
+			  }));
 			const data: any = {
 				name: addChannelDto.name,
 				private: addChannelDto.private,
 				members: {
-					create: [
-						{ userId: addChannelDto.intraId, isAdmin: true, isOwner: true }
-					]
-				}
+					create: membersToCreate
+				}				
 			}
 
 			if (addChannelDto.password && addChannelDto.password !== '') {
@@ -37,7 +53,7 @@ export class ChannelsService {
 
 			throw new Error();
 		} catch (error: unknown) {
-			throw new Error('Failed to add a channel');
+			throw new BadRequestException('Failed to add a channel');
 		}
 	}
 
@@ -78,7 +94,8 @@ export class ChannelsService {
 	async getAllNames(intraId: number): Promise<Channel[]> {
 		try {
 			const publicChannels = await this.prisma.channel.findMany({
-				where: { private: false },
+				where: { private: false,
+					members: { some: { userId: intraId } }},
 				include: { members: true },
 			});
 
@@ -96,6 +113,7 @@ export class ChannelsService {
 		}
 	}
 	
+
 	async channelChecker(channelName: string, intraId: number): Promise<Channel | null> {
 		if (intraId === 0) {
 			return (null);
@@ -190,7 +208,81 @@ export class ChannelsService {
 		});
 		return (res);
 	}
+	
+	async getChannelMembersWithoutMessages(channelId: number): Promise<User[]> {
+		const channelMembers = await this.prisma.channelMember.findMany({
+		  where: { channelId },
+		  include: { user: true }
+		});
+	  
+		const usersWithMessages = await this.prisma.message.findMany({
+		  where: { channelId },
+		  select: { userId: true }
+		});
+	  
 
+		const userIdsWithMessages = new Set(usersWithMessages.map(u => u.userId));
+
+		const filteredMembers = channelMembers.filter(member =>
+		  !userIdsWithMessages.has(member.userId) && !member.isAdmin && !member.isOwner
+		).map(member => member.user); // Retourner les objets utilisateur correspondants
+	  
+		return filteredMembers;
+	  }
+
+	async getUsersToAdd(channelId: number): Promise<User[]> {
+		const allUsers = await this.prisma.user.findMany();
+
+		const currentMembers = await this.prisma.channelMember.findMany({
+			where: { channelId: channelId },
+		});
+		const currentMemberIds = new Set(currentMembers.map(member => member.userId));
+		
+		const usersToAdd = allUsers.filter(user => !currentMemberIds.has(user.intraId));
+		return usersToAdd;
+	}
+	  
+	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId: number): Promise<Channel> {
+		if (newPrivate){
+			const users = await this.getChannelMembersWithoutMessages(channelId);
+			console.log("users:", users);
+			// enlever tous les users qui n'ont pas encore de messages
+			users.forEach(async (user) => {
+				await this.prisma.channelMember.delete({
+					where: {
+						userId_channelId: {
+							userId: user.intraId,
+							channelId: channelId
+						}
+					}
+				});
+			});
+		}
+		else {
+			const usersToAdd = await this.getUsersToAdd(channelId);
+			console.log("usersToAdd:", usersToAdd);
+			for (const user of usersToAdd) {
+			  await this.prisma.channelMember.create({
+				data: {
+				  channelId: channelId,
+				  userId: user.intraId,
+				}
+			  });
+			}
+		  }
+			
+		const channel = await this.prisma.channel.update({
+			where: {
+				id: channelId
+			},
+			data: {
+				password: (newPassword !== "" ? await bcrypt.hash(newPassword, 10) : null),
+				private: newPrivate
+			}
+		});
+		return channel;
+	}
+	
 	async getIsDual(channelName: string): Promise<boolean> {
 		const res = await this.prisma.channel.findUnique({
 			where: {
@@ -200,8 +292,9 @@ export class ChannelsService {
 		return (res.isDual);
 	}
 
-	async channelUpdate(channelId: number, newPassword: string, newPrivate: boolean, intraId: number): Promise<Channel> {
-		const executor: ChannelMember = await this.prisma.channelMember.findUnique({
+	async leaveChannel(channelName: string, intraId: number): Promise<void> {
+		const channelId = await this.getChannelId(channelName);
+		await this.prisma.channelMember.delete({
 			where: {
 				userId_channelId: {
 					userId: intraId,
@@ -209,20 +302,8 @@ export class ChannelsService {
 				}
 			}
 		});
-
-		return (
-			await this.prisma.channel.update({
-				where: {
-					id: channelId
-				},
-				data: {
-					password: (newPassword !== "" ? await bcrypt.hash(newPassword, 10) : ""),
-					private: newPrivate
-				}
-			})
-		);
 	}
-
+	
 	async addMember(user: string, channelName: string): Promise<ChannelMember> {
 		const channelId = await this.getChannelId(channelName);
 		console.log(channelId);

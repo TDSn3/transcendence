@@ -22,12 +22,44 @@
 	height: 30px;
 	font-size: 23px;
 }
+.channelsContainer {
+	display: flex;
+	justify-content: center;
+	padding: var(--spacing-medium);
 
+	background-color: var(--color-light);
+	border-style: solid;
+	border-width: 1.33px;
+	border-color: var(--color-medium);
+	border-radius: var(--border-radius-extra-small);
+
+	color: var(--color-dark);
+    font-family: var(--font-family-principal);
+    font-weight: 500;
+    font-style: normal;
+    font-size: var(--font-size-medium-large);
+
+	transition:
+		box-shadow 0.4s,
+		border 0.4s;
+}
+.channelsContainer:hover {
+	border: solid 1.33px var(--color-medium-dark);
+	box-shadow: 0px 4px 32px 4px var(--color-light-medium);
+}
+
+.channelsContainer:active {
+	background-color: var(--color-light-medium);
+	border: solid 1.33px var(--color-medium-dark);
+	box-shadow: 0px 0px 0px 0px var(--color-light-medium);
+}
 .channels {
 	display: flex;
+	width: 100%;
 	flex-direction: column;
 
 	height: 100%;
+	
 
 	gap: var(--spacing-medium);
 }
