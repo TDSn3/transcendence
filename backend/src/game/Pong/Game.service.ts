@@ -16,6 +16,6 @@ export class GamesService {
 				status: true,
 			}
 		});
-		return (res.status === 'PLAYING');
+		return (res?.status === 'PLAYING');
 	}
 }
