@@ -28,11 +28,12 @@ export class UsersStatusGatewayService {
 
         this.usersService
           .changeStatus(deletedUserStatusWebSocketId.userId, UserStatus.OFFLINE)
-          .then(() => {
-            
+          .then((userUpdated) => {
+            console.log('└─ ', userUpdated.status); // TODO: del
+
             this.server.emit('message', {
               id: deletedUserStatusWebSocketId.userId,
-              status: UserStatus.OFFLINE,
+              status: userUpdated.status,
           })})
           .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
       })
@@ -51,7 +52,7 @@ export class UsersStatusGatewayService {
 
             this.usersService
               .changeStatus(user.id, data.status)
-              .then(() => this.server.emit('message', data))
+              .then((userUpdated) => this.server.emit('message', { ...data, status: userUpdated.status }))
               .catch((error) => console.log(`Error changeStatus: {\n`, error, '\n}'));
           })
           .catch((error) => console.log(`Error addUserStatusWebSocketId: {\n`, error, '\n}'));

@@ -4,6 +4,7 @@ import { User, UserStatus, UserStatusWebSocketId, GameHistory } from '@prisma/cl
 import { UserExtend } from './interface/user.interface';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
+import color from '../utils/color';
 
 @Injectable()
 export class UsersService {
@@ -245,9 +246,28 @@ export class UsersService {
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
     const user = await this.findById(id);
     
-    if (user) {      
-      if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) return user;
-      if (newStatus === UserStatus.END_PLAYING) newStatus = UserStatus.ONLINE;
+    if (user) {
+      if (newStatus === UserStatus.LOGOUT) {
+        printLogout(user);
+        newStatus = UserStatus.OFFLINE;
+      } else if (newStatus === UserStatus.OFFLINE && user.status === UserStatus.OFFLINE) {
+        console.log('Double OFFLINE');
+        newStatus = UserStatus.OFFLINE;
+      } else {
+        // console.log('~~~~> ', newStatus, user.status, user.statusWebSocketId.length); // TODO: del
+        if (newStatus === UserStatus.OFFLINE && user.statusWebSocketId.length > 0) {
+          printNoOffline(user);
+          return user;
+        }
+        if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) {
+          printAlreadyPlaying(newStatus, user);
+          return user;
+        }
+        if (newStatus === UserStatus.END_PLAYING) {
+          printEndPlaying(user);
+          newStatus = UserStatus.ONLINE;
+        }
+      }
 
       const userUpdated = await this.prisma.user.update({
         where: { id },
@@ -398,3 +418,49 @@ export class UsersService {
     }
   }
 }
+
+const printLogout = (user: User) => {
+  console.log(
+    color.MAGENTA,
+    'LOGOUT',
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printAlreadyPlaying = (newStatus: UserStatus, user: User) => {
+  console.log(
+    color.MAGENTA,
+    newStatus,
+    'but already PLAYING',
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printEndPlaying = (user: User) => {
+  console.log(
+    color.MAGENTA,
+    'END_PLAYING  >  ONLINE',
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printNoOffline = (user: User) => {
+  console.log(
+    color.MAGENTA,
+    'OFFLINE but is not LOGOUT and other same user ONLINE',
+    `\n├─  OFFLINE  >  ${user.status}`,
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
