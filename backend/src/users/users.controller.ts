@@ -54,6 +54,7 @@ export class UsersController {
   @UseGuards(AuthGuardToken)
   @Get(':id/blocked')
   getBlockedUsers(@Param('id') id: string): Promise<any> {
+    console.log('getBlockedUsers', id)
     return this.usersService.getBlockedUsers(id);
   }
 
