@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import PongGame from "./PongGame.tsx";
-import BotvsBot from "./BotvsBot.tsx";
 import SoloMode from "./newGame.tsx";
 import io from "socket.io-client";
 import { Socket } from "dgram";
@@ -19,12 +18,12 @@ interface LobbyProps {
 const Lobby = (props: LobbyProps) => {
   const [localPong, setLocalPong] = useState<boolean>(false);
   const [IAPong, setIAPong] = useState<boolean>(false);
-  const [BotvsBot1, setBotvsBot] = useState<boolean>(false);
   const [soloMode, setSoloMode] = useState<boolean>(false);
   const [gameInfos, setGameInfos] = useState<any>(null);
   const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
   const [displayButtons, setDisplayButtons] = useState<boolean>(true);
   const [alreadyPlay, setAlreadyPlay] = useState<boolean>(false);
+  const [mirrorError, setMirrorError] = useState<boolean>(false);
 
   const socketRef = useRef<Socket | null>(null);
   const {user} = useAuth();
@@ -92,12 +91,12 @@ const Lobby = (props: LobbyProps) => {
 		setGameInfos(gameInfo);
 	});
 
-	socketRef.current.on('startPVPGame', () => {
-		console.log("go pvp");
-	})
-
 	socketRef.current.on('alreadyPlay', () => {
 		setAlreadyPlay(true);
+	})
+
+	socketRef.current.on('mirrorError', () => {
+		setMirrorError(true);
 	})
 
 	document.addEventListener('keydown', handleKeyPress);
@@ -106,7 +105,6 @@ const Lobby = (props: LobbyProps) => {
 	if (props.isPrivate === true) {
 		setLocalPong(true);
 		setIAPong(false);
-		setBotvsBot(false);
 		setDisplayButtons(false);
 		joinGame('privateGame');
 	}
@@ -122,7 +120,6 @@ const Lobby = (props: LobbyProps) => {
   const handleLocalPong = ():void => {
     setLocalPong(true);
     setIAPong(false);
-    setBotvsBot(false);
 	joinGame('vsPlayer');
 	setSoloMode(false);
 	setDisplayButtons(false);
@@ -131,7 +128,6 @@ const Lobby = (props: LobbyProps) => {
   const handleIAPong = ():void => {
     setLocalPong(false);
     setIAPong(true);
-    setBotvsBot(false);
 	joinGame('vsBot');
 	setSoloMode(false);
 	setDisplayButtons(false);
@@ -139,20 +135,9 @@ const Lobby = (props: LobbyProps) => {
     socketRef.current?.emit('startIAPong');
   };
 
-  const handleBotvsBot = ():void => {
-    setLocalPong(false);
-    setIAPong(false);
-    setBotvsBot(true);
-	setSoloMode(false);
-	setDisplayButtons(false);
-
-    socketRef.current?.emit('startBotvsBot');
-  };
-
   const handleSoloGame = ():void => {
 		setLocalPong(false);
    		setIAPong(false);
-   		setBotvsBot(false);
 		setSoloMode(true);
 		setDisplayButtons(false);
   }
@@ -213,13 +198,15 @@ const Lobby = (props: LobbyProps) => {
 	  {alreadyPlay && (
 		<p>You can't join a game for the moment</p>
 	  )}
-	  {gameInfos === null && localPong && !alreadyPlay && (
+	  {mirrorError && (
+		<p>You can't play play against you</p>
+	  )}
+	  {gameInfos === null && localPong && !alreadyPlay && !mirrorError && (
 		<p>Waiting for a game ...</p>
 	  )}
   
 	  {IAPong && <PongGame gameInfo={gameInfos}/>}
 	  {localPong && <PongGame gameInfo={gameInfos}/>}
-	  {BotvsBot1 && <BotvsBot />}
 	  {soloMode && <SoloMode avatar={user.avatar} playerName={user.login}/>}
 	</div>
   );

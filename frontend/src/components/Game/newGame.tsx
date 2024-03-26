@@ -11,8 +11,8 @@ interface Paddle {
 
 const SoloMode = (props: any) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [angleStart, setAngleStart] = useState(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
-  const initialBallState = { x: 400, y: 250, speedX: 5 * -Math.cos(angleStart), speedY: 5 * Math.sin(angleStart)};
+  const angleStartRef = useRef<number>(-Math.PI/4 + (Math.random() * ((Math.PI/4) -  (-Math.PI/4))));
+  const initialBallState = { x: 400, y: 250, speedX: 5 * -Math.cos(angleStartRef.current), speedY: 5 * Math.sin(angleStartRef.current)};
   const [ball, setBall] = useState(initialBallState);
   const [gameOver, setGameOver] = useState(false);
   const [gameRunning, setGameRunning] = useState(false);
@@ -26,9 +26,9 @@ const SoloMode = (props: any) => {
   const [leftScore, setLeftScore] = useState(0);
   const [hookTab, setHookTab] = useState<boolean[]>([false, false]);
   const [colors, setColors] = useState<string>("#03fc66");
-  const maxtime:number = 180;
+  const maxtime:number = 5;
   const [timeLeft, setTimeLeft] = useState<number>(maxtime);
-  const [startTimer, setStarTimer] =useState<number>(Date.now());
+  const startTimerRef = useRef<number>(Date.now());
 
   const canvas = canvasRef.current;
   function drawGame() {
@@ -249,7 +249,7 @@ useEffect(() => {
 	const updateTimer = () => {
 		const actualTime:number = Date.now();
 
-		setTimeLeft(maxtime - (actualTime - startTimer) / 1000);
+		setTimeLeft(maxtime - (actualTime - startTimerRef.current) / 1000);
 		if (timeLeft <= 0) {
 			setGameOver(true);
 		}

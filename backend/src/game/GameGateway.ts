@@ -54,10 +54,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(client: any) {
         console.log("Déconnexion du client:", client.id);
-		// this.usersStatusGatewayService.updateStatus({ id: PaddleInfo.userId, status: UserStatus.PLAYING });
 
 		for (const lobbyID in this.lobbies) {
-			// console.log(this.lobbies[lobbyID].pongGame);
 			for (let i = 0; i < this.lobbies[lobbyID].clients.length; i++) {
 				if (client.id === this.lobbies[lobbyID].clients[i]) {
 					if (this.lobbies[lobbyID].clients.length === 2 && !this.lobbies[lobbyID].pongGame.isFinished) {
@@ -73,23 +71,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 							this.lobbies[lobbyID].pongGame.score[0] = 10;
 							this.lobbies[lobbyID].pongGame.score[1] = 0;
 						}
-						console.log(this.lobbies[lobbyID].pongGame.gameMode);
-						
-
 					}
 					if (this.lobbies[lobbyID].pongGame.gameMode === 'vsBot') {
-						// console.log('test');
 						this.lobbies[lobbyID].pongGame.score[0] = 5;
 					}
-					// this.usersStatusGatewayService.updateStatus({ id: this.lobbies[lobbyID].pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
 					this.lobbies[lobbyID].clients.splice(i, 1);
 
-					// this.lobbies[lobbyID].pongGame.leftPaddle.userId;
 					if (this.lobbies[lobbyID].clients.length === 0 || this.lobbies[lobbyID].pongGame.isFinished) {
-						// clearInterval(this.lobbies[lobbyID].updateInterval);
 						delete this.lobbies[lobbyID];
-						console.log(`Lobby ${lobbyID} a ete supprime`);
-					}
+ 					}
 					break;
 			}
 			}
@@ -153,7 +143,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	InitvsPlayerLobby(PaddleInfo:any, client:Socket) {
 		let lobby = this.findLobbyAvailable();
-		if (lobby != null) {
+		if ( lobby != null && PaddleInfo.userId === lobby.pongGame.leftPaddle.userId)
+			client.emit('mirrorError');
+		if (lobby != null  && PaddleInfo.userId != lobby.pongGame.leftPaddle.userId) {
 			lobby.clients[1] = client.id;
 			const lobbyID:string = this.findKey(lobby);
 			client.join(lobbyID);
@@ -200,31 +192,5 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
 			lobby.startGamePVP(PaddleInfo.key, () => {});
 		}
-		// if (PaddleInfo.isHost) {
-		// 	const lobbyID: string = `PrivateGame_${client.id}`;
-		// 	client.join(lobbyID);
-		// 	this.lobbies[lobbyID] = new Lobby ('vsPlayer', this.server, this.usersStatusGatewayService);
-		// 	this.lobbies[lobbyID].key = PaddleInfo.key;
-		// 	this.lobbies[lobbyID].isPrivate = true;
-		// 	this.lobbies[lobbyID].clients[0] = client.id;
-		// 	this.lobbies[lobbyID].pongGame.leftPaddle.websocket = client.id;
-		// 	this.lobbies[lobbyID].pongGame.leftPaddle.avatar = PaddleInfo.avatar;
-		// 	this.lobbies[lobbyID].pongGame.leftPaddle.playerName = PaddleInfo.playerName;
-		// }
-		// else {
-		// 	let lobby = this.findLobbyByKey(PaddleInfo.key);
-		// 	if (lobby != null) {
-		// 		lobby.clients[1] = client.id;
-		// 		const lobbyID:string = this.findKey(lobby);
-		// 		client.join(lobbyID);
-		// 		lobby.startGamePVP(lobbyID, () => {});
-		// 		lobby.pongGame.rightPaddle.websocket = client.id;
-		// 		lobby.pongGame.rightPaddle.avatar = PaddleInfo.avatar;
-		// 		lobby.pongGame.rightPaddle.playerName = PaddleInfo.playerName;
-		// 	}
-		// 	else {
-		// 		console.log('trop tard l invitation est expire');
-		// 	}
-		// }
 	}
 }
