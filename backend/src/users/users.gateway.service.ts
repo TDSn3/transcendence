@@ -29,8 +29,6 @@ export class UsersStatusGatewayService {
         this.usersService
           .changeStatus(deletedUserStatusWebSocketId.userId, UserStatus.OFFLINE)
           .then((userUpdated) => {
-            console.log('└─ ', userUpdated.status); // TODO: del
-
             this.server.emit('message', {
               id: deletedUserStatusWebSocketId.userId,
               status: userUpdated.status,

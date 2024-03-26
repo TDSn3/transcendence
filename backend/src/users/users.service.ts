@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { User, UserStatus, UserStatusWebSocketId, GameHistory } from '@prisma/client';
 import { UserExtend } from './interface/user.interface';
 import { NotFoundException } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common';
 import color from '../utils/color';
 
 @Injectable()
@@ -11,117 +10,108 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany({
-      include: {
-        friends: true,
-        friendOf: true,
-        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
-        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
-      },
-    });
-    return users;
+    try {
+      const users = await this.prisma.user.findMany({
+        include: {
+          friends: true,
+          friendOf: true,
+          historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+          historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+        },
+      });
+   
+      if (users) return users;
+      throw new NotFoundException('Failed to find all users'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find all users'); // HTTP 422 Unprocessable Entity  
+    }
   }
 
   async findById(id: string): Promise<UserExtend> {
-    if (!id) {
-      throw new BadRequestException('User ID is required');
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: {
+          statusWebSocketId: true,
+          friends: true,
+          friendOf: true,
+  		    blocked: true,
+          historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+          historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+        },
+      });
+
+      if (user) return user;
+      throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find user by id'); // HTTP 422 Unprocessable Entity   
     }
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      include: {
-        statusWebSocketId: true,
-        friends: true,
-        friendOf: true,
-		    blocked: true,
-        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
-        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
-      },
-    });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    return user;
   }
 
   async findByIntraId(id: number): Promise<User> {
-    if (!id) {
-      throw new BadRequestException('User intraId is required');
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { intraId: id },
+      });
+
+      if (user) return user;
+      throw new NotFoundException('Failed to find user by intraId'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find user by intraId'); // HTTP 422 Unprocessable Entity   
     }
-
-    const user = await this.prisma.user.findUnique({
-      where: { intraId: id },
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    return user;
   }
 
   async findByLogin(login: string): Promise<User> {
-    if (!login) {
-      throw new BadRequestException('login is required');
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { login },
+        include: {
+          friends: true,
+          friendOf: true,
+          historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
+          historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
+        },
+      });
+
+      if (user) return user;
+      throw new NotFoundException('Failed to find user by login'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find user by login'); // HTTP 422 Unprocessable Entity   
     }
-
-    const user = await this.prisma.user.findUnique({
-      where: { login },
-      include: {
-        friends: true,
-        friendOf: true,
-        historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
-        historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with username ${login} not found`);
-    }
-
-    return user;
   }
 
   async findOneByLogin(login: string): Promise<{ login: string }> {
     try {
-      if (!login) {
-        throw new BadRequestException('login is required');
-      }
-
       const loginValue = await this.prisma.user.findUnique({
-        where: {
-          login: login,
-        },
-        select: {
-          login: true,
-        },
+        where: { login: login },
+        select: { login: true },
       });
 
-      if (!loginValue) {
-        throw new NotFoundException(`User with username ${login} not found`);
-      }
-
-      return loginValue;
-    } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof BadRequestException
-      ) {
-        throw error;
-      }
-      throw new NotFoundException('User not found');
+      if (loginValue) return loginValue;
+      throw new NotFoundException('Failed to find user login'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find user login'); // HTTP 422 Unprocessable Entity   
     }
   }
 
   async getBlockedUsers(id: string): Promise<any> {
-    const res = await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        blocked: true,
-      },
-    });
-    return res.blocked;
+    try {
+      const res = await this.prisma.user.findUnique({
+        where: { id: id },
+        select: { blocked: true },
+      });
+
+      if (res) return res.blocked;
+      throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to find user by id'); // HTTP 422 Unprocessable Entity
+    }
   }
 
   async addFriend(id: string, idUserToAddAsFriend: string): Promise<User> {
@@ -138,8 +128,8 @@ export class UsersService {
       if (user) return user;
 
       throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to add a friend');
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to add a friend'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -159,8 +149,8 @@ export class UsersService {
       }
 
       throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to delete a friend');
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to delete a friend'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -177,8 +167,8 @@ export class UsersService {
 
       if (user) return user;
       throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to add a block');
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to add a block'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -195,88 +185,106 @@ export class UsersService {
 
       if (user) return user;
       throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to delete a block');
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to delete a block'); // HTTP 422 Unprocessable Entity
     }
   }
 
 // Socket ─────────────────────────────────────────────────────────────────────────────────────────
 
   async addUserStatusWebSocketId(id: string, webSocketId: string): Promise<User> {
-    const user = await this.findById(id);
+    try {
+      const user = await this.findById(id);
 
-    if (user) {
-      const userUpdated = await this.prisma.user.update({
-        where: { id: user.id },
-        data: {
-          statusWebSocketId: {
-            create: [{ webSocketId: webSocketId }],
+      if (user) {
+        const userUpdated = await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            statusWebSocketId: {
+              create: [{ webSocketId: webSocketId }],
+            },
           },
-        },
-      });
+        });
 
-      if (userUpdated) return userUpdated
-      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
-    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+        if (userUpdated) return userUpdated;
+        throw new Error();
+      }
+      throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to update user status'); // HTTP 422 Unprocessable Entity
+    }
   }
 
   async removeUserWebSocketId(webSocketId: string): Promise<UserStatusWebSocketId> {
-    const userStatusWebSocketId =
-      await this.prisma.userStatusWebSocketId.findUnique({
-        where: { webSocketId: webSocketId },
-      });
+    try {
+      const userStatusWebSocketId =
+        await this.prisma.userStatusWebSocketId.findUnique({
+          where: { webSocketId: webSocketId },
+        });
 
-    if (userStatusWebSocketId) {
-      const user = await this.findById(userStatusWebSocketId.userId);
+      if (userStatusWebSocketId) {
+        const user = await this.findById(userStatusWebSocketId.userId);
 
-      if (user) {
-        const deletedUserStatusWebSocketId =
-          await this.prisma.userStatusWebSocketId.delete({
-            where: { id: userStatusWebSocketId.id },
-          });
+        if (user) {
+          const deletedUserStatusWebSocketId =
+            await this.prisma.userStatusWebSocketId.delete({
+              where: { id: userStatusWebSocketId.id },
+            });
 
-        if (deletedUserStatusWebSocketId) return deletedUserStatusWebSocketId
-        else throw new UnprocessableEntityException('Failed to remove userStatusWebSocketId'); // HTTP 422 Unprocessable Entity
-      } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
-    } else throw new NotFoundException('Failed to find userStatusWebSocketId by id'); // HTTP 404 Not Found
+          if (deletedUserStatusWebSocketId) return deletedUserStatusWebSocketId;
+          throw new Error();
+        }
+        throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+      }
+      throw new NotFoundException('Failed to find userStatusWebSocketId by id'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to remove userStatusWebSocketId'); // HTTP 422 Unprocessable Entity
+    }
   }
 
 // ────────────────────────────────────────────────────────────────────────────────────────────────
 
   async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
-    const user = await this.findById(id);
-    
-    if (user) {
-      if (newStatus === UserStatus.LOGOUT) {
-        printLogout(user);
-        newStatus = UserStatus.OFFLINE;
-      } else if (newStatus === UserStatus.OFFLINE && user.status === UserStatus.OFFLINE) {
-        console.log('Double OFFLINE');
-        newStatus = UserStatus.OFFLINE;
-      } else {
-        // console.log('~~~~> ', newStatus, user.status, user.statusWebSocketId.length); // TODO: del
-        if (newStatus === UserStatus.OFFLINE && user.statusWebSocketId.length > 0) {
-          printNoOffline(user);
-          return user;
+    try {
+      const user = await this.findById(id);
+      
+      if (user) {
+        if (newStatus === UserStatus.LOGOUT) {
+          printLogout(user);
+          newStatus = UserStatus.OFFLINE;
+        } else if (newStatus === UserStatus.OFFLINE && user.status === UserStatus.OFFLINE) {
+          console.log('Double OFFLINE');
+          newStatus = UserStatus.OFFLINE;
+        } else {
+          if (newStatus === UserStatus.OFFLINE && user.statusWebSocketId.length > 0) {
+            printNoOffline(user);
+            return user;
+          }
+          if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) {
+            printAlreadyPlaying(newStatus, user);
+            return user;
+          }
+          if (newStatus === UserStatus.END_PLAYING) {
+            printEndPlaying(user);
+            newStatus = UserStatus.ONLINE;
+          }
         }
-        if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) {
-          printAlreadyPlaying(newStatus, user);
-          return user;
-        }
-        if (newStatus === UserStatus.END_PLAYING) {
-          printEndPlaying(user);
-          newStatus = UserStatus.ONLINE;
-        }
+
+        const userUpdated = await this.prisma.user.update({
+          where: { id },
+          data: { status: newStatus },
+        });
+
+        if (userUpdated) return userUpdated;
+        throw new Error();
       }
-
-      const userUpdated = await this.prisma.user.update({
-        where: { id },
-        data: { status: newStatus },
-      });
-
-      if (userUpdated) return userUpdated
-      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
-    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+      throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to update user status'); // HTTP 422 Unprocessable Entity
+    }
   }
 
   async getStatus(id: string): Promise<{ status: UserStatus }> {
@@ -287,10 +295,9 @@ export class UsersService {
       });
 
       if (user) return { status: user.status };
-      
       throw new Error();
-    } catch (error: unknown) {
-      throw new NotFoundException('Failed to find user status'); // HTTP 404 Not Found
+    } catch (error) {
+      throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
     }
   }
 
@@ -328,7 +335,7 @@ export class UsersService {
 
             // const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
             // const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
-  
+
             return rankB - rankA;
           },
         );
@@ -337,10 +344,10 @@ export class UsersService {
 
         return ({ rank: selectUserRank + 1 });
       }
-
-      throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to find user rank');
+      throw new NotFoundException('Failed to find all users'); // HTTP 404 Not Found
+    } catch (error: unknown){
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to calculate rank'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -351,9 +358,9 @@ export class UsersService {
         data: { avatar: url },
       });
 
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update url avatar');
+      if (user) return user;
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to update user avatar'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -364,9 +371,10 @@ export class UsersService {
         data: { login: newLogin },
       });
 
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update login');
+      if (user) return user;
+      throw new Error();
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to update user login'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -377,31 +385,34 @@ export class UsersService {
         data: { twoFactorAuthSecret: secret },
       });
 
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to add secret for two factor authentication');
+      if (user) return user;
+      throw new Error();
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to update user twoFactorAuthSecret'); // HTTP 422 Unprocessable Entity
     }
   }
 
   async handleTwoFactorAuth(id: string): Promise<User> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { id },
-      });
-      if (!user) throw new NotFoundException(`User with ID ${id} not found`);
-      if (user.isTwoFactorAuthEnabled) {
-        return await this.prisma.user.update({
-          where: { id },
-          data: { isTwoFactorAuthEnabled: false, twoFactorAuthSecret: ' ' },
-        });
-      } else {
-        return await this.prisma.user.update({
-          where: { id },
-          data: { isTwoFactorAuthEnabled: true },
-        });
+      const user = await this.prisma.user.findUnique({ where: { id } });
+   
+      if (user) {
+        if (user.isTwoFactorAuthEnabled) {
+          return await this.prisma.user.update({
+            where: { id },
+            data: { isTwoFactorAuthEnabled: false, twoFactorAuthSecret: ' ' },
+          });
+        } else {
+          return await this.prisma.user.update({
+            where: { id },
+            data: { isTwoFactorAuthEnabled: true },
+          });
+        }
       }
+      throw new NotFoundException(`User with ID ${id} not found`); // HTTP 404 Not Found 
     } catch (error: unknown) {
-      throw new Error('Failed to activate two factor authentication');
+      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
+      throw new UnprocessableEntityException('Failed to update user isTwoFactorAuthEnabled'); // HTTP 422 Unprocessable Entity
     }
   }
 
@@ -412,9 +423,10 @@ export class UsersService {
         data: { twoFactorAuthSecret: secret },
       });
 
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update two factor authentication secret');
+      if (user) return user;
+      throw new Error();
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to update two factor authentication secret'); // HTTP 422 Unprocessable Entity
     }
   }
 }
