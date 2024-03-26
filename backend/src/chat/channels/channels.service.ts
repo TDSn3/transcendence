@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { Channel, ChannelMember, Message, User } from '@prisma/client';
 import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
@@ -22,8 +22,6 @@ export class ChannelsService {
 			throw new BadRequestException('Channel already exists');
 		}
 		try {
-	
-				
 			const users = await this.prisma.user.findMany();
 			const membersToCreate = users.map(({ intraId }) => ({
 				userId: intraId,
@@ -35,7 +33,7 @@ export class ChannelsService {
 				private: addChannelDto.private,
 				members: {
 					create: membersToCreate
-				}				
+				}
 			}
 
 			if (addChannelDto.password && addChannelDto.password !== '') {
@@ -50,10 +48,9 @@ export class ChannelsService {
 			});
 
 			if (newChannel) return newChannel;
-
-			throw new Error();
+			throw new NotFoundException('Failed to add a channel');
 		} catch (error: unknown) {
-			throw new BadRequestException('Failed to add a channel');
+			throw new UnprocessableEntityException('Failed to add a channel');
 		}
 	}
 
@@ -79,15 +76,17 @@ export class ChannelsService {
 					isDual: true,
 					members: {
 						create: [
-							{ userId: userOneIntraId, isOwner: true, isAdmin: true},
+							{ userId: userOneIntraId },
 							{ userId: userTwoIntraId }
 						]
 					}
 				}
 			});
-			return newDirectChannel;
-		} catch (error) {
-			throw error;
+			if (newDirectChannel) return newDirectChannel;
+			throw new NotFoundException('Failed to add a directChannel');
+		} catch (error: unknown) {
+			if (error instanceof NotFoundException) throw new NotFoundException(error.message);
+			throw new UnprocessableEntityException('Failed to add a directChannel');
 		}
 	}
 
@@ -109,10 +108,10 @@ export class ChannelsService {
 
 			return [...publicChannels, ...privateChannelsWithMember];
 		} catch (error: unknown) {
-			throw new Error('Failed to find all channels');
+			throw new UnprocessableEntityException('Failed to find all channels');
 		}
 	}
-	
+
 
 	async channelChecker(channelName: string, intraId: number): Promise<Channel | null> {
 		if (intraId === 0) {
@@ -171,7 +170,7 @@ export class ChannelsService {
 		}
 	}
 
-	async findById(id: number): Promise<Channel> {	
+	async findById(id: number): Promise<Channel> {
 		try {
 			const channel = await this.prisma.channel.findUnique({
 				where: { id },
