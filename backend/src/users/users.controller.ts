@@ -20,6 +20,7 @@ export class UsersController {
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
+
   @UseGuards(AuthGuardToken)
   @Get('id/:id')
   findById(@Param('id') id: string): Promise<User> {
@@ -74,6 +75,7 @@ export class UsersController {
     return this.usersService.deleteFriend(id, deleteFriendDto.idUserToDelAsFriend);
   }
 
+  @UseGuards(AuthGuardToken)
   @Post('id/ad-block/:id')
   addBlock(
     @Param('id') id: string,
