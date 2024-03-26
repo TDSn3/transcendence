@@ -95,10 +95,9 @@ function PongGame({ gameInfo }: { gameInfo: any }) {
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
             flexDirection: 'column',
+            alignItems: 'center',
             width: '100%',
-            backgroundColor: 'black',
           }}
         >
           <GameHeader gameInfo={gameInfo} />
