@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameHistory } from '@prisma/client';
 
@@ -25,8 +25,8 @@ export class GameHistoryService {
       if (gameHistory) return gameHistory;
 
       throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to add a game history');
+    } catch (error) {
+      throw new UnprocessableEntityException('Failed to add a game history'); // HTTP 422 Unprocessable Entity
     }
   }
 }

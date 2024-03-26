@@ -25,24 +25,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	private lobbies: Record<string, Lobby> = {};
 
 	handleConnection(client: Socket ) {
-		client.on('joinGame', async (PaddleInfo:any) => {
-			if (!await this.gamesService.isInGame(PaddleInfo.playerName)) {
-				if (PaddleInfo.gameMode === 'vsBot') {
-					this.InitvsBotLobby(PaddleInfo, client);
-				}
-				if (PaddleInfo.gameMode === 'vsPlayer') {
-					this.InitvsPlayerLobby(PaddleInfo, client);			
-				}
-				if (PaddleInfo.gameMode === 'privateGame') {
-					this.InitPrivateLobby(PaddleInfo, client);
-				}
-			}
-			else {
-				console.log('deja en game');
-				client.emit('alreadyPlay');
-			}
+		client.on('joinGame', async (PaddleInfo) => {
+			this.gamesService
+				.isInGame(PaddleInfo.playerName)
+				.then((value) => {
+					if (!value) {
+						if (PaddleInfo.gameMode === 'vsBot') {
+							this.InitvsBotLobby(PaddleInfo, client);
+						}
+						if (PaddleInfo.gameMode === 'vsPlayer') {
+							this.InitvsPlayerLobby(PaddleInfo, client);			
+						}
+						if (PaddleInfo.gameMode === 'privateGame') {
+							this.InitPrivateLobby(PaddleInfo, client);
+						}
+					} else {
+						console.log('deja en game');
+						client.emit('alreadyPlay');
+					}
+				})
+				.catch(() => console.log('Error in GameGateway.handleConnection() in this.gamesService.isInGame()'));
 		})
-		client.on('hookTabInfo', (hookTabInfos:any) => {
+		client.on('hookTabInfo', (hookTabInfos) => {
 			let lobby = this.findUserLobby(client.id);
 			if (lobby) {
 				lobby.pongGame.hookTabInfo = hookTabInfos;
