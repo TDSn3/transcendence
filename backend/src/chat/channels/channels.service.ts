@@ -2,6 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Channel, ChannelMember, Message, User } from '@prisma/client';
+import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { AddChannelDto } from './dto/Dto';
 import bcrypt from 'bcrypt';
@@ -11,7 +12,18 @@ export class ChannelsService {
 	constructor(private prisma: PrismaService) {}
 
 	async create(addChannelDto: AddChannelDto): Promise<Channel> {
+		const channelExist = await this.prisma.channel.findFirst({
+			where: {
+				name: addChannelDto.name
+			}
+		});
+		if (channelExist) {
+			console.log("channelExist:", channelExist);
+			throw new BadRequestException('Channel already exists');
+		}
 		try {
+	
+				
 			const users = await this.prisma.user.findMany();
 			const membersToCreate = users.map(({ intraId }) => ({
 				userId: intraId,
@@ -41,7 +53,7 @@ export class ChannelsService {
 
 			throw new Error();
 		} catch (error: unknown) {
-			throw new Error('Failed to add a channel');
+			throw new BadRequestException('Failed to add a channel');
 		}
 	}
 

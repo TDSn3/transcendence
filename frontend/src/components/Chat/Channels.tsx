@@ -54,8 +54,10 @@ const Channels = () => {
           password: channelPassword,
           private: channelPrivate,
         })
-        .then(() => navigate('/chat/' + channelName))
-        .catch((error) => console.error(error));
+        .then(() => {
+          navigate('/chat/' + channelName);
+        })
+        .catch(() => toast.error(<b>failed addition of chatRoom</b>));
     }
 
     setChannelName('');
