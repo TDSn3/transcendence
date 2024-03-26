@@ -89,7 +89,6 @@ export class AuthController {
     }
   }
 
-  @UseGuards(AuthGuardToken)
   @Post('logout')
   async logout(@Res() res: Response, @Body() userObject: any) {
     try {
