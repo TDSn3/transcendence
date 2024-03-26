@@ -195,6 +195,5 @@ export class Pong {
 			}
 			this.isFinished = true;
 		}
-		// console.log(this.score);
 	}
 }

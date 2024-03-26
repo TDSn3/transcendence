@@ -37,10 +37,7 @@ export class Lobby {
 					this.pongGame.nextFrame();
 					this.sendGameInfo(client, gameMode);				
 					if (this.pongGame.isFinished) {
-						console.log('ici');
-						console.log(this.pongGame.leftPaddle.userId);
-						// this.usersStatusGatewayService
-						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.END_PLAYING });
+						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
 						clearInterval(this.updateInterval);
 					}
 				}, 1000 / 60); 
@@ -53,7 +50,6 @@ export class Lobby {
 	public startGamePVP(lobbyID: string, callback: () => void): void {
 		this.pongGame.gameMode = 'vsPlayer';
 		this.pongGame.isStarted = true;
-		console.log(this.pongGame)
 		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.PLAYING });
 		this.usersStatusGatewayService.updateStatus({ id: this.pongGame.rightPaddle.userId, status: UserStatus.PLAYING });
 
