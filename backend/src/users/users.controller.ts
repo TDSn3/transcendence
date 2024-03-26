@@ -49,12 +49,14 @@ export class UsersController {
   findOneByLogin(@Param('login') login: string): Promise<{ login: string }> {
     return this.usersService.findOneByLogin(login);
   }
+
   @UseGuards(AuthGuardToken)
   @Get(':id/blocked')
   getBlockedUsers(@Param('id') id: string): Promise<any> {
     console.log('getBlockedUsers', id)
     return this.usersService.getBlockedUsers(id);
   }
+
   @UseGuards(AuthGuardToken)
   @Post('id/ad-friend/:id')
   addFriend(
@@ -63,16 +65,14 @@ export class UsersController {
   ): Promise<User> {
     return this.usersService.addFriend(id, addFriendDto.idUserToAddAsFriend);
   }
+
   @UseGuards(AuthGuardToken)
   @Post('id/del-friend/:id')
   deleteFriend(
     @Param('id') id: string,
     @Body() deleteFriendDto: DeleteFriendDto,
   ): Promise<User> {
-    return this.usersService.deleteFriend(
-      id,
-      deleteFriendDto.idUserToDelAsFriend,
-    );
+    return this.usersService.deleteFriend(id, deleteFriendDto.idUserToDelAsFriend);
   }
 
   @Post('id/ad-block/:id')
@@ -82,6 +82,7 @@ export class UsersController {
   ): Promise<User> {
     return this.usersService.addBlock(id, addBlockDto.idUserToAddBlock);
   }
+
   @UseGuards(AuthGuardToken)
   @Post('id/del-block/:id')
   delBlock(
@@ -90,6 +91,7 @@ export class UsersController {
   ): Promise<User> {
     return this.usersService.deleteBlock(id, deleteBlockDto.idUserToDelBlock);
   }
+
   @UseGuards(AuthGuardToken)
   @Post('id/avatar/:id')
   updateAvatar(

@@ -7,13 +7,11 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { /*User,*/ UserStatus } from '@prisma/client';
 import {
   UserForStatusWebSocket,
   ServerToClientEvents,
   ClientToServerEvents,
 } from './interface/usersStatus.interface';
-import { UsersService } from './users.service';
 import { UsersStatusGatewayService } from './users.gateway.service';
 import color from '../utils/color';
 
@@ -24,10 +22,7 @@ import color from '../utils/color';
   namespace: '/users/web-socket',
 })
 export class UsersStatusGateway implements OnGatewayInit {
-  constructor(
-    private usersService: UsersService,
-    private usersStatusGatewayService: UsersStatusGatewayService,
-  ) {}
+  constructor(private usersStatusGatewayService: UsersStatusGatewayService) {}
 
   @WebSocketServer() server: Server = new Server<
     ServerToClientEvents,
@@ -43,33 +38,24 @@ export class UsersStatusGateway implements OnGatewayInit {
   }
 
   handleDisconnect(client: Socket) {
-    printClientDisconnected(client);
-
-    this.usersService
-      .removeUserWebSocketId(client.id)
-      .then((deletedUserStatusWebSocketId) => {
-        this.server.emit('message', {
-          id: deletedUserStatusWebSocketId.userId,
-          status: UserStatus.OFFLINE,
-        });
-      })
-      .catch((error) => {
-        console.log('Error removeUserWebSocketId: {\n', error, '\n}');
-      });
+    this.usersStatusGatewayService.disconnect(client);
   }
 
   @SubscribeMessage('message')
   handleMessage(
     @MessageBody() data: UserForStatusWebSocket,
     @ConnectedSocket() client: Socket,
-  ): void {
+  ) {
     this.usersStatusGatewayService.message(data, client);
   }
 
   @SubscribeMessage('updateStatus')
-  handleUpdateStatus(@MessageBody() data: UserForStatusWebSocket): void {
+  handleUpdateStatus(
+    @MessageBody() data: UserForStatusWebSocket
+  ) {
     this.usersStatusGatewayService.updateStatus(data);
   }
+
 }
 
 const printClientConnected = (client: Socket) => {
@@ -78,17 +64,6 @@ const printClientConnected = (client: Socket) => {
     'New client connected',
     color.RESET,
     color.DIM_GREEN,
-    `id: ${client.id}`,
-    color.RESET,
-  );
-};
-
-const printClientDisconnected = (client: Socket) => {
-  console.log(
-    color.RED,
-    'Client disconnected',
-    color.RESET,
-    color.DIM_RED,
     `id: ${client.id}`,
     color.RESET,
   );

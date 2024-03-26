@@ -26,7 +26,7 @@ export class Pong {
 
 	public countdown: number = 3;
 	public timerStart:number;
-	public maxTime:number = 300;
+	public maxTime:number = 300; // TODO: 300
 	public timeLeft:number = this.maxTime;
 
 	public winnerUserId:string;

@@ -69,10 +69,10 @@ const Lobby = (props: LobbyProps) => {
 	sendHookTabInfo(socketRef.current);
   },[hookTab])
 
-//   useEffect (() => {
-// 	if (props.isPrivate === true)
-// 		joinGame('privateGame');
-//   }, []);
+  useEffect (() => {
+	if (props.isPrivate === true)
+		joinGame('privateGame');
+  }, []);
 
   useEffect(() => {
 

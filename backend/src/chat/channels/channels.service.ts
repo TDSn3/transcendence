@@ -29,7 +29,7 @@ export class ChannelsService {
 			if (addChannelDto.password && addChannelDto.password !== '') {
 				const saltRounds = 10
 				const passwordHash = await bcrypt.hash(addChannelDto.password, saltRounds);
-				
+
 				data.password = passwordHash;
 			}
 
@@ -86,7 +86,7 @@ export class ChannelsService {
 					members: { some: { userId: intraId } }},
 				include: { members: true },
 			});
-		
+
 			const privateChannelsWithMember = await this.prisma.channel.findMany({
 				where: {
 					private: true,
@@ -94,13 +94,14 @@ export class ChannelsService {
 				},
 				include: { members: true },
 			});
-			
+
 			return [...publicChannels, ...privateChannelsWithMember];
 		} catch (error: unknown) {
 			throw new Error('Failed to find all channels');
 		}
 	}
 	
+
 	async channelChecker(channelName: string, intraId: number): Promise<Channel | null> {
 		if (intraId === 0) {
 			return (null);
@@ -115,8 +116,7 @@ export class ChannelsService {
 		if (!channel) {
 			return (null);
 		}
-		console.log("intraId", intraId)
-		console.log("channel.id", channel.id)
+
 		const member: ChannelMember = await this.prisma.channelMember.findUnique({
 			where: {
 				userId_channelId: {
@@ -126,15 +126,14 @@ export class ChannelsService {
 			}
 		});
 
-		console.log(member);
 		if (member.isBan) {
 			return (null);
 		}
+
 		return (channel);
 	}
 
 	async getChannelId(channelName: string): Promise<number> {
-		console.log("channelName:", channelName);
 		const res = await this.prisma.channel.findUnique({
 			where: {
 				name: channelName
@@ -150,6 +149,20 @@ export class ChannelsService {
 		try {
 			const channel = await this.prisma.channel.findUnique({
 				where: { name },
+			});
+
+			if (channel) return channel;
+
+			throw new Error();
+		} catch (error: unknown) {
+			throw new Error('Failed to find channel by name');
+		}
+	}
+
+	async findById(id: number): Promise<Channel> {	
+		try {
+			const channel = await this.prisma.channel.findUnique({
+				where: { id },
 			});
 
 			if (channel) return channel;
@@ -245,16 +258,26 @@ export class ChannelsService {
 			  });
 			}
 		  }
+			
 		const channel = await this.prisma.channel.update({
 			where: {
 				id: channelId
 			},
 			data: {
-				password: newPassword,
+				password: await bcrypt.hash(newPassword, 10),
 				private: newPrivate
 			}
 		});
 		return channel;
+	}
+	
+	async getIsDual(channelName: string): Promise<boolean> {
+		const res = await this.prisma.channel.findUnique({
+			where: {
+				name: channelName
+			}
+		})
+		return (res.isDual);
 	}
 
 	async leaveChannel(channelName: string, intraId: number): Promise<void> {

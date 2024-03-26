@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
-import { ServerToClientEvents, ClientToServerEvents } from '../utils/types';
+import { UserStatus, ServerToClientEvents, ClientToServerEvents } from '../utils/types';
 import useAuth from '../contexts/Auth/useAuth';
 import authServices from '../services/auth';
 
 interface LogoutProps {
-  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined,
 }
 
 function Logout({ socket }: LogoutProps) {
@@ -17,7 +17,10 @@ function Logout({ socket }: LogoutProps) {
     const performLogout = async () => {
       try {
         await authServices.logoutUser(user);
-        if (socket !== undefined) socket.disconnect();
+        if (socket !== undefined) {
+          socket.emit('message', { id: user.id, status: UserStatus.LOGOUT });
+          socket.disconnect();
+        }
 
         setLoggedIn(false);
         localStorage.removeItem('userLogin');
