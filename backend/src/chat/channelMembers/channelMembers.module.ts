@@ -6,11 +6,12 @@ import { PrismaModule } from "nestjs-prisma";
 import { ChannelsService } from "../channels/channels.service";
 import { ChatSocketModule } from "../chatSocket/chatSocket.module";
 import { MessagesService } from "../messages/messages.service";
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
 	imports: [ChatSocketModule, PrismaModule],
 	controllers: [ChannelMembersController],
-	providers: [ChannelMembersService, ChannelsService, MessagesService, PrismaService],
+	providers: [JwtService, ChannelMembersService, ChannelsService, MessagesService, PrismaService],
 })
 
 export class ChannelMembersModule {}
