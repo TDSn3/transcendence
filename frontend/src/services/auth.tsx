@@ -1,4 +1,5 @@
 import axios from 'axios';
+import config from '../utils/config';
 
 import { User } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
@@ -6,7 +7,7 @@ import errorMessage from '../utils/errorMessage';
 const logoutUser = async (user: User) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/logout`,
+      `${config.API_BASE_URL}/auth/logout`,
       { user },
       { withCredentials: true },
     );
@@ -30,7 +31,7 @@ const addFakeUser = async () => {
 
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/auth/FakeUsers`,
+      `${config.API_BASE_URL}/auth/FakeUsers`,
       fakeUser,
       { withCredentials: true },
     );
@@ -49,7 +50,7 @@ const addFakeUser = async () => {
 
 const authentication42 = async (code: string) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/auth/signIn42`, {
+    const response = await axios.get(`${config.API_BASE_URL}/auth/signIn42`, {
       params: { code },
       withCredentials: true,
     });

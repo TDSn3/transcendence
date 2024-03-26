@@ -5,4 +5,12 @@ COPY		. /usr/src/app
 
 RUN			npm install
 
-CMD			["npm", "run", "dev"]
+RUN			npm run build
+
+# CMD			["npm", "run", "dev"]
+
+RUN			npm install -g serve
+
+# CMD			["serve", "dist"]
+
+CMD			["serve", "-s", "dist"]

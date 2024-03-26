@@ -4,6 +4,7 @@ import Cta from '../Cta/cta';
 import useAuth from '../../contexts/Auth/useAuth';
 import authServices from '../../services/auth';
 import { UserStatus } from '../../utils/types';
+import config from '../../utils/config';
 
 import './login.css';
 
@@ -14,8 +15,8 @@ function Login() {
   const handleClick42 = (event: React.FormEvent): void => {
     event.preventDefault();
 
-    if (API_42_UID) {
-      window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${API_42_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A${FRONTEND_PORT}%2FsignIn42&response_type=code`;
+    if (config.API_42_UID) {
+      window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${config.API_42_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A${config.FRONTEND_PORT}%2FsignIn42&response_type=code`;
     } else {
       console.error('API 42 UID error. Needed on `.env.private` at root.');
     }

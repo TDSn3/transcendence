@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { AddGameHistory, InterfaceGameHistory } from '../utils/types';
 import errorMessage from '../utils/errorMessage';
+import config from '../utils/config';
 
-const url = `${API_BASE_URL}/game-history`;
+const url = `${config.API_BASE_URL}/game-history`;
 
 const addGameHistory = async (gameResult: AddGameHistory): Promise<InterfaceGameHistory> => {
   try {
