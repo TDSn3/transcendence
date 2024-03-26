@@ -37,7 +37,7 @@ export class Lobby {
 					this.pongGame.nextFrame();
 					this.sendGameInfo(client, gameMode);				
 					if (this.pongGame.isFinished) {
-						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.ONLINE });
+						this.usersStatusGatewayService.updateStatus({ id: this.pongGame.leftPaddle.userId, status: UserStatus.END_PLAYING });
 						clearInterval(this.updateInterval);
 					}
 				}, 1000 / 60); 
