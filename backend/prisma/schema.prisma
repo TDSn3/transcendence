@@ -111,4 +111,6 @@ enum UserStatus {
   ONLINE
   OFFLINE
   PLAYING
+  END_PLAYING
+  LOGOUT
 }

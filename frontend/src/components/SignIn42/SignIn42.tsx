@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../contexts/Auth/useAuth';
 import authServices from '../../services/auth';
+import { UserStatus } from '../../utils/types';
 
 function SignIn42(): React.ReactElement {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function SignIn42(): React.ReactElement {
       try {
         const user = await authServices.authentication42(code as string);
 
-        setUser(user);
+        setUser({ ...user, status: UserStatus.ONLINE });
         if (user.isTwoFactorAuthEnabled) navigate('/login/twofa');
         else {
           setLoggedIn(true);

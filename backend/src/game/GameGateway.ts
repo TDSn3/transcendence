@@ -25,7 +25,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	private lobbies: Record<string, Lobby> = {};
 
 	handleConnection(client: Socket ) {
-		console.log("Nouvelle connexion établie! client ID:", client.id);
 		client.on('joinGame', async (PaddleInfo:any) => {
 			if (!await this.gamesService.isInGame(PaddleInfo.playerName)) {
 				if (PaddleInfo.gameMode === 'vsBot') {

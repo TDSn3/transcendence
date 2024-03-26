@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserStatus, UserStatusWebSocketId, GameHistory } from '@prisma/client';
+import { UserExtend } from './interface/user.interface';
 import { NotFoundException } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
 import color from '../utils/color';
@@ -21,16 +22,17 @@ export class UsersService {
     return users;
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserExtend> {
     if (!id) {
       throw new BadRequestException('User ID is required');
     }
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
+        statusWebSocketId: true,
         friends: true,
         friendOf: true,
-		blocked: true,
+		    blocked: true,
         historyGamesWon: { include: { WinningUser: true, LosingUser: true } },
         historyGamesLost: { include: { WinningUser: true, LosingUser: true } },
       },
@@ -198,78 +200,98 @@ export class UsersService {
     }
   }
 
-  async addUserStatusWebSocketId(
-    id: string,
-    webSocketId: string,
-  ): Promise<User> {
-    try {
-      const user = await this.findById(id);
+// Socket ─────────────────────────────────────────────────────────────────────────────────────────
 
-      if (user) {
-        const userUpdated = await this.prisma.user.update({
-          where: { id: user.id },
-          data: {
-            statusWebSocketId: {
-              create: [{ webSocketId: webSocketId }],
-            },
+  async addUserStatusWebSocketId(id: string, webSocketId: string): Promise<User> {
+    const user = await this.findById(id);
+
+    if (user) {
+      const userUpdated = await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          statusWebSocketId: {
+            create: [{ webSocketId: webSocketId }],
           },
-        });
+        },
+      });
 
-        if (userUpdated) {
-          return userUpdated;
-        }
-      }
-
-      throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to add web socket id');
-    }
+      if (userUpdated) return userUpdated
+      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
+    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
   }
 
-  async removeUserWebSocketId(
-    webSocketId: string,
-  ): Promise<UserStatusWebSocketId> {
-    try {
-      const userStatusWebSocketId =
-        await this.prisma.userStatusWebSocketId.findUnique({
-          where: { webSocketId: webSocketId },
-        });
+  async removeUserWebSocketId(webSocketId: string): Promise<UserStatusWebSocketId> {
+    const userStatusWebSocketId =
+      await this.prisma.userStatusWebSocketId.findUnique({
+        where: { webSocketId: webSocketId },
+      });
 
-      if (userStatusWebSocketId) {
-        const user = await this.findById(userStatusWebSocketId.userId);
+    if (userStatusWebSocketId) {
+      const user = await this.findById(userStatusWebSocketId.userId);
 
-        if (user) {
-          const deletedUserStatusWebSocketId =
-            await this.prisma.userStatusWebSocketId.delete({
-              where: { id: userStatusWebSocketId.id },
-            });
+      if (user) {
+        const deletedUserStatusWebSocketId =
+          await this.prisma.userStatusWebSocketId.delete({
+            where: { id: userStatusWebSocketId.id },
+          });
 
-          if (deletedUserStatusWebSocketId) {
-            printRemoveUserStatusWebSocketId(deletedUserStatusWebSocketId);
+        if (deletedUserStatusWebSocketId) return deletedUserStatusWebSocketId
+        else throw new UnprocessableEntityException('Failed to remove userStatusWebSocketId'); // HTTP 422 Unprocessable Entity
+      } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
+    } else throw new NotFoundException('Failed to find userStatusWebSocketId by id'); // HTTP 404 Not Found
+  }
 
-            return deletedUserStatusWebSocketId;
-          }
+// ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
+    const user = await this.findById(id);
+    
+    if (user) {
+      if (newStatus === UserStatus.LOGOUT) {
+        printLogout(user);
+        newStatus = UserStatus.OFFLINE;
+      } else if (newStatus === UserStatus.OFFLINE && user.status === UserStatus.OFFLINE) {
+        console.log('Double OFFLINE');
+        newStatus = UserStatus.OFFLINE;
+      } else {
+        // console.log('~~~~> ', newStatus, user.status, user.statusWebSocketId.length); // TODO: del
+        if (newStatus === UserStatus.OFFLINE && user.statusWebSocketId.length > 0) {
+          printNoOffline(user);
+          return user;
         }
-
-        throw new Error();
+        if (newStatus !== UserStatus.END_PLAYING && user.status === UserStatus.PLAYING) {
+          printAlreadyPlaying(newStatus, user);
+          return user;
+        }
+        if (newStatus === UserStatus.END_PLAYING) {
+          printEndPlaying(user);
+          newStatus = UserStatus.ONLINE;
+        }
       }
 
-      throw new Error();
-    } catch (error: unknown) {
-      throw new Error('Failed to remove web socket id');
-    }
+      const userUpdated = await this.prisma.user.update({
+        where: { id },
+        data: { status: newStatus },
+      });
+
+      if (userUpdated) return userUpdated
+      else throw new UnprocessableEntityException('Failed to update user'); // HTTP 422 Unprocessable Entity
+    } else throw new NotFoundException('Failed to find user by id'); // HTTP 404 Not Found
   }
 
   async getStatus(id: string): Promise<{ status: UserStatus }> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      include: { statusWebSocketId: true },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id },
+        include: { statusWebSocketId: true },
+      });
 
-    if (user && user.statusWebSocketId.length > 0) {
-      return { status: UserStatus.ONLINE };
+      if (user) return { status: user.status };
+      
+      throw new Error();
+    } catch (error: unknown) {
+      throw new NotFoundException('Failed to find user status'); // HTTP 404 Not Found
     }
-    return { status: UserStatus.OFFLINE };
   }
 
   async getRank(id: string): Promise<{ rank: number }> {
@@ -319,19 +341,6 @@ export class UsersService {
       throw new Error();
     } catch (error: unknown) {
       throw new Error('Failed to find user rank');
-    }
-  }
-
-  async changeStatus(id: string, newStatus: UserStatus): Promise<User> {
-    try {
-      const user = await this.prisma.user.update({
-        where: { id },
-        data: { status: newStatus },
-      });
-
-      return user;
-    } catch (error: unknown) {
-      throw new Error('Failed to update user status');
     }
   }
 
@@ -410,17 +419,48 @@ export class UsersService {
   }
 }
 
-const printRemoveUserStatusWebSocketId = (
-  deletedUserStatusWebSocketId: UserStatusWebSocketId,
-) => {
+const printLogout = (user: User) => {
   console.log(
-    color.BOLD_RED,
-    'Remove UserStatusWebSocketId: ',
+    color.MAGENTA,
+    'LOGOUT',
     color.RESET,
-    color.DIM_RED,
-    '{\n webSocketId: ',
-    deletedUserStatusWebSocketId.webSocketId,
-    '\n }',
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printAlreadyPlaying = (newStatus: UserStatus, user: User) => {
+  console.log(
+    color.MAGENTA,
+    newStatus,
+    'but already PLAYING',
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printEndPlaying = (user: User) => {
+  console.log(
+    color.MAGENTA,
+    'END_PLAYING  >  ONLINE',
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
+    color.RESET,
+  );
+};
+
+const printNoOffline = (user: User) => {
+  console.log(
+    color.MAGENTA,
+    'OFFLINE but is not LOGOUT and other same user ONLINE',
+    `\n├─  OFFLINE  >  ${user.status}`,
+    color.RESET,
+    color.DIM,
+    `from ${user.login}`,
     color.RESET,
   );
 };
