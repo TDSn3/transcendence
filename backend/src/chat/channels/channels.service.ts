@@ -264,7 +264,7 @@ export class ChannelsService {
 				id: channelId
 			},
 			data: {
-				password: await bcrypt.hash(newPassword, 10),
+				password: (newPassword !== "" ? await bcrypt.hash(newPassword, 10) : null),
 				private: newPrivate
 			}
 		});

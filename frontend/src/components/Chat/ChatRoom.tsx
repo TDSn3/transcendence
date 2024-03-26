@@ -89,8 +89,9 @@ const ChatRoom = () => {
       const channel = await axios.get<boolean>(
         `http://localhost:5001/api/channels/${channelName}/${user.intraId}/check`,
       );
-      if (channel.data) {
-        setChannel(channel.data);
+      if (channel?.data) {
+        setChannel(channel?.data);
+        setNewChannelPrivate(channel?.data?.private);
       } else navigate('/chat');
 
       setBlockedUsers(
@@ -104,9 +105,25 @@ const ChatRoom = () => {
           )
         ).data,
       );
-	  isOwnerRef.current = (await axios.get(`http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`)).data.isOwner;
-	  console.log((await axios.get(`http://localhost:5001/api/channels/${channelName}/isDual`)).data);
-	  setDual((await axios.get(`http://localhost:5001/api/channels/${channelName}/isDual`)).data);
+      isOwnerRef.current = (
+        await axios.get(
+          `http://localhost:5001/api/channelMembers/${channelName}/${user.intraId}`,
+        )
+      ).data.isOwner;
+      console.log(
+        (
+          await axios.get(
+            `http://localhost:5001/api/channels/${channelName}/isDual`,
+          )
+        ).data,
+      );
+      setDual(
+        (
+          await axios.get(
+            `http://localhost:5001/api/channels/${channelName}/isDual`,
+          )
+        ).data,
+      );
     };
     if (user.id) fetchData();
 
@@ -182,12 +199,22 @@ const ChatRoom = () => {
       <div className="banner">
         <input type="button" value="←" onClick={() => navigate('/chat')} />
         <h3>{channelName}</h3>
-		{ isDual && <input type="button" value="⚔️" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: channelName}})}/> }
-		{/* <input type="button" value="→" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: false, key: "cest un test"}})}/> */}
-		
-{/* // 	  <input type="button" value="←" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: "CEST LA CLE"}})}/> */}
+        {isDual && (
+          <input
+            type="button"
+            value="⚔️"
+            onClick={() =>
+              navigate('/game', {
+                state: { isPrivate: true, isHost: true, key: channelName },
+              })
+            }
+          />
+        )}
+        {/* <input type="button" value="→" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: false, key: "cest un test"}})}/> */}
 
-        { isOwnerRef.current &&
+        {/* // 	  <input type="button" value="←" onClick={() => navigate("/game", {state: {isPrivate: true, isHost: true, key: "CEST LA CLE"}})}/> */}
+
+        {isOwnerRef.current && (
           <input
             type="button"
             value="⚙️"
