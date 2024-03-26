@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   UnprocessableEntityException,
   BadGatewayException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserStatus } from '@prisma/client';
@@ -304,8 +305,8 @@ export class AuthService {
 
       return user;
     } catch (error: unknown) {
-      if (error instanceof NotFoundException) throw new NotFoundException(error.message); // HTTP 404 Not Found
-      throw new UnprocessableEntityException('Error with getUserByToken'); // HTTP 422 Unprocessable Entity
+      if (error instanceof NotFoundException) throw new UnauthorizedException(error.message); // HTTP 404 Not Found
+      throw new UnauthorizedException('Error with getUserByToken'); // HTTP 422 Unprocessable Entity
     }
   }
 
