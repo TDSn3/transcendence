@@ -20,11 +20,9 @@ export class ChatSocketGateway {
 	constructor(private channelsService: ChannelsService, private channelMembersService: ChannelMembersService, private messagesService: MessagesService) {}
 
 	handleConnection(socket: Socket) {
-		console.log("+", socket.id);
 	}
 
 	handleDisconnect(socket: Socket) {
-		console.log("-", socket.id);
 	}
 
 	@SubscribeMessage("chatJoin")
