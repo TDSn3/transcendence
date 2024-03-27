@@ -313,6 +313,10 @@ export class UsersService {
       if (users && users.length > 0) {
         const usersSortByRank = users.sort(
           (a, b) => {
+
+            // const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
+            // const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
+
             const rankA = a?.historyGamesWon?.reduce((accumulator, currentValue: GameHistory) => {
               if (currentValue.WinningUserScore === currentValue.LosingUserScore) return (accumulator);
               return (accumulator + 1);
@@ -333,8 +337,19 @@ export class UsersService {
               return (accumulator + 1);
             }, 0);
 
-            // const rankA = a.historyGamesWon?.length ?? 0 - a.historyGamesLost?.length ?? 0;
-            // const rankB = b.historyGamesWon?.length ?? 0 - b.historyGamesLost?.length ?? 0;
+            if (rankA === rankB) {
+              const totalGamesA = a.historyGamesWon?.length + a.historyGamesLost?.length;
+              const totalGamesB = b.historyGamesWon?.length + b.historyGamesLost?.length;
+
+              if (totalGamesA === totalGamesB) {
+                const createdAtA = new Date(a.createdAt).getTime();
+                const createdAtB = new Date(b.createdAt).getTime();
+
+                return createdAtA - createdAtB;
+              }
+
+              return totalGamesB - totalGamesA;
+            }
 
             return rankB - rankA;
           },
