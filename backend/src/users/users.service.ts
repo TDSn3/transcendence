@@ -343,7 +343,6 @@ export class UsersService {
         const selectUserRank = usersSortByRank.findIndex((user) => user.id === id);
 
         return ({ rank: selectUserRank + 1 });
-
       }
       throw new NotFoundException('Failed to find all users'); // HTTP 404 Not Found
     } catch (error: unknown){
