@@ -186,7 +186,6 @@ const Channels = () => {
       )}
 
       <div className="banner">
-        <input type="button" value="🏠" onClick={() => navigate('/home')} />
         <h3>Chat</h3>
         <input
           type="button"

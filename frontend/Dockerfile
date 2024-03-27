@@ -3,8 +3,10 @@ FROM		node:21.6.0
 WORKDIR		/usr/src/app
 COPY		. /usr/src/app
 
-RUN			npm install
+RUN			chmod +x /usr/src/app/script.sh		\
+				&& npm install -g serve			\
+				&& npm install
 
-RUN			npm run build
+ENTRYPOINT	["/usr/src/app/script.sh"]
 
-CMD			["npm", "run", "dev"]
+CMD			["serve", "-s", "dist"]

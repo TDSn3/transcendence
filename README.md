@@ -1,5 +1,3 @@
-# transcendence
-
 ```
 └── transcendence
     ├── backend
@@ -26,7 +24,7 @@
 
 ### `.env.private`
 
-You must add a `.env.private` file to the root with these variables :
+First, you must add a `.env.private` file to the root with these variables :
 
 ```
 API_42_UID=<data>
@@ -36,6 +34,10 @@ JWT_REFRESH_SECRET=<data>
 ```
 
 If you don't have access to 42 profiles, ignore the first two and log in with the fake user.
+
+Next, run the `make` command and go to http://localhost:3000.
+
+---
 
 ### Makefile
 
@@ -55,35 +57,15 @@ On `./`
 
 On `./backend/`
 
-- `npx prisma migrate dev` : load .env variable and create a network between my database and my backend.
-- `npx prima migrate deploy`: upload modifications.
-- `npx prisma studio` : debug the database.
-- `npx prisma migrate dev --name name_migrate`.
-- `npx prisma generate`.
+- `npx prisma migrate dev` : Load .env variable and create a network between my database and my backend.
+- `npx prima migrate deploy`: Upload modifications.
+- `npx prisma migrate dev --name name_migrate` : Creates a new migration with the specified name and applies it to the database.
+- `npx prisma generate` : Generates or updates the Prisma client.
+- `npx prisma studio` : Show the database in the navigator.
 
 #### Scripts
 
 - `npm run start:migrate:dev` : Runs `npx prisma migrate deploy` to apply the latest migrations to your database and  starts the development server with `nest start --watch`.
-
-### Run locally
-
-If you test the project without docker for the backend and frontend, you'll have to :
-
-- Run ONLY the database on the docker-compose, so comment frontend and backend service.
-- on `/backend/.env`, on the line `DATABASEURL=`, comment off `"<...>db:5432"` and comment on `"<...>localhost:5432<...>"`.
-- Run locally frontend and backend.
-
-#### Backend
-
-On `./backend/`
-
-- `npm run start:dev`
-
-#### Frontend
-
-On `./frontend/`
-
-- `npm run dev`
 
 ## Utils
 

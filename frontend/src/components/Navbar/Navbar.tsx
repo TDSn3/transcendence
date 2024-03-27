@@ -10,12 +10,6 @@ function Navbar() {
     <div className="navbar-style">
       <div className="first-container-navbar">
         <NavbarItem
-          to="/home"
-          text="Home"
-          navbarItemSelected={navbarItemSelected}
-          setNavbarItemSelected={setNavbarItemSelected}
-        />
-        <NavbarItem
           to={`/profile/${user.login}`}
           text="Profile"
           navbarItemSelected={navbarItemSelected}
